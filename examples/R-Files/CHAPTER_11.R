@@ -8,6 +8,7 @@ win1 <- win1[win1$Room=="Bedroom", ]
 
 
 win1 <- win1[1:5000, ]## Only a subset of the data is considered
+
 win1$HalfHour <- round((win1$day+win1$Time)*24*2)
 
 win1.agr <- aggregate(cbind(CO2C,WindowClosed,Time,Day,Month)~

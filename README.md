@@ -3,5 +3,7 @@
 Modellering CO2 ved hjælp af Hidden Markov Modeller. 
 
 
+
+### Data. 
 Package manager er uv. 
 
