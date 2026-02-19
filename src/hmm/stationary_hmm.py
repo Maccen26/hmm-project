@@ -1,7 +1,6 @@
-
 import jax.numpy as jnp
 from jax import lax
-import jax 
+import jax
 
 
 @jax.jit
@@ -11,58 +10,82 @@ def recursive_filter(Utt0, g, Gamma):
         v = Ut_i * g_i
         ft_i = jnp.sum(v)
         Utt_i = v / ft_i
-        return Utt_i, (Ut_i, ft_i, Utt_i)  # (carry, stacked outputs)
+        return Utt_i, (Ut_i, ft_i, Utt_i)
 
-    _, (Ut_i, ft_i, Utt_i)  = lax.scan(scan_fn, Utt0, g[1:])
-
-    return Ut_i, ft_i, Utt_i
+    _, (Ut, ft, Utt) = lax.scan(scan_fn, Utt0, g)
+    return Ut, ft, Utt
 
 
 class StationaryHMM:
-    def __init__(self, transition_matrix: jnp.ndarray, emission_distributions : jnp.ndarray):
+    def __init__(self, transition_matrix: jnp.ndarray, emission_distributions: jnp.ndarray):
         self.transition_matrix = transition_matrix
         self.emission_distributions = emission_distributions
+        self.num_states = transition_matrix.shape[0]
+        self.num_obs = emission_distributions.shape[1]
 
-        self.num_states = transition_matrix.shape[0] 
-        self.num_obs = emission_distributions.shape[1] 
-        
-        #init of statedistr
-        self.ut = jnp.zeros((self.num_obs, self.num_states))
-        self.u_norm = jnp.zeros((self.num_obs, self.num_states)) 
-        self.ft = jnp.zeros(self.num_obs)
-    
-    def forward(self, method : str = "filter"):
+        self.ut     = jnp.zeros((self.num_obs, self.num_states))
+        self.u_norm = jnp.zeros((self.num_obs, self.num_states))
+        self.ft     = jnp.zeros(self.num_obs)
+
+    def forward(self, method: str = "filter"):
         if method == "filter":
             return self._forward_filter()
         else:
-            raise ValueError("Invalid method. Must be 'filter'.") 
-        
+            raise ValueError("Invalid method. Must be 'filter'.")
 
-    def _forward_filter(self): 
-        self.ut[:, 0] = self.init_stationary_distribution()  
+    def _forward_filter(self):
+        # --- t=0: initialize ---
+        ut0   = self.init_stationary_distribution()          # (num_states,)
+        g0    = self.emission_distributions[:, 0]            # (num_states,) -- bug fix: was column 0
+        ft0   = jnp.sum(ut0 * g0)
+        utt0  = ut0 * g0 / ft0
 
-        self.ft[0] = jnp.sum(self.ut[:, 0] * self.emission_distributions[:, 0]) 
+        self.ut     = self.ut.at[0, :].set(ut0)
+        self.u_norm = self.u_norm.at[0, :].set(utt0)
+        self.ft     = self.ft.at[0].set(ft0)
 
-        self.u_norm[:, 0] = self.ut[:, 0] * self.emission_distributions[:, 0] / self.ft[0] 
+        # --- t=1..T-1: scan ---
+        # Transpose so scan iterates over time: (T-1, num_states)
+        g_rest = self.emission_distributions[:, 1:].T
 
-        # Recursive filtering for t > 0
-        _, (Ut, ft_rest, Utt) = recursive_filter(
-        self.u_norm[:, 0], self.emission_distributions[:, 1:], self.transition_matrix
-    )
-        
-            # --- Step 3: Concatenate t=0 with t=1..T-1 ---
-        self.ut     = jnp.concatenate([self.ut[None, :],  Ut],  axis=0)  # row 0, all states
-        self.u_norm = jnp.concatenate([self.u_norm[None, :], Utt], axis=0)
-        self.ft     = jnp.concatenate([self.ft[0][None],     ft_rest], axis=0)
+        Ut, ft_rest, Utt = recursive_filter(utt0, g_rest, self.transition_matrix)
 
-
-
+        # --- Concatenate t=0 with t=1..T-1 ---
+        self.ut     = jnp.concatenate([ut0[None, :],  Ut],  axis=0)  # (T, num_states)
+        self.u_norm = jnp.concatenate([utt0[None, :], Utt], axis=0)  # (T, num_states)
+        self.ft     = jnp.concatenate([ft0[None],     ft_rest], axis=0)  # (T,)
 
     def init_stationary_distribution(self):
-        # Assuming a stationary distribution over states for initialization
-        # This assumes the transition matrix is already in stationary form
-        I = jnp.eye(self.num_states) 
+        I = jnp.eye(self.num_states)
         E = jnp.ones((self.num_states, self.num_states))
-        e = jnp.ones((self.num_states, 1)) 
-        delta = e@jnp.linalg.inv(I - self.transition_matrix + E)
-        return delta.flatten()  # Return as a 1D array for state distribution 
+        e = jnp.ones((self.num_states, 1))
+        delta = e.T @ jnp.linalg.inv(I - self.transition_matrix + E)  # (1, num_states)
+        return delta.flatten()  # (num_states,)
+
+
+if __name__ == "__main__":
+    # Simple 2-state HMM, 5 observations
+    transition_matrix = jnp.array([
+        [0.7, 0.3],
+        [0.4, 0.6]
+    ])
+
+    # emission_distributions shape: (num_states, T)
+    # Each column is the emission probabilities for all states at time t
+    emission_distributions = jnp.array([
+        [0.9, 0.2, 0.8, 0.1, 0.7],  # state 0 emissions over time
+        [0.1, 0.8, 0.2, 0.9, 0.3],  # state 1 emissions over time
+    ])
+
+    hmm = StationaryHMM(transition_matrix, emission_distributions)
+    hmm.forward(method="filter")
+
+    print("ut     (un-normalized):", hmm.ut)
+    print("u_norm (normalized):   ", hmm.u_norm)
+    print("ft     (likelihoods):  ", hmm.ft)
+    print(emission_distributions[:, 0])  # Check first column of emissions
+
+    # Sanity checks
+    print("\nSanity checks:")
+    print("u_norm rows sum to 1:", jnp.sum(hmm.u_norm, axis=1))   # should all be ~1.0
+    print("ft all positive:     ", jnp.all(hmm.ft > 0))
