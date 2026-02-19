@@ -35,14 +35,10 @@ class StationaryHMM:
 
     def _forward_filter(self):
         # --- t=0: initialize ---
-        ut0   = self.init_stationary_distribution()          # (num_states,)
-        g0    = self.emission_distributions[:, 0]            # (num_states,) -- bug fix: was column 0
+        ut0   = self.init_stationary_distribution()         
+        g0    = self.emission_distributions[:, 0]           
         ft0   = jnp.sum(ut0 * g0)
         utt0  = ut0 * g0 / ft0
-
-        self.ut     = self.ut.at[0, :].set(ut0)
-        self.u_norm = self.u_norm.at[0, :].set(utt0)
-        self.ft     = self.ft.at[0].set(ft0)
 
         # --- t=1..T-1: scan ---
         # Transpose so scan iterates over time: (T-1, num_states)
@@ -83,7 +79,7 @@ if __name__ == "__main__":
     print("ut     (un-normalized):", hmm.ut)
     print("u_norm (normalized):   ", hmm.u_norm)
     print("ft     (likelihoods):  ", hmm.ft)
-    print(emission_distributions[:, 0])  # Check first column of emissions
+    print(emission_distributions)
 
     # Sanity checks
     print("\nSanity checks:")
