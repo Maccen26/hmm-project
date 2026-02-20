@@ -10,4 +10,4 @@ def _gaussian_pdf(x, mean, std):
     std  : (num_states,) vector
     returns: (num_states, T) matrix
     """
-    return norm.pdf(x[:, None], loc=mean, scale=std).T  # (T, num_states) -> (num_states, T)
+    return norm.pdf(x[:, None], loc=mean, scale=std)

@@ -164,6 +164,7 @@ gamma.pars <- c(-2,-10,-10,
                 -2,-2,-10,
                 -10,-2,-2,
                 -10,-10,-2)
+                
 Markov.Inv.Link(gamma.pars, 4)
 
 pars <- c(gamma.pars,550,800,1200,rep(10,4))

@@ -24,7 +24,7 @@ class StaticHMM:
     def _forward_filter(self):
         # --- t=0: initialize ---
         ut0   = self.init_stationary_distribution()         
-        g0    = self.emission_distributions[:, 0]           
+        g0    = self.emission_distributions[:, 0]        
         ft0   = jnp.sum(ut0 * g0)
         utt0  = ut0 * g0 / ft0
 

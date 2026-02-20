@@ -1,4 +1,4 @@
-from hmm.stationary_hmm import StationaryHMM 
+from src.hmm.models.stationary_hmm import StationaryHMM 
 
 import jax.numpy as jnp
 import jaxopt 
