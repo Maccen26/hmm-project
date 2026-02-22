@@ -19,7 +19,8 @@ class BaseHMM(eqx.Module):
         # --- t=0: initialize ---
         g = self.emission_distributions.density(y, x)  # (num_states, T) 
 
-        ut0   = self.transition.init_stationary_distribution()         
+        x0 = x[0] if x is not None else None
+        ut0   = self.transition.init_stationary_distribution(x=x0)
         g0    =  g[0]
         ft0   = jnp.sum(ut0 * g0)
 
@@ -28,7 +29,7 @@ class BaseHMM(eqx.Module):
 
         g_rest = g[1:]
 
-        Ut, ft_rest, Utt = recursive_filter(utt0, g_rest, self.transition.transition_matrix)
+        Ut, ft_rest, Utt = recursive_filter(utt0, g_rest, self.transition.transition_matrix(x))
 
         # --- Concatenate t=0 with t=1..T-1 ---
         ut     = jnp.concatenate([ut0[None, :],  Ut],  axis=0)  # (T, num_states)

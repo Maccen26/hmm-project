@@ -6,13 +6,22 @@ import jax
 
 
 @jax.jit
-def likelihood_grad(model: StationaryHMM, y : jnp.ndarray):
-    
+def likelihood_grad(model, y):
+
     def loss(model, y):
-        return -model.log_likelihood(y)  # We negate because we want to maximize likelihood, but optimizers typically minimize loss.
+        return -model.log_likelihood(y)
 
     solver = jaxopt.LBFGS(fun=loss, maxiter=100)
-    (opt_model, log_likelihood) = solver.run(model, y)  
-    return opt_model, log_likelihood 
+    (opt_model, state) = solver.run(model, y)
+    return opt_model, state
 
 
+@jax.jit
+def likelihood_grad_dynamic(model, y, x):
+
+    def loss(model, y, x):
+        return -model.log_likelihood(y, x)
+
+    solver = jaxopt.LBFGS(fun=loss, maxiter=100)
+    (opt_model, state) = solver.run(model, y, x)
+    return opt_model, state

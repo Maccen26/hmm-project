@@ -25,13 +25,14 @@ class BaseTransition(eqx.Module):
         self.transition_logits = transition_logits
         self.num_states = num_states
 
-    @property
+    #@property
     def transition_matrix(self, x = None):
         return _to_transition_matrix(self.transition_logits, self.num_states)
 
-    def init_stationary_distribution(self):
+    def init_stationary_distribution(self, x = None):
         I = jnp.eye(self.num_states)
         E = jnp.ones((self.num_states, self.num_states))
         e = jnp.ones((self.num_states, 1))
-        delta = e.T @ jnp.linalg.inv(I - self.transition_matrix + E)  # (1, num_states)
+        x = jnp.zeros(self.num_states) if x is None else x
+        delta = e.T @ jnp.linalg.inv(I - self.transition_matrix(x) + E)  # (1, num_states)
         return delta.flatten()  # (num_states,) 
