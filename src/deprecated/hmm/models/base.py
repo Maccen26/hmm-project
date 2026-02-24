@@ -1,7 +1,7 @@
 import jax.numpy as jnp
-from src.hmm.utils import recursive_filter 
-from src.distribution.base import BaseGaussianEmission
-from src.hmm.transitions.base import BaseTransition
+from src.deprecated.hmm.utils import recursive_filter 
+from src.deprecated.distribution.base import BaseGaussianEmission
+from src.deprecated.hmm.transitions.base import BaseTransition
 
 import equinox as eqx 
 

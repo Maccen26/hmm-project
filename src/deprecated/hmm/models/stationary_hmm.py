@@ -1,8 +1,8 @@
 import jax.numpy as jnp
-from src.hmm.utils import recursive_filter 
-from src.distribution.gaussian_emission import GaussianEmission 
-from src.distribution.gaussian_emission import GaussianEmissionExample
-from src.hmm.transitions.stationary_transition import StationaryTransition
+from src.deprecated.hmm.utils import recursive_filter 
+from src.deprecated.distribution.gaussian_emission import GaussianEmission 
+from src.deprecated.distribution.gaussian_emission import GaussianEmissionExample
+from src.deprecated.hmm.transitions.stationary_transition import StationaryTransition
 
 import equinox as eqx 
 

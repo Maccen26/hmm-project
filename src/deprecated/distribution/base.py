@@ -2,7 +2,7 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 
-from src.distribution.utils import _gaussian_pdf 
+from src.deprecated.distribution.utils import _gaussian_pdf 
 
 class BaseGaussianEmission(eqx.Module):
     mu: jax.Array
