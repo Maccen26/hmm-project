@@ -47,7 +47,8 @@ class HMM(eqx.Module):
         f_t = jnp.sum(u_t * g_t) 
         u_tt = u_t * g_t / f_t
 
-        return u_tt, (u_tt, f_t, u_t)
+        return u_tt, (u_tt, f_t, u_t) 
+    
 
 
 

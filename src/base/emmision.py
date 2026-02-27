@@ -1,6 +1,5 @@
 import equinox as eqx
-import jax.numpy as jnp
-from jax.scipy.stats import norm 
+
 
 class Emission(eqx.Module): 
     def __init__(self):
@@ -23,29 +22,6 @@ class Emission(eqx.Module):
     
 
 
-class GaussianEmission(Emission):
-    mu: jnp.ndarray
-    log_sigma: jnp.ndarray
-
-    def __init__(self, mu, log_sigma):
-        self.mu = mu 
-        self.log_sigma = log_sigma 
-
-    def step(self, xt = None):
-        """
-        Compute the emission parameters at time step t given the covariates xt. 
-        """
-        sigma = jnp.exp(self.log_sigma)
-        return self.mu, sigma
-
-    def density(self, yt, xt = None):
-        """
-        Returns the emission density for a Gaussian Distribution one for each state given the observation yt and covariates xt.
-        """
-
-        mu, sigma = self.step(xt)
-
-        return norm.pdf(yt, loc=mu, scale=sigma)
 
 
     
