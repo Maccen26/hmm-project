@@ -1,5 +1,5 @@
-from src.distribution.base_dist import BaseDistribution
-from src.distribution.utils import _gaussian_pdf 
+from src.deprecated.distribution.base_dist import BaseDistribution
+from src.deprecated.distribution.utils import _gaussian_pdf 
 import jax.numpy as jnp
 import jax.scipy.stats.norm as norm 
 import jax

@@ -1,7 +1,7 @@
-from src.hmm.models.base import BaseHMM
-from src.distribution.base import BaseGaussianEmission
-from src.hmm.transitions.base import BaseTransition
-from src.hmm.utils import recursive_filter_dynamic
+from src.deprecated.hmm.models.base import BaseHMM
+from src.deprecated.distribution.base import BaseGaussianEmission
+from src.deprecated.hmm.transitions.base import BaseTransition
+from src.deprecated.hmm.utils import recursive_filter_dynamic
 import jax.numpy as jnp
 import jax
 import functools

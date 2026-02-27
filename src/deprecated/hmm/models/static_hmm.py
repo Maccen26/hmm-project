@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from src.hmm.utils import recursive_filter 
+from src.deprecated.hmm.utils import recursive_filter 
 
 
 
