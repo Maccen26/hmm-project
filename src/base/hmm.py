@@ -5,6 +5,7 @@ import equinox as eqx
 
 from src.base.transition import Transition
 from src.base.emmision import Emission
+import jax
 
 class HMM(eqx.Module):
     transition: Transition
@@ -33,7 +34,7 @@ class HMM(eqx.Module):
         where T is the sequence length.
         """
 
-        ut0 = self.transition.initial_state_dist  
+        ut0 = self.transition.u0()
 
         _, (Ut, ft, Utt) = lax.scan(self.step, ut0, y, x) 
         return Ut, ft, Utt 
@@ -48,6 +49,10 @@ class HMM(eqx.Module):
         u_tt = u_t * g_t / f_t
 
         return u_tt, (u_tt, f_t, u_t) 
+    
+    def filter_spec(self): 
+        return jax.tree_util.tree_map(eqx.is_inexact_array, self)
+
     
 
 

@@ -1,12 +1,42 @@
+import jax
 import jax.numpy as jnp
+import equinox as eqx
+
 from src.base.hmm import HMM
 from src.base.transition import Transition
 from src.base.emmision import Emission  
 from jax.scipy.stats import norm 
 
+
 class StationaryTransition(Transition):
     def __init__(self, transition_logits):
         super().__init__(transition_logits, initial_state_dist=None) 
+    
+    def u0(self):
+        return self._compute_inital_state_distribution()
+
+
+    def _compute_inital_state_distribution(self):
+        I = jnp.eye(self.num_states)
+        E = jnp.ones((self.num_states, self.num_states))
+        e = jnp.ones((self.num_states, 1))
+
+        try: 
+            Gamma = self._inital_transition_matrix() 
+            delta = e.T @ jnp.linalg.inv(I - Gamma + E)  # (1, num_states)
+            return delta.flatten()  # (num_states,)
+        
+        except Exception as e:
+            raise ValueError(f"Error computing inital state distribution. Maybe the Stationary Transition matrix is not invertible? {e}")
+
+        
+    def _inital_transition_matrix(self):
+        try: 
+            Gamma = self.transition_matrix() 
+            return Gamma
+        except Exception as e:
+            raise ValueError(f"Error computing transition matrix for initial state distribution. Did you step function include covaries xt?:\n {e}")
+        
 
 
 class StationaryGaussianEmission(Emission):
@@ -35,7 +65,6 @@ class StationaryGaussianEmission(Emission):
         return norm.pdf(yt, loc=mu, scale=sigma) 
     
 
-
 class GaussianEmisionBackground(StationaryGaussianEmission):
     def __init__(self, mu, log_sigma):
         super().__init__(mu, log_sigma)
@@ -50,3 +79,14 @@ class StationaryHMM(HMM):
         super().__init__(transition_logits, initial_state_dist=None) 
         self.transition = StationaryTransition(transition_logits)
         self.emission = GaussianEmisionBackground(mu, log_sigma) 
+
+    def filter_spec(self):
+        
+        spec = jax.tree_util.tree_map(eqx.is_inexact_array, self)
+
+        spec = eqx.tree_at(
+              lambda m: m.transition.initial_state_dist,
+              spec,
+              replace=False
+          )
+        return spec
