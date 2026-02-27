@@ -9,7 +9,7 @@ from src.optim.base import BaseOptimizer
 class LFBGSOptimizer(BaseOptimizer):
     def __init__(self, model: HMM, loss_fn):
         super().__init__(model, loss_fn)
-        self.optimizer = jaxopt.LBFGS(fun=self._loss_wrapper, maxiter=1000)
+        self.optimizer = jaxopt.LBFGS(fun=self._loss_wrapper, maxiter=1000, implicit_diff=False)
 
     def _loss_wrapper(self, trainaled_parameters, y : jnp.ndarray, x: jnp.ndarray| None =None):
         # Reconstruct the full model with the current parameters

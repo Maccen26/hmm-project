@@ -28,7 +28,7 @@ class Transition(eqx.Module):
         Returns the the transtion logits matrix at time step t of dim (num_states, num_states) 
         """
         tGamma = jnp.zeros((self.num_states, self.num_states))
-        tGamma = tGamma.at[jnp.diag_indices(self.num_states)].set(1.0)
+        tGamma = tGamma.at[jnp.diag_indices(self.num_states)].set(0.0)
         rows, cols = jnp.where(~jnp.eye(self.num_states, dtype=bool), size=self.num_states * (self.num_states - 1))
         tGamma = tGamma.at[rows, cols].set(self.transition_logits.flatten())
         return tGamma  

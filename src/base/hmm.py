@@ -36,16 +36,21 @@ class HMM(eqx.Module):
 
         ut0 = self.transition.u0()
 
-        _, (Ut, ft, Utt) = lax.scan(self.step, ut0, y, x) 
+        if x is None:
+            _, (Ut, ft, Utt) = lax.scan(lambda carry, yt: self.step(carry, yt), ut0, y)
+        else:
+            _, (Ut, ft, Utt) = lax.scan(lambda carry, yx: self.step(carry, yx[0], yx[1]), ut0, (y, x)) 
         return Ut, ft, Utt 
     
     def step(self, ut_prev, yt, xt = None): 
         Gamma = self.transition.transition_matrix(xt) 
+
         u_t = ut_prev @ Gamma 
 
         g_t = self.emission.density(yt, xt) 
 
         f_t = jnp.sum(u_t * g_t) 
+        
         u_tt = u_t * g_t / f_t
 
         return u_tt, (u_tt, f_t, u_t) 
