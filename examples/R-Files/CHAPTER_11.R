@@ -349,7 +349,7 @@ g.funAR1 <- function(pars, y, ms){
     sigma <- sqrt(sigma2)
     phi <- pars[-c(1 : (2 * ms - 1))]
     for(i in 1 : ms){
-        mu.t <- mu[i] + phi[i] * (y[-n] - mu[i])
+        mu.t <- mu[i] + phi[i] * (y[-n] - mu[i]) #Error? 
         g[ ,i] <- dnorm(y[-1], mean = mu.t, sd = sigma[i])
         G[ ,i] <- pnorm(y[-1], mean = mu.t, sd = sigma[i])
     }
@@ -415,6 +415,7 @@ HMM.llGamReg <- function(pars, y, ms, g.fun,  X.reg,
 
 
 pars <- c(rep(0, 8), opt4sAR1$par)
+
 opt4sAR1.Gx <- nlminb(pars, HMM.llGamReg, y = y, ms = 4, 
                       X.reg = X, g.fun = g.funAR1)
 

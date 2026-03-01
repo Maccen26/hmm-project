@@ -3,83 +3,30 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from src.base.hmm import HMM
-from src.base.transition import Transition
-from src.base.emmision import Emission  
-from jax.scipy.stats import norm 
+from src.models.stationary_hmm import StationaryTransition
+from src.models.stationary_hmm import StationaryGaussianEmission
 
 
-class StationaryTransition(Transition):
-    def __init__(self, transition_logits):
-        super().__init__(transition_logits, initial_state_dist=None) 
-    
+class ArGaussianEmisionBackground(StationaryGaussianEmission):
+    phi: jnp.ndarray  # AR(1) coefficient per state, shape (num_states,)
 
-    def u0(self):
-        return self._compute_inital_state_distribution()
-
-
-    def _compute_inital_state_distribution(self):
-        I = jnp.eye(self.num_states)
-        E = jnp.ones((self.num_states, self.num_states))
-        e = jnp.ones((self.num_states, 1))
-
-        try: 
-            Gamma = self._inital_transition_matrix() 
-            delta = e.T @ jnp.linalg.inv(I - Gamma + E)  # (1, num_states)
-            return delta.flatten()  # (num_states,)
-        
-        except Exception as e:
-            raise ValueError(f"Error computing inital state distribution. Maybe the Stationary Transition matrix is not invertible? {e}")
-
-        
-    def _inital_transition_matrix(self):
-        try: 
-            Gamma = self.transition_matrix() 
-            return Gamma
-        except Exception as e:
-            raise ValueError(f"Error computing transition matrix for initial state distribution. Did you step function include covaries xt?:\n {e}")
-        
-
-
-class StationaryGaussianEmission(Emission):
-    mu: jnp.ndarray
-    log_sigma: jnp.ndarray
-
-    def __init__(self, mu, log_sigma):
-        self.mu = mu 
-        self.log_sigma = log_sigma 
-
-    def step(self, xt = None):
-        """
-        Compute the emission parameters at time step t given the covariates xt. 
-        """
-        sigma = jnp.exp(self.log_sigma)
-
-        return self.mu, sigma
-
-    def density(self, yt, xt = None):
-        """
-        Returns the emission density for a Gaussian Distribution one for each state given the observation yt and covariates xt.
-        """
-
-        mu, sigma = self.step(xt)
-
-        return norm.pdf(yt, loc=mu, scale=sigma) 
-    
-
-class GaussianEmisionBackground(StationaryGaussianEmission):
-    def __init__(self, mu, log_sigma):
+    def __init__(self, mu, log_sigma, phi):
         super().__init__(mu, log_sigma)
-    
-    def step(self, xt = None):
-        mu = jnp.concatenate([jnp.array([400]), self.mu])
-        return mu, jnp.exp(self.log_sigma)
-    
+        self.phi = phi
 
-class StationaryHMM(HMM):
-    def __init__(self, transition_logits, mu, log_sigma):
-        super().__init__(transition_logits, initial_state_dist=None) 
+    def step(self, xt=None):
+        mu = jnp.concatenate([jnp.array([400.0]), self.mu])  # shape (num_states,)
+        #phi = jnp.exp(self.phi)  # shape (num_states,)
+        mu = mu + self.phi * (xt - mu)  # xt = y_{t-1}, 
+        return mu, jnp.exp(self.log_sigma)
+
+
+class ArHMM(HMM):
+    def __init__(self, transition_logits, mu, log_sigma, phi):
+        super().__init__(transition_logits, initial_state_dist=None)
         self.transition = StationaryTransition(transition_logits)
-        self.emission = GaussianEmisionBackground(mu, log_sigma) 
+        self.emission = ArGaussianEmisionBackground(mu, log_sigma, phi)
+
 
     def filter_spec(self):
         

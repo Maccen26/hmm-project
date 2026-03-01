@@ -45,3 +45,22 @@ def professor_init_3state_hmm_params():
     mu0        = jnp.array([800.0, 1000.0])
     log_sigma0 = jnp.full(3, 5.0)
     return mu0, log_sigma0, tgamma0
+
+
+def professor_init_4state_hmm_params():
+    """
+    Initialize 4-state HMM parameters exactly as the professor does in R:
+        gamma.pars <- c(-2,-10,-10, -2,-2,-10, -10,-2,-2, -10,-10,-2)
+        pars <- c(gamma.pars, 550, 800, 1200, rep(10, 4))
+
+    Banded structure: adjacent states logit -2 (easy), non-adjacent logit -10 (rare).
+    """
+    tgamma0 = jnp.array([
+        [ -2.0, -10.0, -10.0],
+        [ -2.0,  -2.0, -10.0],
+        [-10.0,  -2.0,  -2.0],
+        [-10.0, -10.0,  -2.0],
+    ])
+    mu0        = jnp.array([550.0, 800.0, 1200.0])
+    log_sigma0 = jnp.full(4, 5.0)
+    return mu0, log_sigma0, tgamma0

@@ -65,6 +65,16 @@ class StationaryGaussianEmission(Emission):
 
         return norm.pdf(yt, loc=mu, scale=sigma) 
     
+    def cdf(self, yt, xt = None):
+        """
+        Returns the emission cdf for a Gaussian Distribution one for each state given the observation yt and covariates xt.
+        """
+
+        mu, sigma = self.step(xt)
+
+        return norm.cdf(yt[:, None], loc=mu, scale=sigma) 
+    
+    
 
 class GaussianEmisionBackground(StationaryGaussianEmission):
     def __init__(self, mu, log_sigma):
