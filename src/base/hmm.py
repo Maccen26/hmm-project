@@ -1,10 +1,13 @@
 import jax.numpy as jnp 
 from jax import lax
 import equinox as eqx
+import numpy as np
 
 
 from src.base.transition import Transition
 from src.base.emmision import Emission
+from jax.scipy.stats import norm
+import jax
 
 class HMM(eqx.Module):
     transition: Transition
@@ -33,21 +36,78 @@ class HMM(eqx.Module):
         where T is the sequence length.
         """
 
-        ut0 = self.transition.initial_state_dist  
+        ut0 = self.transition.u0()
 
-        _, (Ut, ft, Utt) = lax.scan(self.step, ut0, y, x) 
+        if x is None:
+            _, (Ut, ft, Utt) = lax.scan(lambda carry, yt: self.step(carry, yt), ut0, y)
+        else:
+            _, (Ut, ft, Utt) = lax.scan(lambda carry, yx: self.step(carry, yx[0], yx[1]), ut0, (y, x)) 
         return Ut, ft, Utt 
     
     def step(self, ut_prev, yt, xt = None): 
         Gamma = self.transition.transition_matrix(xt) 
+
         u_t = ut_prev @ Gamma 
 
         g_t = self.emission.density(yt, xt) 
 
         f_t = jnp.sum(u_t * g_t) 
+
         u_tt = u_t * g_t / f_t
 
         return u_tt, (u_tt, f_t, u_t) 
+    
+    def cdf(self, y, x=None):
+        """
+        computes the cdf of the HMM. 
+        x is of dim (T, covariestes_dim) 
+        y is of dim (T, obs_dim) 
+
+        where T is the sequence length.
+        """
+        state_dist = self.compute_all_state_distributions(y, x)
+        state_cdf = jnp.sum(self.emission.cdf(y, x) * state_dist, axis=-1)
+        return state_cdf 
+    
+    def compute_all_state_distributions(self, y, x=None):
+        ut0 = self.transition.u0()
+        state_distributions = np.zeros((y.shape[0], ut0.shape[0]))
+
+        state_distributions[0] = ut0
+
+        for t in range(1, y.shape[0]):
+            if x is None:
+                ut0, _ = self.step(ut0, y[t]) 
+            else:
+                ut0, _ = self.step(ut0, y[t], x[t]) 
+
+            state_distributions[t] = ut0 
+
+        return jnp.array(state_distributions)
+    
+    def pseudo_residuals(self, y, x=None):
+        marginal_cdf = self.cdf(y, x)
+        pseudo_residuals = norm.ppf(marginal_cdf)
+        return pseudo_residuals
+
+            
+
+
+
+
+
+    
+    def filter_spec(self):
+        
+        spec = jax.tree_util.tree_map(eqx.is_inexact_array, self)
+
+        spec = eqx.tree_at(
+              lambda m: m.transition.initial_state_dist,
+              spec,
+              replace=False
+          )
+        return spec
+
     
 
 
