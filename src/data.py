@@ -1,10 +1,12 @@
 ## LOAD DATA AS IN EXAMPLE USAGE 
+import pickle 
 import pandas as pd 
 from dotenv import load_dotenv 
 import os 
 import matplotlib.pyplot as plt
 import numpy as np
-
+from src.base.hmm import HMM
+import jax.numpy as jnp
 
 
 def load_and_aggregate_data(no_of_days: int |None = None ) -> pd.DataFrame:
@@ -92,6 +94,82 @@ def plot_filtered_states(df, u_norm):
 
     plt.tight_layout()
     plt.show()
+
+
+#Loading and saving models using pickle
+
+def save_model(modelname: str, tag: str, run: int,  model: HMM):
+    load_dotenv()
+    PATH = os.getenv("MODEL_PATH")
+
+    subpath = f"{PATH}/{tag}"
+
+    if (not os.path.exists(subpath)):
+        os.makedirs(subpath)
+
+    subpath = f"{subpath}/run_{run}"
+
+    if (not os.path.exists(subpath)):
+        os.makedirs(subpath)
+
+    with open(os.path.join(subpath, f"{modelname}.pkl"), "wb") as f:
+        pickle.dump(model, f) 
+
+def load_model(modelname: str, tag: str, run: int):
+    load_dotenv()
+    PATH = os.getenv("MODEL_PATH")
+
+    subpath = f"{PATH}/{tag}/run_{run}"
+
+    with open(os.path.join(subpath, f"{modelname}.pkl"), "rb") as f:
+        model = pickle.load(f)
+        return model
+    
+
+
+## Load and save x and y for experiments
+
+def save_experiment_data(data_name: str, tag: str, run: int, y : jnp.ndarray, X: jnp.ndarray | None = None):
+    load_dotenv()
+    PATH = os.getenv("MODEL_DATA_PATH")
+
+    subpath = f"{PATH}/{tag}"
+
+    if (not os.path.exists(subpath)):
+        os.makedirs(subpath)
+
+    subpath = f"{subpath}/run_{run}"
+
+    if (not os.path.exists(subpath)):
+        os.makedirs(subpath)
+
+    with open(os.path.join(subpath, f"{data_name}.pkl"), "wb") as f:
+        pickle.dump(y, f) 
+        pickle.dump(X, f)
+
+
+def load_experiment_data(data_name: str, tag: str, run: int):
+    load_dotenv()
+    PATH = os.getenv("MODEL_DATA_PATH")
+
+    subpath = f"{PATH}/{tag}/run_{run}"
+
+    with open(os.path.join(subpath, f"{data_name}.pkl"), "rb") as f:
+        y, X = pickle.load(f)
+        return y, X
+    
+
+def save_model_and_data(modelname: str, tag: str, run: int, model: HMM, y : jnp.ndarray, X: jnp.ndarray | None = None):
+    save_model(modelname=modelname, tag=tag, run=run, model=model)
+    save_experiment_data(data_name=modelname, tag=tag, run=run, y=y, X=X)
+
+def load_model_and_data(modelname: str, tag: str, run: int):
+    model = load_model(modelname=modelname, tag=tag, run=run)
+
+    y, X = load_experiment_data(data_name=modelname, tag=tag, run=run)
+
+    return model, y, X
+
 
 
 if __name__ == "__main__": 
