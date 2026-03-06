@@ -155,7 +155,18 @@ def load_experiment_data(data_name: str, tag: str, run: int):
     subpath = f"{PATH}/{tag}/run_{run}"
 
     with open(os.path.join(subpath, f"{data_name}.pkl"), "rb") as f:
-        y, X = pickle.load(f)
+        first_obj = pickle.load(f)
+
+        if isinstance(first_obj, tuple) and len(first_obj) == 2:
+            y, X = first_obj
+            return y, X
+
+        y = first_obj
+        try:
+            X = pickle.load(f)
+        except EOFError:
+            X = None
+
         return y, X
     
 

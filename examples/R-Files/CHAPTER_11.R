@@ -1,7 +1,7 @@
 library(numDeriv)
 ##################################################
 ## Data (see Chapter 8)
-win1 <- read.table("data/b1.csv",sep=";",header=TRUE)
+win1 <- read.table("/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/data/b1.csv",sep=";",header=TRUE)
 
 win1 <- win1[!is.na(win1$WindowClosed), ]
 win1 <- win1[win1$Room=="Bedroom", ]
@@ -361,6 +361,9 @@ opt4sAR1 <- nlminb(pars, HMM.ll1, y = y, ms = 4, g.fun = g.funAR1)
 
 c("HMM-Gaus"= -opt4s$objective, "HMM-Gam"=-opt4sGam$objective, "HMM-AR1"=-opt4sAR1$objective, "AR2"=  logLik(arima(y,order=c(2,0,0))))
 
+ar = arima(y,order=c(2,0,0)) 
+print(ar)
+print(y)
 res4sAR1 <- HMM.ll1(opt4sAR1$par,y,m=4,g.funAR1,full=TRUE)
 partab <- cbind(mu=res4sAR1$g.list$mu, sigma=res4sAR1$g.list$sigma, phi=res4sAR1$g.list$phi)
 partab

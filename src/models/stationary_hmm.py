@@ -91,6 +91,18 @@ class StationaryHMM(HMM):
         self.transition = StationaryTransition(transition_logits)
         self.emission = GaussianEmisionBackground(mu, log_sigma) 
 
+    def mu(self, xt = None): 
+        mu,_ = self.emission.step(xt=xt) 
+        return mu
+    
+    def sigma(self, xt = None):
+        _, sigma = self.emission.step(xt=xt) 
+        return sigma
+    
+    def transition_matrix(self, xt = None):
+        return self.transition.transition_matrix(xt=xt) 
+    
+
     def filter_spec(self):
         
         spec = jax.tree_util.tree_map(eqx.is_inexact_array, self)

@@ -89,6 +89,17 @@ class HMM(eqx.Module):
         marginal_cdf = self.cdf(y, x)
         pseudo_residuals = norm.ppf(marginal_cdf)
         return pseudo_residuals
+    
+
+    def __repr__(self):
+        # iterate over the class fields and print their names and values 
+        field_str = ""
+        for field_name in self.__dict__:
+            field_value = getattr(self, field_name)
+            field_str += f"{field_name}: {field_value}, "
+        
+        class_name = self.__class__.__name__  
+        return f"{class_name}({field_str.rstrip(', ')})" 
 
             
 
