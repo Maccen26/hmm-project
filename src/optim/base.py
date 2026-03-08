@@ -10,9 +10,13 @@ class BaseOptimizer:
     model: HMM
     loss_fn: Callable 
 
-    def __init__(self, model: HMM, loss_fn: Callable):
+    def __init__(self, model: HMM, loss_fn: Callable, spec = None):
         self.model = model 
-        self.trainaled_parameters, self.frozen_parameters = eqx.partition(self.model, self.model.filter_spec())
+        if (spec is not None): 
+            self.trainaled_parameters, self.frozen_parameters = eqx.partition(self.model, spec)
+        else:
+            self.trainaled_parameters, self.frozen_parameters = eqx.partition(self.model, self.model.filter_spec())
+            
         self.loss_fn = loss_fn 
 
 

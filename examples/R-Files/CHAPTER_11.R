@@ -20,7 +20,7 @@ win1.agr$Time <-  (1:length(win1.agr$Hour))/2/24
 
 ##################################################
 ## Chap 09 functions
-source("functions/chap09funs.R")
+source("/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/examples/R-Files/functions/chap09funs.R")
 
 ##################################################
 ## Example 11.1
@@ -61,7 +61,7 @@ HMM.filter <- function(Gamma, g){
 
 ##################################################
 ## Example 11.3
-win1 <- read.table("data/b1.csv",sep=";",header=TRUE)
+win1 <- read.table("/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/data/b1.csv",sep=";",header=TRUE)
 win1 <- win1[!is.na(win1$WindowClosed), ]
 
 par(bg="white")
@@ -210,7 +210,7 @@ g.funGamma <- function(pars, y, ms){
     k <- 1 / cv^2
     theta <- mu  * cv^2
     
-    for(i in 1 : ms){
+    for(i in 1:ms){
         g[ ,i] <- dgamma(y, shape = k[i], scale = theta[i])
         G[ ,i] <- pgamma(y, shape = k[i], scale = theta[i])
     }
@@ -358,6 +358,27 @@ g.funAR1 <- function(pars, y, ms){
 
 pars <- c(opt4s$par, rep(0, 4))
 opt4sAR1 <- nlminb(pars, HMM.ll1, y = y, ms = 4, g.fun = g.funAR1)
+print(opt4sAR1$par)
+######### PROFILE LIKELIHOOD 
+
+profile <- function(phi0, opt){
+    nll_p <- function(pars, y, ms, g.fun){
+        pars[length(pars) - 3] <- phi0
+        HMM.ll1(pars, y, ms, g.fun)
+    } 
+    pars <- opt$par
+    opt <- nlminb(pars, nll_p, y = y, ms = 4, g.fun = g.funAR1)
+    return(-opt$objective)
+}
+
+phi0 = seq(-0.5, 0.5, by = 0.01) 
+log_likes <- sapply(phi0, profile, opt = opt4sAR1) 
+plot(phi0, exp(log_likes), type = "l", xlab = expression(phi), ylab = "Log-likelihood")
+ 
+#
+#######
+print("Hello")
+
 
 c("HMM-Gaus"= -opt4s$objective, "HMM-Gam"=-opt4sGam$objective, "HMM-AR1"=-opt4sAR1$objective, "AR2"=  logLik(arima(y,order=c(2,0,0))))
 

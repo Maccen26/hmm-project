@@ -45,17 +45,23 @@ class HMM(eqx.Module):
         return Ut, ft, Utt 
     
     def step(self, ut_prev, yt, xt = None): 
-        Gamma = self.transition.transition_matrix(xt) 
+
+        Gamma = self.transition_matrix(xt) 
 
         u_t = ut_prev @ Gamma 
 
-        g_t = self.emission.density(yt, xt) 
+        g_t = self.density(yt, xt) 
 
         f_t = jnp.sum(u_t * g_t) 
 
         u_tt = u_t * g_t / f_t
 
         return u_tt, (u_tt, f_t, u_t) 
+    
+    def transition_matrix(self, xt = None): 
+        return self.transition.transition_matrix(xt) 
+    def density(self, yt, xt = None): 
+        return self.emission.density(yt, xt)
     
     def cdf(self, y, x=None):
         """
