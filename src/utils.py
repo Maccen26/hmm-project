@@ -1,5 +1,6 @@
 import jax.numpy as jnp 
 import jax
+import pandas as pd
 
 
 def _init_mu(y, num_states):
@@ -64,3 +65,6 @@ def professor_init_4state_hmm_params():
     mu0        = jnp.array([550.0, 800.0, 1200.0])
     log_sigma0 = jnp.full(4, 5.0)
     return mu0, log_sigma0, tgamma0
+
+
+

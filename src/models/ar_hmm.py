@@ -25,7 +25,8 @@ class ArHMM(HMM):
     def __init__(self, transition_logits, mu, log_sigma, phi):
         super().__init__(transition_logits, initial_state_dist=None)
         self.transition = StationaryTransition(transition_logits)
-        self.emission = ArGaussianEmisionBackground(mu, log_sigma, phi)
+        self.emission = ArGaussianEmisionBackground(mu, log_sigma, phi) 
+    
 
 
     def filter_spec(self):

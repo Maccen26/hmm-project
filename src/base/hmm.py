@@ -45,17 +45,23 @@ class HMM(eqx.Module):
         return Ut, ft, Utt 
     
     def step(self, ut_prev, yt, xt = None): 
-        Gamma = self.transition.transition_matrix(xt) 
+
+        Gamma = self.transition_matrix(xt) 
 
         u_t = ut_prev @ Gamma 
 
-        g_t = self.emission.density(yt, xt) 
+        g_t = self.density(yt, xt) 
 
         f_t = jnp.sum(u_t * g_t) 
 
         u_tt = u_t * g_t / f_t
 
         return u_tt, (u_tt, f_t, u_t) 
+    
+    def transition_matrix(self, xt = None): 
+        return self.transition.transition_matrix(xt) 
+    def density(self, yt, xt = None): 
+        return self.emission.density(yt, xt)
     
     def cdf(self, y, x=None):
         """
@@ -89,6 +95,17 @@ class HMM(eqx.Module):
         marginal_cdf = self.cdf(y, x)
         pseudo_residuals = norm.ppf(marginal_cdf)
         return pseudo_residuals
+    
+
+    def __repr__(self):
+        # iterate over the class fields and print their names and values 
+        field_str = ""
+        for field_name in self.__dict__:
+            field_value = getattr(self, field_name)
+            field_str += f"{field_name}: {field_value}, "
+        
+        class_name = self.__class__.__name__  
+        return f"{class_name}({field_str.rstrip(', ')})" 
 
             
 

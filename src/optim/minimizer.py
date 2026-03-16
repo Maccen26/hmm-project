@@ -8,8 +8,8 @@ from src.optim.base import BaseOptimizer
 
 
 class Minimizer(BaseOptimizer):
-    def __init__(self, model: HMM, loss_fn):
-        super().__init__(model, loss_fn)
+    def __init__(self, model: HMM, loss_fn, spec=None):
+        super().__init__(model, loss_fn, spec)
         self.optimizer = jaxopt.ScipyMinimize(fun=self._loss_wrapper, maxiter=1000)
 
     def _loss_wrapper(self, trainaled_parameters, y : jnp.ndarray, x: jnp.ndarray| None =None):

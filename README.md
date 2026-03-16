@@ -11,7 +11,6 @@ The projects leads up to a Bachelor Projects, and this course therefore focus on
 - Testing HMM's 
 
 
-
 ## Generel about the project
 Package manager is uv. 
 
@@ -21,6 +20,11 @@ Package manager is uv.
 3. Agents has been used to debug Jax Modules (sometimes). 
 4. Claude has been used to find sources and explain concepts.  
 5. Claude code has been used to generate documentation about my code.
+
+## Data and experiments. 
+In week 2, the mu values was free. In week 3, they are being constrained such that the mu must be incresing. 
+
+The save model should only save the parameters and they are passed to the model. 
 
 
 ## Notes
