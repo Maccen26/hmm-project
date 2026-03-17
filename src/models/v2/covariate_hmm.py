@@ -4,8 +4,8 @@ import equinox as eqx
 
 from src.base.hmm import HMM
 from src.base.transition import Transition
-from src.models.stationary_hmm import GaussianEmisionBackground
-from jax.scipy.stats import norm 
+from src.models.v2.stationary_hmm import GaussianEmisionBackground
+from jax.scipy.stats import norm
 
 
 class CovariateTransition(Transition):
@@ -13,13 +13,13 @@ class CovariateTransition(Transition):
 
     def __init__(self, transition_logits, beta, initial_state_dist):
         self.beta = beta
-        super().__init__(transition_logits, initial_state_dist=initial_state_dist) 
- 
+        super().__init__(transition_logits, initial_state_dist=initial_state_dist)
 
-    def step(self, xt = None): 
+
+    def step(self, xt=None):
         """
-        xt is the covarites at time step t. 
-        Returns the the transtion logits matrix at time step t of dim (num_states, num_states) 
+        xt is the covarites at time step t.
+        Returns the the transtion logits matrix at time step t of dim (num_states, num_states)
         """
         tGamma = jnp.zeros((self.num_states, self.num_states))
 
@@ -27,23 +27,18 @@ class CovariateTransition(Transition):
 
         tGamma = tGamma.at[jnp.diag_indices(self.num_states)].set(diag_vals)
 
-
         rows, cols = jnp.where(~jnp.eye(self.num_states, dtype=bool), size=self.num_states * (self.num_states - 1))
         tGamma = tGamma.at[rows, cols].set(self.transition_logits.flatten())
-        return tGamma  
+        return tGamma
 
- 
-
-    
 
 class CovariateHMM(HMM):
-    def __init__(self, transition_logits, mu, log_sigma, initial_state_dist, beta):
-        super().__init__(transition_logits, initial_state_dist=initial_state_dist) 
+    def __init__(self, transition_logits, mu_diff, log_sigma, initial_state_dist, beta):
+        super().__init__(transition_logits, initial_state_dist=initial_state_dist)
         self.transition = CovariateTransition(transition_logits=transition_logits, beta=beta, initial_state_dist=initial_state_dist)
-        self.emission = GaussianEmisionBackground(mu=mu, log_sigma=log_sigma) 
+        self.emission = GaussianEmisionBackground(mu_diff=mu_diff, log_sigma=log_sigma)
 
     def filter_spec(self):
-        
         spec = jax.tree_util.tree_map(eqx.is_inexact_array, self)
 
         spec = eqx.tree_at(
@@ -52,4 +47,3 @@ class CovariateHMM(HMM):
               replace=False
           )
         return spec
-

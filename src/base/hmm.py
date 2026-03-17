@@ -96,6 +96,11 @@ class HMM(eqx.Module):
         pseudo_residuals = norm.ppf(marginal_cdf)
         return pseudo_residuals
     
+    def log_likelihood(self, y, x=None):
+        _, ft, _ = self.forward(y, x)
+        log_likelihood = jnp.sum(jnp.log(ft))
+        return log_likelihood
+    
 
     def __repr__(self):
         # iterate over the class fields and print their names and values 

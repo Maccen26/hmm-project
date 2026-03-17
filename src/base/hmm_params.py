@@ -1,18 +1,61 @@
 from src.base.hmm import HMM
-import jax 
+import jax
 import jax.numpy as jnp
 import dataclasses
 import equinox as eqx
 
 
-class HMMParams: 
-    def __init__(self, model: HMM): 
-        for param in jax.tree_util.tree_leaves(model):
-            if not isinstance(param, jnp.ndarray):
-                raise ValueError(f"Expected all parameters to be jnp.ndarray, but got {type(param)}")
-            
+class HMMParams:
+    """Extracts and exposes the actual (untransformed) parameters from an HMM model."""
 
-        self.params = flat_trainable_params(model)
+    def __init__(self, model: HMM):
+        self.model_name = type(model).__name__
+        if hasattr(model, 'emission'):
+            self.emission_type = type(model.emission).__name__
+
+            if hasattr(model.emission, 'mu'):
+                self.mu = model.emission.mu
+        
+            if hasattr(model.emission, 'log_sigma'):
+                self.sigma = jnp.exp(model.emission.log_sigma)
+
+            if hasattr(model.emission, 'phi'):
+                self.phi = model.emission.phi
+        
+        if hasattr(model, 'params'):
+            self.params = model.params
+        
+        if hasattr(model, 'transition'):
+            self.transition_logits = model.transition.transition_logits
+            if hasattr(model.transition, 'beta'):
+                self.beta = model.transition.beta
+                
+            else: 
+                self.transition_matrix = model.transition.transition_matrix()
+
+            if hasattr(model.transition, 'initial_state_dist'):
+                self.initial_state_dist = model.transition.initial_state_dist
+        
+
+
+
+
+
+
+    def __repr__(self):
+        lines = [f"model: {self.model_name}",
+                 f"mu:    {self.mu}",
+                 f"sigma: {self.sigma}"]
+        
+        if hasattr(self, 'phi'):
+            lines.append(f"phi:   {self.phi}")
+        if hasattr(self, 'beta'):
+            lines.append(f"beta:  {self.beta}")
+        if hasattr(self, 'initial_state_dist'):
+            lines.append(f"initial_state_dist:  {self.initial_state_dist}")
+        
+        lines.append(f"transition_matrix:\n{self.transition_matrix}")
+        return "\n".join(lines)
 
 
 
@@ -74,14 +117,24 @@ def flat_trainable_params(model):
 
 
 if __name__ == "__main__":
-    from src.models.stationary_hmm import StationaryHMM
-    
-    transition_logits = jnp.array([[ 0.0], [ 0.0]])
-    mu = jnp.array([1.0, 2.0])
-    
-    log_sigma = jnp.array([2.0, 2.0])
+    import jax
+    jax.config.update("jax_enable_x64", True)
 
-    model = StationaryHMM(transition_logits, mu, log_sigma)
-    params = HMMParams(model)
+    from src.models.v1.stationary_hmm import StationaryHMM
+    from src.models.v1.ar_hmm import ArHMM
 
-    print(params.params)
+    print("=== StationaryHMM ===")
+    transition_logits = jnp.array([[0.0, 0.0], [0.0, 0.0], [0.0, 0.0]])
+    mu = jnp.array([500.0, 800.0, 1200.0])
+    log_sigma = jnp.array([2.0, 3.0, 4.0, 5.0])
+
+    stationary_model = StationaryHMM(transition_logits, mu, log_sigma)
+
+    params = HMMParams(stationary_model)
+    print(params)
+
+    print("\n=== ArHMM ===")
+    phi = jnp.array([0.9, 0.5, 0.7, 0.3])
+    ar_model = ArHMM(transition_logits, mu, log_sigma, phi)
+    ar_params = HMMParams(ar_model)
+    print(ar_params)

@@ -3,8 +3,8 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from src.base.hmm import HMM
-from src.models.stationary_hmm import StationaryTransition
-from src.models.stationary_hmm import StationaryGaussianEmission
+from src.models.v1.stationary_hmm import StationaryTransition
+from src.models.v1.stationary_hmm import StationaryGaussianEmission
 
 
 class ArGaussianEmisionBackground(StationaryGaussianEmission):
