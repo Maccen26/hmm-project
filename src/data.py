@@ -1,11 +1,12 @@
-## LOAD DATA AS IN EXAMPLE USAGE 
-import pickle 
-import pandas as pd 
-from dotenv import load_dotenv 
-import os 
+## LOAD DATA AS IN EXAMPLE USAGE
+import pickle
+import pandas as pd
+from dotenv import load_dotenv
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 from src.base.hmm import HMM
+from src.base.hmm_params import HMMParams
 import jax.numpy as jnp
 
 
@@ -98,22 +99,23 @@ def plot_filtered_states(df, u_norm):
 
 #Loading and saving models using pickle
 
-def save_model(modelname: str, tag: str, run: int,  model: HMM):
+def save_model(modelname: str, tag: str, run: int, model: HMM):
     load_dotenv()
     PATH = os.getenv("MODEL_PATH")
 
     subpath = f"{PATH}/{tag}"
 
-    if (not os.path.exists(subpath)):
+    if not os.path.exists(subpath):
         os.makedirs(subpath)
 
     subpath = f"{subpath}/run_{run}"
 
-    if (not os.path.exists(subpath)):
+    if not os.path.exists(subpath):
         os.makedirs(subpath)
 
+    params = HMMParams(model)
     with open(os.path.join(subpath, f"{modelname}.pkl"), "wb") as f:
-        pickle.dump(model, f) 
+        pickle.dump(params, f)
 
 def load_model(modelname: str, tag: str, run: int):
     load_dotenv()

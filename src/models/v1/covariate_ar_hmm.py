@@ -5,7 +5,7 @@ import equinox as eqx
 from src.base.hmm import HMM
 from src.base.transition import Transition
 
-from src.models.stationary_hmm import StationaryGaussianEmission
+from src.models.v1.stationary_hmm import StationaryGaussianEmission
 
 
 class CovariateTransition(Transition):

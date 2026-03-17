@@ -12,6 +12,9 @@ def negative_log_likelihood(model: HMM, y: jnp.ndarray, x: jnp.ndarray | None = 
     log_likelihood = jnp.sum(jnp.log(ft))
     return -log_likelihood 
 
+def negative_log_likelihood_v2(model: HMM, y: jnp.ndarray, x: jnp.ndarray | None = None):
+    return -model.log_likelihood(y, x) 
+
 
 def profile_likelihood(model: HMM, y: jnp.ndarray, phi_range: tuple, loss_generator: Callable, num_points: int = 20, X: jnp.ndarray | None = None):
     param_space = jnp.linspace(phi_range[0], phi_range[1], num=num_points)

@@ -1,6 +1,45 @@
-import jax.numpy as jnp 
+import jax.numpy as jnp
 import jax
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def plot_likelihood(
+    param_values: jnp.ndarray,
+    log_like: jnp.ndarray,
+    zoom: float = 1.0,
+    xlabel: str = "Parameter",
+    ylabel: str = "Normalized Likelihood",
+    plot: bool = True,
+) -> tuple[np.ndarray, np.ndarray]:
+
+    param_values = jnp.asarray(param_values)
+    log_like = jnp.asarray(log_like)
+
+    norm_log_like = log_like - jnp.max(log_like)
+
+    params_np = np.array(param_values)
+    norm_np = np.array(jnp.exp(norm_log_like))
+
+    if plot:
+        peak_idx = int(np.argmax(norm_np))
+        peak_x = params_np[peak_idx]
+        half_width = (params_np[-1] - params_np[0]) * zoom / 2
+        x_min, x_max = peak_x - half_width, peak_x + half_width
+
+        mask = (params_np >= x_min) & (params_np <= x_max)
+
+        fig, ax = plt.subplots()
+        ax.plot(params_np[mask], norm_np[mask])
+        ax.axvline(peak_x, color="red", linestyle="--", linewidth=0.8, label=f"peak = {peak_x:.4g}")
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.legend()
+        plt.tight_layout()
+        plt.show()
+
+    return params_np, norm_np
 
 
 def _init_mu(y, num_states):
