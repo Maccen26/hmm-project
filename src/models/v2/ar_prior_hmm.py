@@ -12,12 +12,13 @@ class ArGaussianEmisionBackground(StationaryGaussianEmission):
     phi: jnp.ndarray  # free AR(1) parameter per state, shape (num_states,)
 
     def __init__(self, mu, log_sigma, phi):
-        super().__init__(mu, log_sigma)
+        super().__init__(mu, log_sigma) 
         self.phi = phi
 
     def step(self, xt=None):
         mu = jnp.concatenate([jnp.array([400.0]), self._compute_mu()])  # shape (num_states,)
-        mu = mu + self.phi * (xt - mu)  # xt = y_{t-1}
+        lags = (xt[None, :] -  mu[:, None] ) * self.phi.reshape(len(mu), -1) # shape (num_states, lags)
+        mu = mu + lags.sum(axis=1) 
         return mu, jnp.exp(self.log_sigma)
 
 

@@ -71,6 +71,18 @@ class StationaryGaussianEmission(Emission):
         """
         mu, sigma = self.step(xt)
         return norm.cdf(yt[:, None], loc=mu, scale=sigma)
+    
+    def ll(self, yt, xt=None):
+        """
+        Returns the log-likelihood of the observation yt given the covariates xt for each state.
+        """
+        mu, sigma = self.step(xt)
+        grad = self._compute_mu_grad()  # shape (num_states,)
+        return norm.logpdf(yt[:, None], loc=mu, scale=sigma) + grad 
+    
+    def _compute_mu_grad(self):
+        pass 
+    
 
 
 class GaussianEmisionBackground(StationaryGaussianEmission):
