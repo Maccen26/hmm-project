@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import equinox as eqx
 from jax import lax
 
-from src.base.hmm import HMM
+from src.deprecated.base.hmm import HMM
 from src.models.v3.stationary_hmm import StationaryTransition
 from src.models.v3.stationary_hmm import StationaryGaussianEmission
 

@@ -30,6 +30,7 @@ The save model should only save the parameters and they are passed to the model.
 ## Notes
 
 ### CHANGELOG: 
+6-04-2026:
 Removing dependecy on other classes. Inforcing dependecy injection such that models are more flexible. 
 
 

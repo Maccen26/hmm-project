@@ -1,4 +1,4 @@
-from src.base.hmm import HMM
+from src.deprecated.base.hmm import HMM
 import jax
 import jax.numpy as jnp
 import dataclasses

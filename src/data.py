@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-from src.base.hmm import HMM
-from src.base.hmm_params import HMMParams
+from src.deprecated.base.hmm import HMM
+from src.deprecated.base.hmm_params import HMMParams
 import jax.numpy as jnp
 
 

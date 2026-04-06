@@ -4,8 +4,8 @@ import equinox as eqx
 import numpy as np
 
 
-from src.base.transition import Transition
-from src.base.emmision import Emission
+from src.deprecated.base.transition import Transition
+from src.deprecated.base.emmision import Emission
 from jax.scipy.stats import norm
 import jax
 

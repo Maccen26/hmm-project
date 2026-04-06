@@ -3,7 +3,7 @@ import equinox as eqx
 import jax.numpy as jnp
 from typing import Callable 
 
-from src.base.hmm import HMM 
+from src.deprecated.base.hmm import HMM 
 
 
 class BaseOptimizer:
