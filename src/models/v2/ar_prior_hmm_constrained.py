@@ -25,14 +25,13 @@ class ArHMMPriorConstrained(HMM):
         return log_likelihood
 
     def log_prior(self):
-        """Prior placed on the constrained phi (after sigmoid transform).
-        
+        """
+        Prior placed on the constrained phi (after sigmoid transform).
         """
         phi_tilde = self.emission.phi_tilde
-        phi = self._transform_phi(phi_tilde)
-        abs_grad = self._transform_phi_grad(phi_tilde) # |dphi/dphi_tilde| for the change of variables
+       # abs_grad = self._transform_phi_grad(phi_tilde) # |dphi/dphi_tilde| for the change of variables
 
-        log_likelihood = jnp.sum(norm.logpdf(phi, loc=0.0, scale=self.phi_sigma) + jnp.log(abs_grad))
+        log_likelihood = jnp.sum(norm.logpdf(phi_tilde, loc=0.0, scale=self.phi_sigma)) #- jnp.log(abs_grad))
 
         return log_likelihood
     

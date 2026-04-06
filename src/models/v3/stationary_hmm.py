@@ -45,14 +45,14 @@ class StationaryGaussianEmission(Emission):
     log_sigma: jnp.ndarray
 
     def __init__(self, mu, log_sigma):
-        self.mu_diff = jnp.log(jnp.diff(jnp.concatenate([jnp.array([400.0]), mu])))  # Store log-differences to ensure monotonicity
+        self.mu_diff = jnp.concatenate([mu[0:1], jnp.array(jnp.log(jnp.diff(mu)))])  # Store log-differences to ensure monotonicity
         self.log_sigma = log_sigma
 
     def _compute_mu(self):
-        return 400.0 + jnp.cumsum(jnp.exp(self.mu_diff))
+        return jnp.concatenate([self.mu_diff[0:1], self.mu_diff[0:1] + jnp.cumsum(jnp.exp(self.mu_diff[1:]))])
 
     def step(self, xt=None):
-        """
+        """$
         Compute the emission parameters at time step t given the covariates xt.
         """
         sigma = jnp.exp(self.log_sigma)
@@ -72,33 +72,14 @@ class StationaryGaussianEmission(Emission):
         mu, sigma = self.step(xt)
         return norm.cdf(yt[:, None], loc=mu, scale=sigma)
     
-    def ll(self, yt, xt=None):
-        """
-        Returns the log-likelihood of the observation yt given the covariates xt for each state.
-        """
-        mu, sigma = self.step(xt)
-        grad = self._compute_mu_grad()  # shape (num_states,)
-        return norm.logpdf(yt[:, None], loc=mu, scale=sigma) + grad 
-    
-    def _compute_mu_grad(self):
-        pass 
-    
 
-
-class GaussianEmisionBackground(StationaryGaussianEmission):
-    def __init__(self, mu, log_sigma):
-        super().__init__(mu, log_sigma)
-
-    def step(self, xt=None):
-        mu = jnp.concatenate([jnp.array([400.0]), self._compute_mu()])
-        return mu, jnp.exp(self.log_sigma)
 
 
 class StationaryHMM(HMM):
     def __init__(self, transition_logits, mu, log_sigma):
         super().__init__(transition_logits, initial_state_dist=None)
         self.transition = StationaryTransition(transition_logits)
-        self.emission = GaussianEmisionBackground(mu, log_sigma)
+        self.emission = StationaryGaussianEmission(mu, log_sigma)
 
     def mu(self, xt=None):
         mu, _ = self.emission.step(xt=xt)
