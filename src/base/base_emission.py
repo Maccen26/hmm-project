@@ -17,7 +17,7 @@ class BaseEmission(eqx.Module, ABC):
         ...  
     
     @abstractmethod
-    def cdf(self, y, x=None) -> jnp.ndarray:
+    def cdf(self, yt, xt=None) -> jnp.ndarray:
         """
         y is the observation at time step t. 
         x is the covariates at time step t. 

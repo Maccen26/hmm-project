@@ -2,24 +2,39 @@ from src.base import BaseTransition
 import jax.numpy as jnp 
 import jax
 
-def transition_matrix_to_logits(T: jnp.ndarray) -> jnp.ndarray:
+def logits_to_transition_matrix(logits: jnp.ndarray) -> jnp.ndarray:
     """
-    Inverse of the logits → softmax transition matrix construction.
+    Inverse of transition_matrix_to_logits.
     
-    Since the diagonal of the logit matrix is fixed at 0,
-    softmax is shift-invariant, so:
-        logits[i, j] = log(T[i, j]) - log(T[i, i])
-    
-    Then extract only the off-diagonal elements.
+    Places exp(pars) in off-diagonal positions of an identity matrix
+    (diagonal = 1 = exp(0), the reference), then row-normalizes.
+    This is just softmax per row.
     """
-    log_T = jnp.log(T)
-    # Subtract diagonal (per row) to pin diagonal logits at 0
-    logits = log_T - jnp.diag(log_T)[:, None]
+    m = logits.shape[0]
+    exp_pars = jnp.exp(logits.flatten())
+    Gamma = jnp.eye(m)
+    mask = ~jnp.eye(m, dtype=bool)
+    Gamma = Gamma.at[mask].set(exp_pars)
+    return Gamma / Gamma.sum(axis=1, keepdims=True)
 
-    # Extract off-diagonal elements
-    n = T.shape[0]
-    mask = ~jnp.eye(n, dtype=bool)
-    return logits[mask]
+def transition_matrix_to_logits(Gamma: jnp.ndarray) -> jnp.ndarray:
+    """
+    Direct translation of the R Markov.link function.
+    
+    Maps a transition matrix to unconstrained logit parameters
+    by computing log(gamma_ij / gamma_ii) for off-diagonal entries.
+    """
+    m = Gamma.shape[0]
+    # Zero diagonal — rowSums then gives 1 - gamma_ii
+    Gamma = Gamma.at[jnp.diag_indices(m)].set(0.0)
+    # 1 - rowSums recovers the original diagonal
+    diag_vals = 1.0 - Gamma.sum(axis=1)
+    # log-ratio: each entry divided by its row's diagonal value
+    beta = jnp.log(Gamma / diag_vals[:, None])
+    # Extract off-diagonal (R does transpose then extract —
+    # transpose changes extraction order to column-major)
+    mask = ~jnp.eye(m, dtype=bool)
+    return beta[mask].reshape(m, m - 1)
 
 class StaticTransition(BaseTransition):
     """

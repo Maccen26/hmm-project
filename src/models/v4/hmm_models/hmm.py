@@ -1,4 +1,4 @@
-from base.base_hmm import BaseHMM
+from src.base.base_hmm import BaseHMM
 import jax.numpy as jnp
 
 class HMM(BaseHMM):
