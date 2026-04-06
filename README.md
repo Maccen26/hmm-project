@@ -29,12 +29,18 @@ The save model should only save the parameters and they are passed to the model.
 
 ## Notes
 
+### CHANGELOG: 
+Removing dependecy on other classes. Inforcing dependecy injection such that models are more flexible. 
+
+
 ### Software Design 
 3 classes: HMM Class, Transition Class, Emmission class. \
 The responsibilities of each class are: 
 1. Emission: Compute the state distribution given the $y_i$ observation. Base class should take $x$ arguments as covariates
 2. Transition: Compute the transition matrix at timestep $i$ given obs $y_i$. Should take $x$ as arguments as covarites. 
 3. HMM Model: Compose a transition and a emission class. The goal of this class is to step trough the markov chain using the state distributions and transition matrix. The class should also take a initial state distribution as argument such that we can vary this depending on the state we start in. 
+
+
 
 
 
