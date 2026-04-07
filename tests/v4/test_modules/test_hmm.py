@@ -47,10 +47,19 @@ class TestHMM(TestCase):
     def test_custom_initial_distribution_is_stored(self):
         custom_u0 = jnp.array([0.5, 0.3, 0.2])
         hmm = HMM(transition=self.transition_matrix, emission=self.emission, inital_distribution=custom_u0)
-        self.assertTrue(jnp.allclose(hmm.u_pre, custom_u0))
+        self.assertTrue(jnp.allclose(hmm.u_pre, custom_u0.reshape(1, -1)))
 
     def test_set_inference_algorithm_returns_forward_algorithm(self):
         hmm = HMM(transition=self.transition_matrix, emission=self.emission)
         inference_alg = hmm._set_inference_algorithm("forward")
         self.assertIsInstance(inference_alg, ForwardAlgorithm)
+
+    def test_fit_improves_log_likelihood(self):
+        import jax
+        ys = jax.random.normal(jax.random.PRNGKey(42), shape=(100, 1))
+        hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        ll_before = hmm.log_likelihood(ys)
+        hmm.fit(ys)
+        ll_after = hmm.log_likelihood(ys)
+        self.assertGreater(ll_after, ll_before)
 

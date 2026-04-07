@@ -17,8 +17,28 @@ class HMM:
 
     def _set_initial_distribution(self, inital_distribution):
         if inital_distribution is not None:
-            return inital_distribution
+            return self._validate_initial_distribution(inital_distribution)
         return self._compute_stationary_distribution()
+
+    def _validate_initial_distribution(self, u: jnp.ndarray) -> jnp.ndarray:
+        u = jnp.atleast_1d(jnp.asarray(u, dtype=float))
+        num_states = self.transition.transition_logits.shape[0]
+        if u.ndim == 1:
+            if u.shape[0] != num_states:
+                raise ValueError(
+                    f"inital_distribution has {u.shape[0]} states but transition has {num_states}."
+                )
+            u = u[jnp.newaxis, :]  # reshape (num_states,) -> (1, num_states)
+        if u.ndim == 2:
+            if u.shape != (1, num_states):
+                raise ValueError(
+                    f"inital_distribution must have shape (1, {num_states}), got {u.shape}."
+                )
+        else:
+            raise ValueError(
+                f"inital_distribution must be 1-D or 2-D, got {u.ndim}-D array."
+            )
+        return u
 
     def _compute_stationary_distribution(self):
         num_states = self.transition.transition_logits.shape[0]
@@ -57,7 +77,14 @@ class HMM:
             solver = GradientSolver()
         solver.fit(self.params, ys, xs, u_pre=self.u_pre,
                    frozen=frozen, loss_fn=loss_fn)
-        self.params = solver.params 
+        self.params = solver.params  
+
+
+    def log_likelihood(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> float:
+        inference_alg = self._set_inference_algorithm("forward")
+        output = inference_alg.run(self.params, self.u_pre, ys, xs)
+        from src.api.v4.likelihoods import negative_log_likelihood
+        return -float(negative_log_likelihood(output, self.params))
 
     
 
