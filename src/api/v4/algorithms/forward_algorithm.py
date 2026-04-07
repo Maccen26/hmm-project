@@ -16,7 +16,7 @@ class ForwardAlgorithm(BaseInference):
 
         Gamma = hmm_params.transition_matrix(t, ys, xs)  # shape (num_states, num_states)
         u_t = ut_prev @ Gamma
-        g_t = hmm_params.density(t, yt, xt)  # shape (1, num_states)
+        g_t = hmm_params.density(t, ys, xs)  # shape (1, num_states)
         f_t = jnp.sum(u_t * g_t)
         u_tt = u_t * g_t / f_t
         return u_tt, (u_tt, f_t) 

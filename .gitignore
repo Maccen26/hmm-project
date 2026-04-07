@@ -224,3 +224,6 @@ __marimo__/
 *.bmp
 *.svg
 *.webp
+
+
+/docs/litterature/*
