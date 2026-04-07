@@ -1,27 +1,26 @@
 import equinox as eqx
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import Any
 import jax.numpy as jnp
 import jax
-
-class BaseInference(eqx.Module):
+from src.base.base_hmm import BaseHMM
+class BaseInference(ABC):
     """
     Base class for inference algorithms for HMMs.
     
     Subclasses implement `step` (single iteration) and `run` (full sequence).
     The HMM is stored as a regular field so gradients flow through it.
     """
-    hmm_params: Any  # Should be an instance of HMM, but we avoid circular imports heres
 
-    def __init__(self, hmm_params):
-        self.hmm_params = hmm_params
+
 
     @abstractmethod
-    def step(self, carry: Any, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
+    def step(self, hmm_params:Any, carry: Any, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
         """
         Single iteration of the algorithm.
         
         Args:
+            hmm_params: The HMM parameters
             carry: Algorithm-specific state from previous step
             t: Current time index
             ys: Full observation sequence (indexed by t inside)
@@ -34,21 +33,21 @@ class BaseInference(eqx.Module):
 
 
 
-    def run(self, carry_pre: Any, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
+    def run(self, hmm_params:Any, carry_pre: Any, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
         """
         Run the full algorithm over a sequence using jax.lax.scan.
         """
 
-        self._validate_inputs(ys, xs, carry_pre)
+        self._validate_inputs(hmm_params,ys, xs, carry_pre)
 
         def scan_fn(carry, t):
-            return self.step(carry, t, ys, xs)
+            return self.step(hmm_params, carry, t, ys, xs)
 
         carry_final, outputs = jax.lax.scan(scan_fn, carry_pre, jnp.arange(0, len(ys)))
         return self.postprocess(carry_pre, carry_final, outputs)
     
 
-    def _validate_inputs(self, ys: jnp.ndarray, xs: jnp.ndarray | None, carry_pre: Any):
+    def _validate_inputs(self, hmm_params:Any, ys: jnp.ndarray, xs: jnp.ndarray | None, carry_pre: Any):
         """Validate that the inputs to run() have compatible shapes and types.
         """
         if carry_pre is None:
@@ -61,7 +60,9 @@ class BaseInference(eqx.Module):
             raise ValueError("ys cannot be empty")
         if xs is not None and len(xs) != len(ys):
             raise ValueError(f"xs and ys must have the same length, got {len(xs)} and {len(ys)}")
-
+        if not isinstance(hmm_params, BaseHMM):
+            raise ValueError(f"hmm_params must be an instance of HMMParams, got {type(hmm_params)}")
+    
     @abstractmethod
     def postprocess(self, carry_0, carry_final, outputs) -> Any:
         """

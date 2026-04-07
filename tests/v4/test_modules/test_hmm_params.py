@@ -51,7 +51,14 @@ class TestHMMParams(TestCase):
             density = hmm.density(t=t, ys=ys[0], xs=xs)
             cdf = hmm.cdf(t=t, ys=ys[0], xs=xs)
         except Exception as e:
-            self.fail(f"Getting emission parameters from HMM failed with error: {e}") 
+            self.fail(f"Getting emission parameters from HMM failed with error: {e}")
 
-        self.assertTrue(density.shape == (1,3))  # Should return a vector of length num_states
+        self.assertTrue(density.shape == (1, 3))  # Should return a vector of length num_states
         self.assertTrue(cdf.shape == (1, 3))
+
+    def test_density_values_are_non_negative(self):
+        hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
+        ys = jnp.array([[0.0], [1.0], [2.0]])
+        xs = None
+        density = hmm.density(t=0, ys=ys[0], xs=xs)
+        self.assertTrue(jnp.all(density >= 0.0))

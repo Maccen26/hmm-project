@@ -57,13 +57,38 @@ class TestGaussEmission(TestCase):
 
     def test_cdf_success(self):
         emission = GaussEmission.from_params(self.mean, self.sigma)
-        try: 
+        try:
             yt = jnp.array([0.0])
             cdf = emission.cdf(0, self.yt)
-            self.assertTrue(cdf.shape == (1, len(self.mean))) #Every row is a new obs  
+            self.assertTrue(cdf.shape == (1, len(self.mean))) #Every row is a new obs
             self.assertTrue(jnp.isclose(cdf[0, 0], 0.5)) # CDF at mean should be 0.5
         except Exception as e:
             self.fail(f"CDF computation failed with error: {e}")
+
+    def test_cdf_correctness(self):
+        from scipy import stats as scipy_stats
+        emission = GaussEmission.from_params(self.mean, self.sigma)
+        yt = jnp.array([1.0])
+        cdf = emission.cdf(0, yt)
+        expected = scipy_stats.norm.cdf(yt, loc=self.mean, scale=self.sigma)
+        self.assertTrue(jnp.allclose(cdf, expected))
+
+    def test_cdf_values_between_0_and_1(self):
+        emission = GaussEmission.from_params(self.mean, self.sigma)
+        cdf = emission.cdf(0, self.yt)
+        self.assertTrue(jnp.all(cdf >= 0.0))
+        self.assertTrue(jnp.all(cdf <= 1.0))
+
+    def test_mu_is_monotonically_increasing(self):
+        emission = GaussEmission.from_params(self.mean, self.sigma)
+        mu = emission.mu(0, self.yt)
+        diffs = jnp.diff(mu)
+        self.assertTrue(jnp.all(diffs > 0))
+
+    def test_sigma_is_positive(self):
+        emission = GaussEmission.from_params(self.mean, self.sigma)
+        sigma = emission.sigma(0, self.yt)
+        self.assertTrue(jnp.all(sigma > 0))
 
 
 

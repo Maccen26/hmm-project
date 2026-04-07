@@ -49,6 +49,18 @@ class TestStaticTransition(TestCase):
     def test_transtion_matrix_is_probability_matrix(self):
         transition = StaticTransition.from_params(self.transition_matrix)
         computed_transition_matrix = transition.transition_matrix()
-        self.assertTrue(jnp.allclose(computed_transition_matrix.sum(axis=1), 1.0)) 
+        self.assertTrue(jnp.allclose(computed_transition_matrix.sum(axis=1), 1.0))
         self.assertTrue(jnp.all(computed_transition_matrix >= 0.0))
+
+    def test_step_returns_same_logits_for_any_time(self):
+        transition = StaticTransition(self.transition_logits)
+        ys = jnp.array([[0.0], [1.0]])
+        logits_t0 = transition.step(t=0, ys=ys, xs=None)
+        logits_t5 = transition.step(t=5, ys=ys, xs=None)
+        self.assertTrue(jnp.allclose(logits_t0, logits_t5))
+
+    def test_transition_matrix_has_correct_shape(self):
+        transition = StaticTransition(self.transition_logits)
+        matrix = transition.transition_matrix()
+        self.assertEqual(matrix.shape, (self.dim, self.dim))
         

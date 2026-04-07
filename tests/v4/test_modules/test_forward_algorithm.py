@@ -18,20 +18,20 @@ class TestForwardAlgorithm(TestCase):
 
     def test_build_forward_algorithm(self):
         try:
-            forward_alg = ForwardAlgorithm(self.hmm_params)
+            forward_alg = ForwardAlgorithm()
         except Exception as e:
             self.fail(f"Building ForwardAlgorithm failed with error: {e}") 
 
     def test_forward_algorithm_step(self):
-        forward_alg = ForwardAlgorithm(self.hmm_params)
+        forward_alg = ForwardAlgorithm()
         ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
         xs = None  # No covariates
 
         carry_0 = jnp.array([[1.0, 0.0, 0.0]])  # Initial forward variable (start in state 0 with prob 1)
         try:
-            carry_1, output_1 = forward_alg.step(carry_0, t=0, ys=ys, xs=xs)
-            carry_2, output_2 = forward_alg.step(carry_1, t=1, ys=ys, xs=xs)
-            carry_3, output_3 = forward_alg.step(carry_2, t=2, ys=ys, xs=xs)
+            carry_1, output_1 = forward_alg.step(self.hmm_params, carry_0, t=0, ys=ys, xs=xs)
+            carry_2, output_2 = forward_alg.step(self.hmm_params,carry_1, t=1, ys=ys, xs=xs)
+            carry_3, output_3 = forward_alg.step(self.hmm_params,carry_2, t=2, ys=ys, xs=xs)
         except Exception as e:
             self.fail(f"Forward algorithm step failed with error: {e}")
 
@@ -44,24 +44,46 @@ class TestForwardAlgorithm(TestCase):
         self.assertTrue(isinstance(output_3, float) or isinstance(output_3, tuple))
 
     def test_forward_run(self):
-        forward_alg = ForwardAlgorithm(self.hmm_params)
+        forward_alg = ForwardAlgorithm()
         ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
         u0 = jnp.array([[1.0, 0.0, 0.0]])  # Initial forward variable (start in state 0 with prob 1)
         xs = None  # No covariates
 
         try:
-            outputs = forward_alg.run(u0, ys, xs)
+            outputs = forward_alg.run(self.hmm_params,u0, ys, xs)
         except Exception as e:
             self.fail(f"Forward algorithm run failed with error: {e}")
 
         # Check final carry shape and outputs length
         #self.assertTrue(carry.shape == (1, 3))  # Final forward variable should be a vector of length num_states
     def test_forward_run_output_length(self):
-        forward_alg = ForwardAlgorithm(self.hmm_params)
+        forward_alg = ForwardAlgorithm()
         ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
         xs = None  # No covariates
         u0 = jnp.array([[1.0, 0.0, 0.0]])  # Initial forward variable (start in state 0 with prob 1)
 
-        utt, ft = forward_alg.run(u0, ys, xs)
+        forward_output = forward_alg.run(self.hmm_params,u0, ys, xs)
 
-        self.assertTrue(len(ft) == len(ys))  # Should have one output per timestep
+        self.assertTrue(len(forward_output.ft) == len(ys))  # Should have one output per timestep
+
+    def test_forward_variable_sums_to_one(self):
+        forward_alg = ForwardAlgorithm()
+        ys = jnp.array([[0.0], [1.0], [2.0]])
+        u0 = jnp.array([[1.0, 0.0, 0.0]])
+        xs = None
+
+        forward_output = forward_alg.run(self.hmm_params, u0, ys, xs)
+
+        # Each u_tt is a probability distribution and must sum to 1
+        row_sums = forward_output.utt.sum(axis=-1)
+        self.assertTrue(jnp.allclose(row_sums, 1.0, atol=1e-5))
+
+    def test_ft_values_are_positive(self):
+        forward_alg = ForwardAlgorithm()
+        ys = jnp.array([[0.0], [1.0], [2.0]])
+        u0 = jnp.array([[1.0, 0.0, 0.0]])
+        xs = None
+
+        forward_output = forward_alg.run(self.hmm_params,u0, ys, xs)
+
+        self.assertTrue(jnp.all(forward_output.ft > 0))

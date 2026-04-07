@@ -1,8 +1,9 @@
 from unittest import TestCase
-from src.api.v4 import HMM, StaticTransition, GaussEmission 
+from src.api.v4 import HMM  , StaticTransition, GaussEmission
+from src.api.v4.algorithms import ForwardAlgorithm
 import jax.numpy as jnp
 
-class TestHMMParams(TestCase):
+class TestHMM(TestCase):
     def setUp(self) -> None:
         self.transition_logits = jnp.array([[-0.84729786, -1.94591015], 
                                             [-2.07944154, -1.09861229], 
@@ -34,7 +35,7 @@ class TestHMMParams(TestCase):
 
     def test_default_hmm_fit(self):
         # This is a placeholder for a future test that would check if the HMM can be fitted to data
-        ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs 
+        ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
         xs = None  # No covariates
         hmm = HMM(transition=self.transition_matrix, emission=self.emission)
         try:
@@ -42,4 +43,14 @@ class TestHMMParams(TestCase):
             hmm.fit(ys, xs)
         except Exception as e:
             self.fail(f"Fitting HMM to data failed with error: {e}")
+
+    def test_custom_initial_distribution_is_stored(self):
+        custom_u0 = jnp.array([0.5, 0.3, 0.2])
+        hmm = HMM(transition=self.transition_matrix, emission=self.emission, inital_distribution=custom_u0)
+        self.assertTrue(jnp.allclose(hmm.u_pre, custom_u0))
+
+    def test_set_inference_algorithm_returns_forward_algorithm(self):
+        hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        inference_alg = hmm._set_inference_algorithm("forward")
+        self.assertIsInstance(inference_alg, ForwardAlgorithm)
 
