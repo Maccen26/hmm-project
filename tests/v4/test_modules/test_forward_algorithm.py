@@ -1,5 +1,5 @@
 from unittest import TestCase 
-from src.models.v4 import ForwardAlgorithm, StaticTransition, GaussEmission, HMM 
+from src.api.v4 import ForwardAlgorithm, StaticTransition, GaussEmission, HMM 
 import jax.numpy as jnp
 
 class TestForwardAlgorithm(TestCase):

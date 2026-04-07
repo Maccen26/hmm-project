@@ -1,4 +1,4 @@
-from src.models.v4.algorithms import ForwardAlgorithm
+from src.api.v4.algorithms import ForwardAlgorithm
 import jax.numpy as jnp
 
 def likelihood(forward_alg: ForwardAlgorithm, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:

@@ -1,13 +1,11 @@
 from src.base import BaseInference
-from src.models.v4 import HMM
+from src.api.v4 import HMM
 import jax.numpy as jnp
 import jax
 from typing import Any
 
 
 class ForwardAlgorithm(BaseInference):
-
-    hmm: HMM
 
     def __init__(self, hmm: HMM):
         super().__init__(hmm)

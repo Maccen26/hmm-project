@@ -1,8 +1,8 @@
 from unittest import TestCase
-from src.models.v4 import HMM, StaticTransition, GaussEmission
+from src.api.v4 import HMM, StaticTransition, GaussEmission
 import jax.numpy as jnp
-from src.models.v4.algorithms import ForwardAlgorithm
-from src.models.v4.likelihoods import likelihood, negative_log_likelihood 
+from src.api.v4.algorithms import ForwardAlgorithm
+from src.api.v4.likelihoods import likelihood, negative_log_likelihood 
 
 class TestLikelihoods(TestCase):
     def setUp(self) -> None:

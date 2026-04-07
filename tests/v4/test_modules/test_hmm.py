@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.models.v4 import StaticTransition, GaussEmission, HMM
+from src.api.v4 import StaticTransition, GaussEmission, HMM
 import jax.numpy as jnp 
 
 class TestHMM(TestCase):

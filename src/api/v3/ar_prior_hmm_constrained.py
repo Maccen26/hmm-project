@@ -4,9 +4,9 @@ import equinox as eqx
 from jax.scipy.stats import norm
 
 from src.deprecated.base.hmm import HMM
-from src.models.v3.ar_prior_hmm import ArHMMPhiPrior
-from src.models.v3.stationary_hmm import StationaryTransition
-from src.models.v3.ar_hmm_constrained import ArGaussianEmisionConstrained
+from src.api.v3.ar_prior_hmm import ArHMMPhiPrior
+from src.api.v3.stationary_hmm import StationaryTransition
+from src.api.v3.ar_hmm_constrained import ArGaussianEmisionConstrained
 
 
     

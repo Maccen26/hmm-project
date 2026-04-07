@@ -4,8 +4,8 @@ import equinox as eqx
 from jax import lax
 
 from src.deprecated.base.hmm import HMM
-from src.models.v3.stationary_hmm import StationaryTransition
-from src.models.v3.stationary_hmm import StationaryGaussianEmission
+from src.api.v3.stationary_hmm import StationaryTransition
+from src.api.v3.stationary_hmm import StationaryGaussianEmission
 
 
 class ArGaussianEmisionConstrained(StationaryGaussianEmission):

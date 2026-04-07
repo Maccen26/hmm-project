@@ -3,7 +3,6 @@ from abc import abstractmethod
 from typing import Any
 import jax.numpy as jnp
 import jax
-from src.base.base_hmm import BaseHMM
 
 class BaseInference(eqx.Module):
     """
@@ -12,8 +11,7 @@ class BaseInference(eqx.Module):
     Subclasses implement `step` (single iteration) and `run` (full sequence).
     The HMM is stored as a regular field so gradients flow through it.
     """
-    hmm: Any  # HMM instance — kept as pytree leaf for differentiability
-
+    hmm: Any  # Should be an instance of HMM, but we avoid circular imports heres
     def __init__(self, hmm):
         self.hmm = hmm
 

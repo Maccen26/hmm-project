@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from scipy import stats 
-from src.models.v4 import GaussEmission 
+from src.api.v4 import GaussEmission 
 import jax.numpy as jnp
 
 

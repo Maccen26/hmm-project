@@ -1,7 +1,7 @@
 from unittest import TestCase
-from src.models.v4 import StaticTransition 
+from src.api.v4 import StaticTransition 
 import jax.numpy as jnp 
-from src.models.v4.transitions.static_transition import logits_to_transition_matrix, transition_matrix_to_logits
+from src.api.v4.transitions.static_transition import logits_to_transition_matrix, transition_matrix_to_logits
 
 
 class TestStaticTransition(TestCase):

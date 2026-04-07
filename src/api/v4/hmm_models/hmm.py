@@ -42,4 +42,6 @@ class HMM(BaseHMM):
         x is the covariates at time step t. 
         Returns the emission cdf P(Y_t <= y | z_t, x_t) at time step t with dimensions (num_states,).
         """
-        return self.emission.cdf(yt, xt)
+        return self.emission.cdf(yt, xt) 
+    
+    
