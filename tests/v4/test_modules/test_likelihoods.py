@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.api.v4 import HMM, StaticTransition, GaussEmission
+from src.api.v4 import HMMParams, StaticTransition, GaussEmission
 import jax.numpy as jnp
 from src.api.v4.algorithms import ForwardAlgorithm
 from src.api.v4.likelihoods import likelihood, negative_log_likelihood 
@@ -16,7 +16,7 @@ class TestLikelihoods(TestCase):
         self.emission_sigma = jnp.array([1.0, 1.0, 1.0])
         self.emission = GaussEmission.from_params(self.emission_mean, self.emission_sigma) 
 
-        self.hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        self.hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
 
         self.forward_alg = ForwardAlgorithm(self.hmm)
 

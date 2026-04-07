@@ -1,47 +1,81 @@
-from src.base.base_hmm import BaseHMM
-import jax.numpy as jnp
+from src.api.v4.hmm_models.hmm_params import HMMParams 
+import jax.numpy as jnp 
+from typing import Callable
+from src.api.v4.algorithms.forward_algorithm import ForwardAlgorithm
 
-class HMM(BaseHMM):
-    """
-    HMM class that combines a transition model and an emission model. 
-
-    The HMM class should focus on combining the transition and emission models to data (y,x) and compute the different states
-    troughout the sequence.
-    """
+from src.base.base_inference import BaseInference
+from src.base.base_optimizer import BaseOptimizer
+from src.base.base_emission import BaseEmission
+from src.base.base_transition import BaseTransition
 
 
-    def transition_matrix(self, xt : jnp.ndarray | None = None): 
-        """
-        Builds the transition matrix at time step t given the covariates at time step t.
+class HMM: 
+    def __init__(self, transition: BaseTransition, emission: BaseEmission, inital_distribution=None): 
+
+        self.params = HMMParams(transition=transition, emission=emission)
+        self._u0 = self._set_initial_distribution(inital_distribution)
+
+    def _set_initial_distribution(self, inital_distribution): 
+        if inital_distribution is not None: 
+            return inital_distribution 
+        else: 
+            return self._compute_stationary_distribution()
         
-        :param xt: covarites at time step t. 
+    def _compute_stationary_distribution(self): 
+        num_states = self.transition.transition_logits.shape[0]
+        I = jnp.eye(num_states)
+        E = jnp.ones((num_states, num_states))
+        e = jnp.ones((num_states, 1))
 
-        :return: transition matrix at time step t of dim (num_states, num_states) 
-        """
-        return self.transition.transition_matrix(xt) 
+        try:
+            Gamma = self.transition.transition_matrix()
+            delta = e.T @ jnp.linalg.inv(I - Gamma + E)  # (1, num_states)
+            return delta.flatten()  # (num_states,)
+
+        except Exception as e:
+            raise ValueError(f"Error computing inital state distribution. Maybe the Stationary Transition matrix is not invertible? {e}")
+
+    @property
+    def transition(self):
+        return self.params.transition
     
-    def u0(self) -> jnp.ndarray:
-        """
-        Generate the inital state distribution (u) at time step 0. 
+    @property
+    def emission(self):
+        return self.params.emission 
+    
+    def u0(self):
+        return self._u0
+    
+    def fit(self, 
+            ys: jnp.ndarray, 
+            xs: jnp.ndarray | None = None, 
+            inference: str = "forward", 
+            solver: str = "minimizer", 
+            loss_fn: Callable | str = "nll"
+            ):
+        # Placeholder for future implementation of fitting procedure
+        inference_alg = self._set_inference_algorithm(inference) 
+        solver_obj   = self._set_solver(solver) 
+        loss_fn       = self._set_loss_function(loss_fn) 
+
+    def _set_inference_algorithm(self, inference: str) -> BaseInference: 
+        if (inference == "forward"): 
+            return ForwardAlgorithm(self.params) 
+        raise ValueError(f"Inference method {inference} could not be set") 
+    def _set_solver(self, solver: str) -> BaseOptimizer: 
+        raise NotImplementedError("Solver setting not implemented yet")
+    
+    def _set_loss_function(self, loss_fn: Callable | str) -> Callable: 
+        if (loss_fn == "nll"): 
+            raise NotImplementedError("NLL loss function not implemented yet")
         
-        :param self: Description
-        """
-        return self.transition.u0() 
-    
-    def density(self, yt, xt = None):
-        """
-        y is the observation at time step t. 
-        x is the covariates at time step t. 
-        Returns the emission density p(y_t | z_t, x_t) at time step t with dimensions (num_states,).
-        """
-        return self.emission.density(yt, xt) 
-    
-    def cdf(self, yt, xt = None):
-        """
-        y is the observation at time step t. 
-        x is the covariates at time step t. 
-        Returns the emission cdf P(Y_t <= y | z_t, x_t) at time step t with dimensions (num_states,).
-        """
-        return self.emission.cdf(yt, xt) 
-    
-    
+        raise ValueError(f"Loss function {loss_fn} could not be set")
+
+
+
+        
+        
+
+
+
+        

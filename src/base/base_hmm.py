@@ -3,6 +3,7 @@ from src.base.base_transition import BaseTransition
 from src.base.base_emission import BaseEmission
 from abc import ABC, abstractmethod
 import equinox as eqx
+from typing import Callable
 
 
 class BaseHMM(ABC, eqx.Module):
@@ -16,7 +17,7 @@ class BaseHMM(ABC, eqx.Module):
     transition: BaseTransition
 
     @abstractmethod
-    def transition_matrix(self, xt : jnp.ndarray | None = None) -> jnp.ndarray: 
+    def transition_matrix(self, t:int| None = None, ys: jnp.ndarray | None = None, xs: jnp.ndarray | None = None) -> jnp.ndarray:  
         """
         Builds the transition matrix at time step t given the covariates at time step t.
         
@@ -27,16 +28,7 @@ class BaseHMM(ABC, eqx.Module):
         ... 
     
     @abstractmethod
-    def u0(self) -> jnp.ndarray:
-        """
-        Generate the inital state distribution (u) at time step 0. 
-        
-        :param self: Description
-        """
-        ...
-    
-    @abstractmethod
-    def density(self, yt, xt = None) -> jnp.ndarray:
+    def density(self,  t:int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
         """
         y is the observation at time step t. 
         x is the covariates at time step t. 
@@ -45,13 +37,14 @@ class BaseHMM(ABC, eqx.Module):
         ... 
     
     @abstractmethod
-    def cdf(self, yt, xt = None) -> jnp.ndarray:
+    def cdf(self, t:int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
         """
         y is the observation at time step t. 
         x is the covariates at time step t. 
         Returns the emission cdf P(Y_t <= y | z_t, x_t) at time step t with dimensions (num_states,).
         """
-        ... 
+        ...  
+
     
 
     

@@ -11,9 +11,10 @@ class BaseInference(eqx.Module):
     Subclasses implement `step` (single iteration) and `run` (full sequence).
     The HMM is stored as a regular field so gradients flow through it.
     """
-    hmm: Any  # Should be an instance of HMM, but we avoid circular imports heres
-    def __init__(self, hmm):
-        self.hmm = hmm
+    hmm_params: Any  # Should be an instance of HMM, but we avoid circular imports heres
+
+    def __init__(self, hmm_params):
+        self.hmm_params = hmm_params
 
     @abstractmethod
     def step(self, carry: Any, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
@@ -31,27 +32,39 @@ class BaseInference(eqx.Module):
         """
         ...
 
-    def initialize(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
-        """
-        Compute initial carry (e.g., log_alpha_0 for forward algorithm).
-        """
-        return self.hmm.u0()
 
-    def run(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
+
+    def run(self, carry_pre: Any, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> Any:
         """
         Run the full algorithm over a sequence using jax.lax.scan.
         """
 
-        carry_0 = self.initialize(ys, xs)
+        self._validate_inputs(ys, xs, carry_pre)
 
         def scan_fn(carry, t):
             return self.step(carry, t, ys, xs)
 
-        carry_final, outputs = jax.lax.scan(scan_fn, carry_0, jnp.arange(1, len(ys)))
-        return self.postprocess(carry_0, carry_final, outputs)
+        carry_final, outputs = jax.lax.scan(scan_fn, carry_pre, jnp.arange(0, len(ys)))
+        return self.postprocess(carry_pre, carry_final, outputs)
+    
 
-    def postprocess(self, carry_0, carry_final, outputs):
+    def _validate_inputs(self, ys: jnp.ndarray, xs: jnp.ndarray | None, carry_pre: Any):
+        """Validate that the inputs to run() have compatible shapes and types.
         """
-        Optional method to post-process scan outputs (e.g., compute log-likelihood from final carry).
+        if carry_pre is None:
+            raise ValueError("carry_pre cannot be None. Use the initialize() method to compute the initial carry.")
+        if not isinstance(ys, jnp.ndarray):
+            raise ValueError(f"ys must be a jnp.ndarray, got {type(ys)}")
+        if xs is not None and not isinstance(xs, jnp.ndarray):
+            raise ValueError(f"xs must be a jnp.ndarray if provided, got {type(xs)}")
+        if len(ys) == 0:
+            raise ValueError("ys cannot be empty")
+        if xs is not None and len(xs) != len(ys):
+            raise ValueError(f"xs and ys must have the same length, got {len(xs)} and {len(ys)}")
+
+    @abstractmethod
+    def postprocess(self, carry_0, carry_final, outputs) -> Any:
         """
-        return outputs
+        Method to post-process scan outputs (e.g., compute log-likelihood from final carry).
+        """
+        ... 

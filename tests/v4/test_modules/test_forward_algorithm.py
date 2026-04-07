@@ -1,5 +1,5 @@
 from unittest import TestCase 
-from src.api.v4 import ForwardAlgorithm, StaticTransition, GaussEmission, HMM 
+from src.api.v4 import ForwardAlgorithm, StaticTransition, GaussEmission, HMMParams
 import jax.numpy as jnp
 
 class TestForwardAlgorithm(TestCase):
@@ -14,20 +14,20 @@ class TestForwardAlgorithm(TestCase):
         self.emission_sigma = jnp.array([1.0, 1.0, 1.0])
         self.emission = GaussEmission.from_params(self.emission_mean, self.emission_sigma) 
 
-        self.hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        self.hmm_params = HMMParams(transition=self.transition_matrix, emission=self.emission)
 
     def test_build_forward_algorithm(self):
         try:
-            forward_alg = ForwardAlgorithm(self.hmm)
+            forward_alg = ForwardAlgorithm(self.hmm_params)
         except Exception as e:
             self.fail(f"Building ForwardAlgorithm failed with error: {e}") 
 
     def test_forward_algorithm_step(self):
-        forward_alg = ForwardAlgorithm(self.hmm)
+        forward_alg = ForwardAlgorithm(self.hmm_params)
         ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
         xs = None  # No covariates
 
-        carry_0 = forward_alg.initialize(ys, xs)
+        carry_0 = jnp.array([[1.0, 0.0, 0.0]])  # Initial forward variable (start in state 0 with prob 1)
         try:
             carry_1, output_1 = forward_alg.step(carry_0, t=0, ys=ys, xs=xs)
             carry_2, output_2 = forward_alg.step(carry_1, t=1, ys=ys, xs=xs)
@@ -44,22 +44,24 @@ class TestForwardAlgorithm(TestCase):
         self.assertTrue(isinstance(output_3, float) or isinstance(output_3, tuple))
 
     def test_forward_run(self):
-        forward_alg = ForwardAlgorithm(self.hmm)
+        forward_alg = ForwardAlgorithm(self.hmm_params)
         ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
+        u0 = jnp.array([[1.0, 0.0, 0.0]])  # Initial forward variable (start in state 0 with prob 1)
         xs = None  # No covariates
 
         try:
-            carry, outputs = forward_alg.run(ys, xs)
+            outputs = forward_alg.run(u0, ys, xs)
         except Exception as e:
             self.fail(f"Forward algorithm run failed with error: {e}")
 
         # Check final carry shape and outputs length
         #self.assertTrue(carry.shape == (1, 3))  # Final forward variable should be a vector of length num_states
     def test_forward_run_output_length(self):
-        forward_alg = ForwardAlgorithm(self.hmm)
+        forward_alg = ForwardAlgorithm(self.hmm_params)
         ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs
         xs = None  # No covariates
+        u0 = jnp.array([[1.0, 0.0, 0.0]])  # Initial forward variable (start in state 0 with prob 1)
 
-        carry, outputs = forward_alg.run(ys, xs)
+        utt, ft = forward_alg.run(u0, ys, xs)
 
-        self.assertTrue(len(outputs) == ys.shape[0])  # Should have one output per timestep
+        self.assertTrue(len(ft) == len(ys))  # Should have one output per timestep

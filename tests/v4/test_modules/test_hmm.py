@@ -1,8 +1,8 @@
 from unittest import TestCase
-from src.api.v4 import StaticTransition, GaussEmission, HMM
-import jax.numpy as jnp 
+from src.api.v4 import HMM, StaticTransition, GaussEmission 
+import jax.numpy as jnp
 
-class TestHMM(TestCase):
+class TestHMMParams(TestCase):
     def setUp(self) -> None:
         self.transition_logits = jnp.array([[-0.84729786, -1.94591015], 
                                             [-2.07944154, -1.09861229], 
@@ -19,3 +19,27 @@ class TestHMM(TestCase):
             hmm = HMM(transition=self.transition_matrix, emission=self.emission)
         except Exception as e:
             self.fail(f"Building HMM failed with error: {e}") 
+
+    
+    def test_hmm_params_access(self):
+        hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        try:
+            transition = hmm.transition
+            emission = hmm.emission
+        except Exception as e:
+            self.fail(f"Accessing HMM parameters failed with error: {e}")
+
+        self.assertIsInstance(transition, StaticTransition)
+        self.assertIsInstance(emission, GaussEmission)  
+
+    def test_default_hmm_fit(self):
+        # This is a placeholder for a future test that would check if the HMM can be fitted to data
+        ys = jnp.array([[0.0], [1.0], [2.0]])  # 3 timesteps, 1-dimensional obs 
+        xs = None  # No covariates
+        hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        try:
+            # This will eventually call a fit method that we haven't implemented yet
+            hmm.fit(ys, xs)
+        except Exception as e:
+            self.fail(f"Fitting HMM to data failed with error: {e}")
+

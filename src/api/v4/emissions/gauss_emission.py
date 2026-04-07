@@ -18,19 +18,22 @@ class GaussEmission(BaseEmission):
         log_sigma = jnp.log(sigma)  # Store log of sigma to ensure positivity
         return cls(log_mu_diff, mu0, log_sigma)
 
-    def density(self, yt, xt=None) -> jnp.ndarray:
-        mu = self.mu(xt)
-        sigma = self.sigma(xt) 
-        return stats.norm.pdf(yt[:, None], loc=mu, scale=sigma) 
+    def density(self, t:int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
+        mu, sigma = self.step(t, ys, xs) 
+        yt = ys[t]
+        return stats.norm.pdf(jnp.atleast_1d(yt)[:, None], loc=mu, scale=sigma)
     
-    def mu(self, xt=None):
+    def step(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None):
+        return self.mu(t, ys, xs), self.sigma(t, ys, xs) 
+    
+    def mu(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None):
         return jnp.concatenate([jnp.array([self.mu0]), self.mu0 + jnp.cumsum(jnp.exp(self.log_mu_diff))]) 
 
-    def sigma(self, xt=None):
+    def sigma(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None):
         return jnp.exp(self.log_sigma) 
     
-    def cdf(self, yt, xt=None) -> jnp.ndarray:
-        mu = self.mu(xt)
-        sigma = self.sigma(xt) 
-        return stats.norm.cdf(yt[:, None], loc=mu, scale=sigma)
+    def cdf(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
+        mu = self.mu(t, ys, xs)
+        sigma = self.sigma(t, ys, xs)
+        return stats.norm.cdf(jnp.atleast_1d(ys[t])[:, None], loc=mu, scale=sigma)
     

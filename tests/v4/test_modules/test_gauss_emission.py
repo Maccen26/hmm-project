@@ -18,6 +18,8 @@ class TestGaussEmission(TestCase):
         self.log_mu_diff = jnp.log(jnp.array([self.mean[i] - self.mean[i-1] for i in range(1, len(self.mean))]))
         self.log_sigma = jnp.log(self.sigma)
 
+        self.yt = jnp.array([0.0, 1.0, 2.0])  # 1-dimensional observation for testing
+
     def test_build(self):
         emission = GaussEmission(mu0=self.mu0, log_mu_diff=self.log_mu_diff, log_sigma=self.log_sigma)
 
@@ -35,8 +37,7 @@ class TestGaussEmission(TestCase):
     def test_density_success(self):
         emission = GaussEmission.from_params(self.mean, self.sigma)
         try: 
-            yt = jnp.array([0.0])
-            density = emission.density(yt)
+            density = emission.density(0, self.yt)
             self.assertTrue(density.shape == (1, len(self.mean))) 
         except Exception as e:
             self.fail(f"Density computation failed with error: {e}") 
@@ -44,21 +45,21 @@ class TestGaussEmission(TestCase):
     def test_density_correctness(self):
         emission = GaussEmission.from_params(self.mean, self.sigma)
         yt = jnp.array([0.0])
-        density = emission.density(yt)
+        density = emission.density(0, self.yt)
         expected_density = stats.norm.pdf(yt, loc=self.mean, scale=self.sigma)
         self.assertTrue(jnp.allclose(density, expected_density))
 
     def test_density_dim(self): 
         y = jnp.array([0.0])
         emission = GaussEmission.from_params(self.mean, self.sigma)
-        density = emission.density(y)
+        density = emission.density(0, self.yt)
         self.assertTrue(density.shape == (1, len(self.mean))) #Every row is a new obs  
 
     def test_cdf_success(self):
         emission = GaussEmission.from_params(self.mean, self.sigma)
         try: 
             yt = jnp.array([0.0])
-            cdf = emission.cdf(yt)
+            cdf = emission.cdf(0, self.yt)
             self.assertTrue(cdf.shape == (1, len(self.mean))) #Every row is a new obs  
             self.assertTrue(jnp.isclose(cdf[0, 0], 0.5)) # CDF at mean should be 0.5
         except Exception as e:
