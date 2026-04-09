@@ -11,6 +11,7 @@ from src.base.base_transition import BaseTransition
 class HMM:
     def __init__(self, transition: BaseTransition, emission: BaseEmission,
                  inital_distribution=None):
+        
         self.params = HMMParams(transition=transition, emission=emission)
         
         self.u_pre = self._set_initial_distribution(inital_distribution)

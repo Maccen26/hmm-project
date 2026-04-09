@@ -11,8 +11,15 @@ class GaussEmission(BaseEmission):
     mu0: jnp.ndarray
     log_sigma: jnp.ndarray 
 
+    def __init__(self, log_mu_diff, mu0, log_sigma):
+        self.log_mu_diff = jnp.asarray(log_mu_diff, dtype=float)
+        self.mu0 = jnp.asarray(mu0, dtype=float)
+        self.log_sigma = jnp.asarray(log_sigma, dtype=float)
+
     @classmethod
     def from_params(cls, mu, sigma):
+        mu = jnp.asarray(mu, dtype=float)
+        sigma = jnp.asarray(sigma, dtype=float)
         log_mu_diff = jnp.log(jnp.diff(mu))  # Store log-differences to ensure monotonicity
         mu0 = mu[0]
         log_sigma = jnp.log(sigma)  # Store log of sigma to ensure positivity

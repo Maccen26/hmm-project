@@ -23,7 +23,7 @@ class TestAutoregressiveGaussEmission(TestCase):
         self.assertTrue(jnp.allclose(emission.mu0, self.mu0))
         self.assertTrue(jnp.allclose(emission.log_mu_diff, self.log_mu_diff))
         self.assertTrue(jnp.allclose(emission.log_sigma, self.log_sigma))
-        self.assertTrue(jnp.allclose(emission.phi_tilde, self.phi_tilde)) 
+        self.assertTrue(jnp.allclose(jnp.stack(emission.phi_tilde), jnp.atleast_2d(self.phi_tilde)))
 
     def test_build(self):
         emission = AutoregressiveGaussEmission(log_mu_diff=self.log_mu_diff, mu0=self.mu0, log_sigma=self.log_sigma, phi_tilde=self.phi_tilde)
@@ -31,7 +31,7 @@ class TestAutoregressiveGaussEmission(TestCase):
         self.assertTrue(jnp.allclose(emission.mu0, self.mu0))
         self.assertTrue(jnp.allclose(emission.log_mu_diff, self.log_mu_diff))
         self.assertTrue(jnp.allclose(emission.log_sigma, self.log_sigma))
-        self.assertTrue(jnp.allclose(emission.phi_tilde, self.phi_tilde)) 
+        self.assertTrue(jnp.allclose(jnp.stack(emission.phi_tilde), jnp.atleast_2d(self.phi_tilde)))
 
     def test_density_success(self):
         emission = AutoregressiveGaussEmission.from_params(self.mean, self.sigma, self.phi)
@@ -85,7 +85,7 @@ class TestAutoregressiveGaussEmission(TestCase):
         emission = AutoregressiveGaussEmission.from_params(self.mean, self.sigma, phi)
         ys = jnp.array([1.0, 2.0, 3.0, 4.0, 5.0])
 
-        for t in range(len(phi)):
+        for t in range(len(phi)):  # t=0 and t=1 should have density = 1.0
             density = emission.density(t, ys)
             self.assertTrue(jnp.allclose(density, jnp.ones_like(density)),
                             f"Density at t={t} should be 1.0 when t < k={len(phi)}")
@@ -133,6 +133,7 @@ class TestAutoregressiveGaussEmission(TestCase):
             actual_mu = emission.mu(t, ys)
             self.assertTrue(jnp.allclose(actual_mu, base_mu),
                             f"At t={t} < k, mu should equal base_mu (no AR term)")
+            
 
     def test_zero_phi_gives_base_mu(self):
         """When all phi are zero, AR term vanishes — mu should equal base_mu for all t."""

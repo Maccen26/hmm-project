@@ -17,16 +17,36 @@ class BaseSolver(ABC):
         ...
 
     def _build_filter_spec(self, params: eqx.Module, frozen: dict | None):
-        """Returns a boolean pytree: True = trainable, False = frozen."""
+        """Returns a boolean pytree: True = trainable, False = frozen.
+
+        frozen examples:
+          {"mu0": False}              — freeze the whole mu0 leaf
+          {"phi_tilde": {0: False}}   — freeze only lag-0 of phi_tilde (tuple leaf)
+        """
         if frozen is None:
             return eqx.is_array
 
         def filter_fn(path, leaf):
-            if path:
-                last = path[-1]
-                name = getattr(last, "name", getattr(last, "key", None))
-                if name in frozen and frozen[name] == False:
-                    return False
+            if not path:
+                return eqx.is_array(leaf)
+
+            last = path[-1]
+            name = getattr(last, "name", getattr(last, "key", None))
+
+            # Whole-param freeze: frozen={"mu0": False}
+            if name in frozen and frozen[name] is False:
+                return False
+
+            # Indexed freeze for tuple leaves: frozen={"phi_tilde": {0: False}}
+            if len(path) >= 2:
+                parent = path[-2]
+                parent_name = getattr(parent, "name", getattr(parent, "key", None))
+                idx = getattr(last, "idx", getattr(last, "key", None))
+                if parent_name in frozen:
+                    spec = frozen[parent_name]
+                    if isinstance(spec, dict) and idx in spec and spec[idx] is False:
+                        return False
+
             return eqx.is_array(leaf)
 
         return jax.tree_util.tree_map_with_path(filter_fn, params)

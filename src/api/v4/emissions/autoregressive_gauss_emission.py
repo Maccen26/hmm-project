@@ -16,24 +16,34 @@ class AutoregressiveGaussEmission(BaseEmission):
     """ 
     log_mu_diff: jnp.ndarray
     mu0: jnp.ndarray
-    log_sigma: jnp.ndarray 
-    phi_tilde: jnp.ndarray 
+    log_sigma: jnp.ndarray
+    phi_tilde: tuple  # tuple of 1D arrays, one per lag — allows per-lag freezing
+
+
+    def __init__(self, log_mu_diff, mu0, log_sigma, phi_tilde):
+        self.log_mu_diff = jnp.asarray(log_mu_diff, dtype=float)
+        self.mu0 = jnp.asarray(mu0, dtype=float)
+        self.log_sigma = jnp.asarray(log_sigma, dtype=float)
+        phi_tilde_2d = jnp.atleast_2d(jnp.asarray(phi_tilde, dtype=float))
+        self.phi_tilde = tuple(phi_tilde_2d[i] for i in range(phi_tilde_2d.shape[0]))
 
     @classmethod
     def from_params(cls, mu, sigma, phi):
+        mu = jnp.asarray(mu, dtype=float)
+        sigma = jnp.asarray(sigma, dtype=float)
         log_mu_diff = jnp.log(jnp.diff(mu))  # Store log-differences to ensure monotonicity
         mu0 = mu[0]
         log_sigma = jnp.log(sigma)  # Store log of sigma to ensure positivity
         phi_tilde = phi_to_phi_tilde(phi)  # Store transformed phi values
-        return cls(log_mu_diff, mu0, log_sigma, phi_tilde) 
+        return cls(log_mu_diff, mu0, log_sigma, phi_tilde)
     
 
     def density(self, t:int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
-        mu, sigma = self.step(t, ys, xs) 
+        mu, sigma = self.step(t, ys, xs)
         yt = ys[t]
-        density = stats.norm.pdf(jnp.atleast_1d(yt)[:, None], loc=mu, scale=sigma) 
-        k = self.phi_tilde.shape[0] #no of lags 
-        return_val = jnp.where(t < k, jnp.ones_like(density), density)  #Density of 1 gives a log like of 0 
+        density = stats.norm.pdf(jnp.atleast_1d(yt)[:, None], loc=mu, scale=sigma)
+        k = len(self.phi_tilde)  # no of lags
+        return_val = jnp.where(t < k, jnp.ones_like(density), density)  #Density of 1 gives a log like of 0
         return return_val
     
     def step(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None):
@@ -41,7 +51,7 @@ class AutoregressiveGaussEmission(BaseEmission):
     
     def mu(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None):
         base_mu = self.mu_vals(t, ys, xs)
-        k = self.phi_tilde.shape[0]
+        k = len(self.phi_tilde)
         
         # Always produces shape (k,) — safe even when t < k
         lags = jax.lax.dynamic_slice(ys, (jnp.maximum(t - k, 0),), (k,))
@@ -56,7 +66,7 @@ class AutoregressiveGaussEmission(BaseEmission):
         return jnp.exp(self.log_sigma) 
     
     def phi(self):
-        return phi_tilde_to_phi(self.phi_tilde)  # Transform phi_tilde back to (0, 1) range
+        return phi_tilde_to_phi(jnp.stack(self.phi_tilde, axis=0))  # (num_lags, num_states)
     
     def cdf(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
         mu = self.mu(t, ys, xs)
