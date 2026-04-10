@@ -1,5 +1,5 @@
 from src.base import BaseInference
-from src.api.v4.hmm_models.hmm_params import HMMParams 
+from src.api.v4.parameters.hmm_params import HMMParams 
 import jax.numpy as jnp
 from src.api.v4.algorithms.forward_outout import ForwardOutput
 from typing import Any
