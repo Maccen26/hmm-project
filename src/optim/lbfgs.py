@@ -3,7 +3,7 @@ import jax.numpy as jnp
 import jaxopt
 import equinox as eqx
 
-from src.base.hmm import HMM
+from src.deprecated.base.hmm import HMM
 from src.optim.base import BaseOptimizer
 
 

@@ -1,6 +1,6 @@
 import jax.numpy as jnp
 import equinox as eqx 
-from src.base.hmm import HMM 
+from src.deprecated.base.hmm import HMM 
 
 
 
