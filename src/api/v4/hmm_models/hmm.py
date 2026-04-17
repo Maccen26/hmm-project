@@ -1,3 +1,4 @@
+import jax
 from src.api.v4.hmm_models.hmm_params import HMMParams
 import jax.numpy as jnp
 from typing import Callable
@@ -6,6 +7,8 @@ from src.api.v4.algorithms.forward_algorithm import ForwardAlgorithm
 from src.base.base_inference import BaseInference
 from src.base.base_emission import BaseEmission
 from src.base.base_transition import BaseTransition
+from typing import Tuple
+from src.api.v4.likelihoods import negative_log_likelihood
 
 
 class HMM:
@@ -15,6 +18,12 @@ class HMM:
         self.params = HMMParams(transition=transition, emission=emission)
         
         self.u_pre = self._set_initial_distribution(inital_distribution)
+        self.ll_fits = []  
+        self.negative_log_likelihood : Callable = negative_log_likelihood 
+
+    def set_negative_log_likelihood(self, loss_fn: Callable):
+        self.negative_log_likelihood = loss_fn
+
 
     def _set_initial_distribution(self, inital_distribution):
         if inital_distribution is not None:
@@ -70,22 +79,37 @@ class HMM:
             return ForwardAlgorithm()
         raise ValueError(f"Inference method {inference} could not be set")
 
-    def fit(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None,
-            solver=None, frozen=None,
-            loss_fn: Callable | None = None) -> None:
+    def fit(self, ys: jnp.ndarray, 
+            xs: jnp.ndarray | None = None,
+            solver=None, 
+            frozen=None) -> None:
         if solver is None:
             from src.api.v4.solvers import GradientSolver
             solver = GradientSolver()
+        
+        #run fit
         solver.fit(self.params, ys, xs, u_pre=self.u_pre,
-                   frozen=frozen, loss_fn=loss_fn)
-        self.params = solver.params  
+                   frozen=frozen, loss_fn=self.negative_log_likelihood)
+        
+        self.params = solver.params
+        self.ll_fits.append(-solver.opt_loss_val if solver.opt_loss_val is not None else float('-inf'))
+
+    def log_likelihood(self, ys: jnp.ndarray| None = None, xs: jnp.ndarray | None = None) -> float:
+        if (ys is None):
+            return self.ll_fits[-1] if self.ll_fits else float('-inf')
+        ll = self._compute_log_likelihood(ys, xs)
+        return ll
 
 
-    def log_likelihood(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> float:
+    def _compute_log_likelihood(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> float:
         inference_alg = self._set_inference_algorithm("forward")
         output = inference_alg.run(self.params, self.u_pre, ys, xs)
         from src.api.v4.likelihoods import negative_log_likelihood
-        return -float(negative_log_likelihood(output, self.params))
+        return -float(negative_log_likelihood(output, self.params)) 
+    
+
+    def update_param(self, param_name: str, new_value: jax.Array, index: Tuple|float|None = None) -> None:
+        self.params = self.params.update_param(param_name, new_value, index) 
 
     
 

@@ -62,7 +62,23 @@ class TestHMMParams(TestCase):
         hmm2 = HMMParams(transition=different_transition_matrix, emission=different_emission)
 
         self.assertNotEqual(hmm1, hmm2)  # Should not be equal since they have different parameters
-        
+
+    def test_update_param(self):
+        hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
+
+
+        try:
+            updated_hmm = hmm.update_param('transition_logits', 0, index=(0,0))
+        except Exception as e:
+            self.fail(f"Updating HMM parameter failed with error: {e}") 
+
+        self.assertIsInstance(updated_hmm, HMMParams)
+        self.assertEqual(updated_hmm.emission, hmm.emission)  # Emission should be unchanged
+        self.assertNotEqual(updated_hmm.transition, hmm.transition)  # Transition should be updated
+        self.assertNotEqual(updated_hmm, hmm)
+
+        self.assertEqual(updated_hmm.transition.transition_logits[0,0], 0)  # The updated parameter should be changed to the new value
+
     def test_get_transition_params(self):
         hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
         try:

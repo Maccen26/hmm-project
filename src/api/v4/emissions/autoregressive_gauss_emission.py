@@ -2,14 +2,7 @@ from src.base.base_emission import BaseEmission
 import jax.scipy.stats as stats 
 import jax.numpy as jnp 
 import jax 
-import equinox as eqx
-
-def phi_to_phi_tilde(phi):
-    return jax.scipy.special.logit(phi)  # constrained → unconstrained
-
-def phi_tilde_to_phi(phi_tilde):
-    return jax.nn.sigmoid(phi_tilde)     # unconstrained → constrained (0, 1)
-
+from src.api.v4.utils import phi_to_phi_tilde, phi_tilde_to_phi
 class AutoregressiveGaussEmission(BaseEmission):
     """
     Gaussian emission model for an HMM. The emission density is a Gaussian distribution with mean and variance that can depend on the covariates at time step t. 
@@ -17,15 +10,15 @@ class AutoregressiveGaussEmission(BaseEmission):
     log_mu_diff: jnp.ndarray
     mu0: jnp.ndarray
     log_sigma: jnp.ndarray
-    phi_tilde: tuple  # tuple of 1D arrays, one per lag — allows per-lag freezing
+    phi_tilde: jnp.ndarray  # tuple of 1D arrays, one per lag — allows per-lag freezing
 
 
     def __init__(self, log_mu_diff, mu0, log_sigma, phi_tilde):
         self.log_mu_diff = jnp.asarray(log_mu_diff, dtype=float)
         self.mu0 = jnp.asarray(mu0, dtype=float)
         self.log_sigma = jnp.asarray(log_sigma, dtype=float)
-        phi_tilde_2d = jnp.atleast_2d(jnp.asarray(phi_tilde, dtype=float))
-        self.phi_tilde = tuple(phi_tilde_2d[i] for i in range(phi_tilde_2d.shape[0]))
+        self.phi_tilde = jnp.atleast_2d(jnp.asarray(phi_tilde, dtype=float))
+
 
     @classmethod
     def from_params(cls, mu, sigma, phi):
@@ -66,7 +59,7 @@ class AutoregressiveGaussEmission(BaseEmission):
         return jnp.exp(self.log_sigma) 
     
     def phi(self):
-        return phi_tilde_to_phi(jnp.stack(self.phi_tilde, axis=0))  # (num_lags, num_states)
+        return phi_tilde_to_phi(self.phi_tilde)  # (num_lags, num_states)
     
     def cdf(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
         mu = self.mu(t, ys, xs)

@@ -3,7 +3,7 @@ from src.base.base_transition import BaseTransition
 from src.base.base_emission import BaseEmission
 from abc import ABC, abstractmethod
 import equinox as eqx
-from typing import Iterator
+from typing import Iterator, Tuple
 from dataclasses import fields 
 import jax
 
@@ -51,14 +51,29 @@ class BaseHMM(ABC, eqx.Module):
         return((f.name, getattr(self, f.name)) for f in fields(self))
     
     def __eq__(self, value: object) -> bool:
-        is_equal = True
-        
-        is_equal = is_equal and isinstance(value, BaseHMM)
-        is_equal = is_equal and (self.__class__.__name__ == value.__class__.__name__)
+        if not isinstance(value, BaseHMM):
+            return False
+        if self.__class__.__name__ != value.__class__.__name__:
+            return False
+        return all(getattr(self, f.name) == getattr(value, f.name) for f in fields(self))
+    
 
-        for f in fields(self):
-            is_equal = is_equal and getattr(self, f.name) == getattr(value, f.name)
-        return is_equal
+    def update_param(self, param_name: str, new_value: float|jax.Array, index: Tuple|float|None) -> 'BaseHMM':
+        """Returns a new HMMParams object with the updated parameter value
+        Only updates low level params as Jax Arrays
+        """ 
+
+        val = jnp.asarray(new_value, dtype=float)  # Cast to double for numerical stability
+
+        new_components_list = {}
+
+        for name, component in self: 
+            if (hasattr(component, param_name)): 
+                component = component.update_param(param_name, val, index)  
+            new_components_list[name] = component
+        return self.__class__(**new_components_list)
+        
+
 
 
     

@@ -76,6 +76,7 @@ class TestGaussEmission(TestCase):
         expected_density = stats.norm.pdf(yt, loc=self.mean, scale=self.sigma)
         self.assertTrue(jnp.allclose(density, expected_density))
 
+
     def test_density_dim(self): 
         y = jnp.array([0.0])
         emission = GaussEmission.from_params(self.mean, self.sigma)

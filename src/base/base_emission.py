@@ -1,7 +1,8 @@
 import equinox as eqx
 from abc import ABC, abstractmethod 
+import jax
 import jax.numpy as jnp
-from typing import Any, Iterator
+from typing import Any, Iterator, Tuple
 from dataclasses import fields
 
 class BaseEmission(eqx.Module, ABC): 
@@ -60,4 +61,19 @@ class BaseEmission(eqx.Module, ABC):
             is_equal = is_equal and jnp.allclose(a, b, atol=1e-6, rtol=1e-5) 
 
         return bool(is_equal)
+    
+    def update_param(self, param_name: str, new_value: jax.Array, index: Tuple|float|None) -> 'BaseEmission': 
+        new_param_list = []
+        for name, param in self: 
+            if name == param_name: 
+                if index is not None:
+                    new_param = jnp.asarray(param).at[index].set(new_value)   
+                else:
+                    new_param = new_value
+            else: 
+                new_param = param 
+
+            new_param_list.append(new_param)
+
+        return self.__class__(*new_param_list) 
  

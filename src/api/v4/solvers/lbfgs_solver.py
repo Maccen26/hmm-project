@@ -7,6 +7,7 @@ class LBFGSSolver(BaseSolver):
     def __init__(self, n_iter: int = 200):
         self.n_iter = n_iter
         self.params = None
+        self.opt_loss_val = None
 
     def fit(self, hmm_params, ys, xs=None, u_pre=None,
             frozen=None, loss_fn: Callable | None = None) -> None:
@@ -21,3 +22,4 @@ class LBFGSSolver(BaseSolver):
         result = solver.run(trainable)
 
         self.params = eqx.combine(result.params, static)
+        self.opt_loss_val = float(result.state.value)

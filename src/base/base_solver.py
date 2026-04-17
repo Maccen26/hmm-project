@@ -21,7 +21,8 @@ class BaseSolver(ABC):
 
         frozen examples:
           {"mu0": False}              — freeze the whole mu0 leaf
-          {"phi_tilde": {0: False}}   — freeze only lag-0 of phi_tilde (tuple leaf)
+          {"phi_tilde": (0,)}         — freeze only index 0 of phi_tilde
+          {"phi_tilde": (0, 2)}       — freeze indices 0 and 2 of phi_tilde
         """
         if frozen is None:
             return eqx.is_array
@@ -37,14 +38,14 @@ class BaseSolver(ABC):
             if name in frozen and frozen[name] is False:
                 return False
 
-            # Indexed freeze for tuple leaves: frozen={"phi_tilde": {0: False}}
+            # Indexed freeze: frozen={"phi_tilde": (0,)}
             if len(path) >= 2:
                 parent = path[-2]
                 parent_name = getattr(parent, "name", getattr(parent, "key", None))
                 idx = getattr(last, "idx", getattr(last, "key", None))
                 if parent_name in frozen:
                     spec = frozen[parent_name]
-                    if isinstance(spec, dict) and idx in spec and spec[idx] is False:
+                    if isinstance(spec, tuple) and idx in spec:
                         return False
 
             return eqx.is_array(leaf)

@@ -2,9 +2,9 @@ import jax.numpy as jnp
 import equinox as eqx
 from abc import ABC, abstractmethod
 from src.base.utils import logits_to_transition_matrix, transition_matrix_to_logits
-from typing import Iterator
+from typing import Iterator, Tuple
 from dataclasses import fields
-
+import jax 
 class BaseTransition(eqx.Module, ABC):
     """
     Base class for the transition component of an HMM.
@@ -64,6 +64,22 @@ class BaseTransition(eqx.Module, ABC):
             is_equal = is_equal and jnp.allclose(a, b, atol=1e-6, rtol=1e-5) 
 
         return bool(is_equal)
+    
+    def update_param(self, param_name: str, new_value: jax.Array, index: Tuple|float|None) -> 'BaseTransition': 
+        new_param_list = []
+        for name, param in self: 
+            if name == param_name: 
+                if index is not None:
+                    new_param = jnp.asarray(param).at[index].set(new_value)   
+                else:
+                    new_param = new_value
+            else: 
+                new_param = param 
+
+            new_param_list.append(new_param)
+
+        return self.__class__(*new_param_list) 
+
 
 
 

@@ -10,6 +10,7 @@ class GradientSolver(BaseSolver):
         self.n_iter = n_iter
         self.verbose = verbose
         self.params = None
+        self.opt_loss_val = None
 
     def fit(self, hmm_params, ys, xs=None, u_pre=None,
             frozen=None, loss_fn: Callable | None = None) -> None:
@@ -35,3 +36,6 @@ class GradientSolver(BaseSolver):
                 print(f"iter {i:4d}  loss={float(val):.6f}")
 
         self.params = eqx.combine(trainable, static)
+        self.opt_loss_val = float(val)
+
+
