@@ -2,7 +2,8 @@ import jax.numpy as jnp
 import equinox as eqx
 from abc import ABC, abstractmethod
 from src.base.utils import logits_to_transition_matrix, transition_matrix_to_logits
-
+from typing import Iterator
+from dataclasses import fields
 
 class BaseTransition(eqx.Module, ABC):
     """
@@ -46,6 +47,23 @@ class BaseTransition(eqx.Module, ABC):
         :rtype: jnp.ndarray
         """
         ...
+
+    def __iter__(self) -> Iterator:
+        return ((f.name, getattr(self, f.name)) for f in fields(self))
+    
+
+    def __eq__(self, value: object) -> bool:
+        is_equal = True
+        
+        is_equal = is_equal and isinstance(value, BaseTransition)
+        is_equal = is_equal and (self.__class__.__name__ == value.__class__.__name__)
+
+        for f in fields(self):
+            a = getattr(self, f.name)
+            b = getattr(value, f.name) 
+            is_equal = is_equal and jnp.allclose(a, b, atol=1e-6, rtol=1e-5) 
+
+        return bool(is_equal)
 
 
 

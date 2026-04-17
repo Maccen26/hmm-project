@@ -3,8 +3,9 @@ from src.base.base_transition import BaseTransition
 from src.base.base_emission import BaseEmission
 from abc import ABC, abstractmethod
 import equinox as eqx
-from typing import Callable
-
+from typing import Iterator
+from dataclasses import fields 
+import jax
 
 class BaseHMM(ABC, eqx.Module):
     """
@@ -44,6 +45,23 @@ class BaseHMM(ABC, eqx.Module):
         Returns the emission cdf P(Y_t <= y | z_t, x_t) at time step t with dimensions (num_states,).
         """
         ...  
+
+    def __iter__(self) -> Iterator:
+        """Make the class iterable with names. This is useful for the forward and backward algorithms, where we need to iterate over the states and compute the transition and emission probabilities."""
+        return((f.name, getattr(self, f.name)) for f in fields(self))
+    
+    def __eq__(self, value: object) -> bool:
+        is_equal = True
+        
+        is_equal = is_equal and isinstance(value, BaseHMM)
+        is_equal = is_equal and (self.__class__.__name__ == value.__class__.__name__)
+
+        for f in fields(self):
+            is_equal = is_equal and getattr(self, f.name) == getattr(value, f.name)
+        return is_equal
+
+
+    
 
     
 

@@ -36,6 +36,13 @@ class HMMParams(BaseHMM):
         """
         return self.emission.cdf(t, ys, xs)  
     
+    def __iter__(self):
+        """Make the class iterable with names. This is useful for the forward and backward algorithms, where we need to iterate over the states and compute the transition and emission probabilities."""
+        yield 'transition', self.transition
+        yield 'emission', self.emission 
+
+
+    
 
 
         

@@ -30,6 +30,32 @@ class TestStaticTransition(TestCase):
         except Exception as e:
             self.fail(f"Building StaticTransition from logits failed with error: {e}")
 
+    def test_iterable(self):
+        transition = StaticTransition(self.transition_logits)
+        try:
+            params = list(transition)
+        except Exception as e:
+            self.fail(f"Iterating over StaticTransition parameters failed with error: {e}") 
+
+        self.assertEqual(len(params), 1)  # Should have one parameter: transition_logits
+        param_names = [name for name, _ in params]
+        self.assertIn('transition_logits', param_names)
+
+    def test_equality_is_true(self):
+        transition1 = StaticTransition(self.transition_logits)
+        transition2 = StaticTransition(self.transition_logits)
+
+        self.assertEqual(transition1, transition2)  # Should be equal since they have the same parameters
+
+    def test_equality_is_false(self):
+        different_transition_logits = jnp.array([[-0.5, -1.0], 
+                                                [-1.5, -0.5], 
+                                                [-1.0, -0.5]]) 
+        different_transition = StaticTransition(different_transition_logits)
+
+        transition = StaticTransition(self.transition_logits)
+        self.assertNotEqual(transition, different_transition)  # Should not be equal since they have different parameters
+
     def test_build_gives_same_transition_matrix(self):
         transition_from_logits = StaticTransition(self.transition_logits)
 

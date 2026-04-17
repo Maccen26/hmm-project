@@ -34,6 +34,33 @@ class TestGaussEmission(TestCase):
         self.assertTrue(jnp.allclose(emission.log_mu_diff, self.log_mu_diff))
         self.assertTrue(jnp.allclose(emission.log_sigma, self.log_sigma))
 
+    def test_iterable(self):
+        emission = GaussEmission.from_params(self.mean, self.sigma)
+        try:
+            params = list(emission)
+        except Exception as e:
+            self.fail(f"Iterating over GaussEmission parameters failed with error: {e}") 
+
+        self.assertEqual(len(params), 3)  # Should have three parameters: mu0, log_mu_diff, log_sigma
+        param_names = [name for name, _ in params]
+        self.assertIn('mu0', param_names)
+        self.assertIn('log_mu_diff', param_names)
+        self.assertIn('log_sigma', param_names)
+    def test_equality_is_true(self):
+        emission1 = GaussEmission.from_params(self.mean, self.sigma)
+        emission2 = GaussEmission.from_params(self.mean, self.sigma)
+
+        self.assertEqual(emission1, emission2)  # Should be equal since they have the same parameters
+
+    def test_equality_is_false(self):
+        different_mean = jnp.array([1.0, 2.0, 3.0]) 
+        different_sigma = jnp.array([1.0, 1.0, 1.0])
+        different_emission = GaussEmission.from_params(different_mean, different_sigma)
+
+        emission = GaussEmission.from_params(self.mean, self.sigma)
+
+        self.assertNotEqual(emission, different_emission)  # Should not be equal since they have different parameters
+
     def test_density_success(self):
         emission = GaussEmission.from_params(self.mean, self.sigma)
         try: 
