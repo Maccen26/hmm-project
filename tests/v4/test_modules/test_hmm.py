@@ -34,6 +34,17 @@ class TestBaseHMM(TestCase):
         #self.assertIsInstance(transition, StaticTransition)
         #self.assertIsInstance(emission, GaussEmission)  
 
+    def test_update_param(self): 
+        hmm = HMM(transition=self.transition_matrix, emission=self.emission)
+        param_before = hmm.params
+        try:
+            hmm.update_param("mu0", 5.0)
+        except Exception as e:
+            self.fail(f"Updating HMM parameter failed with error: {e}")
+
+        self.assertTrue(jnp.allclose(hmm.params.emission.mu0, 5)) 
+        self.assertNotEqual(hmm.params, param_before)
+
     def test_default_hmm_fit(self):
         # This is a placeholder for a future test that would check if the HMM can be fitted to data
         ys = jnp.array([0.0, 1.0, 2.0])
@@ -93,4 +104,6 @@ class TestAutoRegressiveHMM(TestBaseHMM):
         self.emission_sigma = jnp.array([1.0, 1.0, 1.0])
         self.phi = jnp.array([0.5, 0.5, 0.5])  # AR(1) coefficient for each state
         self.emission = AutoregressiveGaussEmission.from_params(self.emission_mean, self.emission_sigma, self.phi) 
+
+
 

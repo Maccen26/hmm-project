@@ -3,7 +3,8 @@
 
 Thursday 09-04-2026: (week 7): 
 Code:
-- [] Design New Params Class and Second Order Markov Chains. 
+- [] Make classes iterable with names
+- [] Design  Second Order Markov Chains. 
 - [] Create Params class that holds individuel params and a aggreagater classs that exposes them as jax arrays 
 - [] Create Tests for Params and Params aggregator class 
 - [] Build Second Order Markov Chain emissions and Transitions

@@ -31,7 +31,54 @@ class TestHMMParams(TestCase):
         self.assertIsInstance(transition, StaticTransition)
         self.assertIsInstance(emission, GaussEmission) 
 
-    
+    def test_is_iterable(self):
+        hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
+        try:
+            params = list(hmm)
+        except Exception as e:
+            self.fail(f"Iterating over HMM parameters failed with error: {e}") 
+
+        self.assertEqual(len(params), 2)  # Should have two parameters: transition and emission
+        param_names = [name for name, _ in params]
+        self.assertIn('transition', param_names)
+        self.assertIn('emission', param_names)
+
+    def test_hmm_equality_is_true(self):
+        hmm1 = HMMParams(transition=self.transition_matrix, emission=self.emission)
+        hmm2 = HMMParams(transition=self.transition_matrix, emission=self.emission)
+
+        self.assertEqual(hmm1, hmm2)  # Should be equal since they have the same parameters
+
+    def test_hmm_equality_is_false(self):
+        different_transition_logits = jnp.array([[-0.5, -1.0], 
+                                                [-1.5, -0.5], 
+                                                [-1.0, -0.5]]) 
+        different_transition_matrix = StaticTransition(different_transition_logits)
+        different_emission_mean = jnp.array([1.0, 2.0, 3.0]) 
+        different_emission_sigma = jnp.array([1.0, 1.0, 1.0])
+        different_emission = GaussEmission.from_params(different_emission_mean, different_emission_sigma) 
+
+        hmm1 = HMMParams(transition=self.transition_matrix, emission=self.emission)
+        hmm2 = HMMParams(transition=different_transition_matrix, emission=different_emission)
+
+        self.assertNotEqual(hmm1, hmm2)  # Should not be equal since they have different parameters
+
+    def test_update_param(self):
+        hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
+
+
+        try:
+            updated_hmm = hmm.update_param('transition_logits', 0, index=(0,0))
+        except Exception as e:
+            self.fail(f"Updating HMM parameter failed with error: {e}") 
+
+        self.assertIsInstance(updated_hmm, HMMParams)
+        self.assertEqual(updated_hmm.emission, hmm.emission)  # Emission should be unchanged
+        self.assertNotEqual(updated_hmm.transition, hmm.transition)  # Transition should be updated
+        self.assertNotEqual(updated_hmm, hmm)
+
+        self.assertEqual(updated_hmm.transition.transition_logits[0,0], 0)  # The updated parameter should be changed to the new value
+
     def test_get_transition_params(self):
         hmm = HMMParams(transition=self.transition_matrix, emission=self.emission)
         try:

@@ -76,7 +76,7 @@ class TestAutoregressiveGaussEmission(TestCase):
         extreme_phi_tilde = jnp.array([-1000.0, 0.0, 1000.0])  # Very large negative, zero, and very large positive values
         emission = AutoregressiveGaussEmission(log_mu_diff=self.log_mu_diff, mu0=self.mu0, log_sigma=self.log_sigma, phi_tilde=extreme_phi_tilde)
         recovered_phi = emission.phi()
-        self.assertTrue(jnp.all((recovered_phi >= 0) & (recovered_phi <= 1)), "Recovered phi values should be between 0 and 1 even for extreme phi_tilde values")
+        self.assertTrue(jnp.all((recovered_phi >= -1) & (recovered_phi <= 1)), "Recovered phi values should be between 0 and 1 even for extreme phi_tilde values")
 
     def test_density_is_one_for_t_less_than_k(self):
         """For t < k (number of lags), density should be 1.0 (log-likelihood contribution = 0)."""

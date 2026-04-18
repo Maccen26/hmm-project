@@ -1,5 +1,7 @@
 from src.base import BaseTransition 
-import jax.numpy as jnp 
+import jax.numpy as jnp
+
+from src.base.utils import logits_to_transition_matrix 
 
 
 class StaticTransition(BaseTransition):
@@ -20,5 +22,16 @@ class StaticTransition(BaseTransition):
         :rtype: ndarray
         """
         return self.transition_logits 
+    
+    def transition_matrix(self, t:int| None = None, ys: jnp.ndarray | None = None, xs: jnp.ndarray | None = None) -> jnp.ndarray: 
+        """
+        Builds the transition matrix at time step t given the covariates at time step t.
+        
+        :param xt: covarites at time step t. 
+
+        :return: transition matrix at time step t of dim (num_states, num_states) 
+        """
+        logits = self.step(t, ys, xs)
+        return logits_to_transition_matrix(logits)
     
 

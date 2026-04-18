@@ -3,8 +3,9 @@ from src.base.base_transition import BaseTransition
 from src.base.base_emission import BaseEmission
 from abc import ABC, abstractmethod
 import equinox as eqx
-from typing import Callable
-
+from typing import Iterator, Tuple
+from dataclasses import fields 
+import jax
 
 class BaseHMM(ABC, eqx.Module):
     """
@@ -44,6 +45,38 @@ class BaseHMM(ABC, eqx.Module):
         Returns the emission cdf P(Y_t <= y | z_t, x_t) at time step t with dimensions (num_states,).
         """
         ...  
+
+    def __iter__(self) -> Iterator:
+        """Make the class iterable with names. This is useful for the forward and backward algorithms, where we need to iterate over the states and compute the transition and emission probabilities."""
+        return((f.name, getattr(self, f.name)) for f in fields(self))
+    
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, BaseHMM):
+            return False
+        if self.__class__.__name__ != value.__class__.__name__:
+            return False
+        return all(getattr(self, f.name) == getattr(value, f.name) for f in fields(self))
+    
+
+    def update_param(self, param_name: str, new_value: float|jax.Array, index: Tuple|float|None) -> 'BaseHMM':
+        """Returns a new HMMParams object with the updated parameter value
+        Only updates low level params as Jax Arrays
+        """ 
+
+        val = jnp.asarray(new_value, dtype=float)  # Cast to double for numerical stability
+
+        new_components_list = {}
+
+        for name, component in self: 
+            if (hasattr(component, param_name)): 
+                component = component.update_param(param_name, val, index)  
+            new_components_list[name] = component
+        return self.__class__(**new_components_list)
+        
+
+
+
+    
 
     
 

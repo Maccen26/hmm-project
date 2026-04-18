@@ -13,7 +13,7 @@ class GaussEmission(BaseEmission):
 
     def __init__(self, log_mu_diff, mu0, log_sigma):
         self.log_mu_diff = jnp.asarray(log_mu_diff, dtype=float)
-        self.mu0 = jnp.asarray(mu0, dtype=float)
+        self.mu0 =jnp.asarray(mu0, dtype=float)
         self.log_sigma = jnp.asarray(log_sigma, dtype=float)
 
     @classmethod

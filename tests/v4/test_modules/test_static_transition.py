@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.api.v4 import StaticTransition 
+from src.api.v4 import StaticTransition, StaticTransitionHigherOrder
 import jax.numpy as jnp 
 from src.base.utils import logits_to_transition_matrix, transition_matrix_to_logits
 
@@ -29,6 +29,32 @@ class TestStaticTransition(TestCase):
             transition = StaticTransition(self.transition_logits)
         except Exception as e:
             self.fail(f"Building StaticTransition from logits failed with error: {e}")
+
+    def test_iterable(self):
+        transition = StaticTransition(self.transition_logits)
+        try:
+            params = list(transition)
+        except Exception as e:
+            self.fail(f"Iterating over StaticTransition parameters failed with error: {e}") 
+
+        self.assertEqual(len(params), 1)  # Should have one parameter: transition_logits
+        param_names = [name for name, _ in params]
+        self.assertIn('transition_logits', param_names)
+
+    def test_equality_is_true(self):
+        transition1 = StaticTransition(self.transition_logits)
+        transition2 = StaticTransition(self.transition_logits)
+
+        self.assertEqual(transition1, transition2)  # Should be equal since they have the same parameters
+
+    def test_equality_is_false(self):
+        different_transition_logits = jnp.array([[-0.5, -1.0], 
+                                                [-1.5, -0.5], 
+                                                [-1.0, -0.5]]) 
+        different_transition = StaticTransition(different_transition_logits)
+
+        transition = StaticTransition(self.transition_logits)
+        self.assertNotEqual(transition, different_transition)  # Should not be equal since they have different parameters
 
     def test_build_gives_same_transition_matrix(self):
         transition_from_logits = StaticTransition(self.transition_logits)
@@ -64,3 +90,71 @@ class TestStaticTransition(TestCase):
         matrix = transition.transition_matrix()
         self.assertEqual(matrix.shape, (self.dim, self.dim))
         
+
+
+
+class TestHigherOrderStaticTransition(TestCase):
+    """
+    Should test build and computation of transition matrix and step function for higher order static transition.
+    """
+    
+    def setUp(self) -> None:
+        self.transition_logits = jnp.array([[-0.84729786], 
+                                            [-2.07944154], 
+                                            [-1.60943791], 
+                                            [-0.84729786], 
+                                            ]) 
+        #self.transition_matrix = logits_to_transition_matrix(self.transition_logits)
+        self.dim = 4
+
+    def test_build_from_logits(self):
+        try:
+            transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        except Exception as e:
+            self.fail(f"Building StaticTransitionHigherOrder from logits failed with error: {e}")
+    def test_iterable(self):
+        transition = StaticTransition(self.transition_logits)
+        try:
+            params = list(transition)
+        except Exception as e:
+            self.fail(f"Iterating over StaticTransition parameters failed with error: {e}") 
+        self.assertEqual(len(params), 1)  # Should have one parameter: transition_logits
+        param_names = [name for name, _ in params]
+        self.assertIn('transition_logits', param_names)
+
+
+    def test_equality_is_true(self):
+        transition1 = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        transition2 = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+
+        self.assertEqual(transition1, transition2)  # Should be equal since they have the same parameters
+
+    def test_equality_is_false(self):
+        different_transition_logits = jnp.array([[-0.5], 
+                                                [-1.5], 
+                                                [-1.0],
+                                                [-0.5]]) 
+        
+        different_transition = StaticTransitionHigherOrder(different_transition_logits, order=2, num_states=2)
+        transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        self.assertNotEqual(transition, different_transition)  # Should not be equal since they have different parameters
+
+
+    def test_transtion_matrix_is_probability_matrix(self):
+        transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        computed_transition_matrix = transition.transition_matrix()
+
+        self.assertTrue(jnp.allclose(computed_transition_matrix.sum(axis=1), 1.0))
+        self.assertTrue(jnp.all(computed_transition_matrix >= 0.0))
+
+    def test_step_returns_same_logits_for_any_time(self):
+        transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        ys = jnp.array([[0.0], [1.0]])
+        logits_t0 = transition.step(t=0, ys=ys, xs=None)
+        logits_t5 = transition.step(t=5, ys=ys, xs=None)
+
+        self.assertTrue(jnp.allclose(logits_t0, logits_t5))
+    def test_transition_matrix_has_correct_shape(self):
+        transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        matrix = transition.transition_matrix()
+        self.assertEqual(matrix.shape, (self.dim, self.dim))
