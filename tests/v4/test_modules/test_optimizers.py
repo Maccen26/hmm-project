@@ -2,7 +2,7 @@ from unittest import TestCase
 import jax.numpy as jnp
 import jax
 
-from src.api.v4 import HMMParams, StaticTransition, GaussEmission, HMM
+from src.api.v4 import HMMParams, StaticTransition, GaussEmission, AutoregressiveGaussEmission, HMM
 from src.api.v4 import GradientSolver, LBFGSSolver, Minimizer
 
 
@@ -119,6 +119,137 @@ class TestHMMOptimizers(TestCase):
         trainable, static = eqx.partition(self.hmm.params, spec)
         self.assertIsNone(trainable.emission.mu0)
         self.assertIsNotNone(static.emission.mu0)
+
+    # ------------------------------------------------------------------
+    # Custom loss function test
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # Element-level frozen tests
+    # ------------------------------------------------------------------
+
+    def test_element_freeze_scalar_unchanged(self):
+        """Freezing a scalar param with a tuple index keeps it unchanged."""
+        solver = GradientSolver(n_iter=50)
+        original_mu0 = self.hmm.params.emission.mu0.copy()
+        solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre,
+                   frozen={"mu0": (0,)})
+        self.assertTrue(
+            jnp.allclose(solver.params.emission.mu0, original_mu0),
+            "scalar mu0 should be frozen when element-frozen with a tuple"
+        )
+
+    def test_element_freeze_1d_single_element(self):
+        """Freezing a 1D array element keeps only that element unchanged."""
+        solver = GradientSolver(n_iter=50)
+        original_log_sigma = self.hmm.params.emission.log_sigma.copy()
+        # log_sigma is 1D with 3 elements — freeze element 1
+        solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre,
+                   frozen={"log_sigma": (0, 1)})
+        self.assertTrue(
+            jnp.allclose(solver.params.emission.log_sigma[1],
+                         original_log_sigma[1]),
+            "log_sigma[1] should be frozen"
+        )
+
+    def test_element_freeze_1d_other_elements_change(self):
+        """Non-frozen elements of a 1D array should still be trainable."""
+        solver = GradientSolver(n_iter=50)
+        original_log_sigma = self.hmm.params.emission.log_sigma.copy()
+        solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre,
+                   frozen={"log_sigma": (0, 1)})
+        unfrozen = jnp.delete(solver.params.emission.log_sigma, 1)
+        original_unfrozen = jnp.delete(original_log_sigma, 1)
+        self.assertFalse(
+            jnp.allclose(unfrozen, original_unfrozen),
+            "non-frozen log_sigma elements should have changed"
+        )
+
+    def test_element_freeze_2d_single_element(self):
+        """Freezing a 2D array element at (row, col) keeps it unchanged."""
+        transition_logits = jnp.array([[-0.84729786, -1.94591015],
+                                       [-2.07944154, -1.09861229],
+                                       [-1.60943791, -1.09861229]])
+        transition = StaticTransition(transition_logits)
+        phi = jnp.array([[0.5, 0.3, 0.1]])  # 1 lag, 3 states
+        emission = AutoregressiveGaussEmission.from_params(
+            jnp.array([0.0, 1.0, 2.0]),
+            jnp.array([1.0, 1.0, 1.0]),
+            phi
+        )
+        hmm = HMM(transition, emission)
+        rng = jax.random.PRNGKey(42)
+        ys = jax.random.normal(rng, shape=(50,))  # 1D for AR emission
+
+        solver = GradientSolver(n_iter=50)
+        original_phi_tilde = hmm.params.emission.phi_tilde.copy()
+        # phi_tilde is 2D (num_lags, num_states) — freeze element [0, 1]
+        solver.fit(hmm.params, ys, u_pre=hmm.u_pre,
+                   frozen={"phi_tilde": (0, 1)})
+        self.assertTrue(
+            jnp.allclose(solver.params.emission.phi_tilde[0, 1],
+                         original_phi_tilde[0, 1]),
+            "phi_tilde[0,1] should be frozen"
+        )
+
+    def test_element_freeze_2d_other_elements_change(self):
+        """Non-frozen elements of a 2D array should still be trainable."""
+        transition_logits = jnp.array([[-0.84729786, -1.94591015],
+                                       [-2.07944154, -1.09861229],
+                                       [-1.60943791, -1.09861229]])
+        transition = StaticTransition(transition_logits)
+        phi = jnp.array([[0.5, 0.3, 0.1]])
+        emission = AutoregressiveGaussEmission.from_params(
+            jnp.array([0.0, 1.0, 2.0]),
+            jnp.array([1.0, 1.0, 1.0]),
+            phi
+        )
+        hmm = HMM(transition, emission)
+        rng = jax.random.PRNGKey(42)
+        ys = jax.random.normal(rng, shape=(50,))  # 1D for AR emission
+
+        solver = GradientSolver(n_iter=50)
+        original_phi_tilde = hmm.params.emission.phi_tilde.copy()
+        solver.fit(hmm.params, ys, u_pre=hmm.u_pre,
+                   frozen={"phi_tilde": (0, 1)})
+        # Check that at least one non-frozen element changed
+        mask = jnp.ones_like(original_phi_tilde, dtype=bool).at[0, 1].set(False)
+        self.assertFalse(
+            jnp.allclose(solver.params.emission.phi_tilde[mask],
+                         original_phi_tilde[mask]),
+            "non-frozen phi_tilde elements should have changed"
+        )
+
+    def test_element_freeze_combined_with_whole_freeze(self):
+        """Element-level and whole-param freezes can be used together."""
+        solver = GradientSolver(n_iter=50)
+        original_mu0 = self.hmm.params.emission.mu0.copy()
+        original_log_sigma = self.hmm.params.emission.log_sigma.copy()
+        solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre,
+                   frozen={"mu0": False, "log_sigma": (0, 0)})
+        self.assertTrue(
+            jnp.allclose(solver.params.emission.mu0, original_mu0),
+            "whole-frozen mu0 should be unchanged"
+        )
+        self.assertTrue(
+            jnp.allclose(solver.params.emission.log_sigma[0],
+                         original_log_sigma[0]),
+            "element-frozen log_sigma[0] should be unchanged"
+        )
+
+    def test_parse_frozen_separates_whole_and_element(self):
+        """_parse_frozen correctly separates False from tuple specs."""
+        solver = GradientSolver(n_iter=1)
+        whole, element = solver._parse_frozen(
+            {"mu0": False, "phi_tilde": (0, 1), "log_sigma": (0, 2)})
+        self.assertEqual(whole, {"mu0": False})
+        self.assertEqual(element, {"phi_tilde": (0, 1), "log_sigma": (0, 2)})
+
+    def test_parse_frozen_none_returns_empty(self):
+        solver = GradientSolver(n_iter=1)
+        whole, element = solver._parse_frozen(None)
+        self.assertIsNone(whole)
+        self.assertEqual(element, {})
 
     # ------------------------------------------------------------------
     # Custom loss function test

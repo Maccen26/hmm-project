@@ -19,7 +19,8 @@ class BaseTransition(eqx.Module, ABC):
     def from_params(cls, transition_matrix):
         transition_logits =  transition_matrix_to_logits(transition_matrix)
         return cls(transition_logits)
-
+    
+    @abstractmethod
     def transition_matrix(self, t:int| None = None, ys: jnp.ndarray | None = None, xs: jnp.ndarray | None = None) -> jnp.ndarray: 
         """
         Builds the transition matrix at time step t given the covariates at time step t.
@@ -28,8 +29,8 @@ class BaseTransition(eqx.Module, ABC):
 
         :return: transition matrix at time step t of dim (num_states, num_states) 
         """
-        logits = self.step(t, ys, xs)
-        return logits_to_transition_matrix(logits)
+        ...
+        
 
     @abstractmethod
     def step(self, t: int | None, ys: jnp.ndarray | None, xs: jnp.ndarray | None) -> jnp.ndarray:

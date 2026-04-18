@@ -13,13 +13,18 @@ class LBFGSSolver(BaseSolver):
             frozen=None, loss_fn: Callable | None = None) -> None:
         from jaxopt import LBFGS
 
-        filter_spec = self._build_filter_spec(hmm_params, frozen)
+        whole_frozen, element_frozen = self._parse_frozen(frozen)
+        filter_spec = self._build_filter_spec(hmm_params, whole_frozen)
         trainable, static = eqx.partition(hmm_params, filter_spec)
-        _loss_fn = self._build_loss_fn(static, u_pre, ys, xs, loss_fn=loss_fn)
+        _loss_fn = self._build_loss_fn(static, u_pre, ys, xs, loss_fn=loss_fn,
+                                       element_frozen=element_frozen,
+                                       original_params=hmm_params)
 
         solver = LBFGS(fun=_loss_fn, maxiter=self.n_iter, implicit_diff=False)
-        
+
         result = solver.run(trainable)
 
         self.params = eqx.combine(result.params, static)
+        self.params = self._restore_frozen_elements(
+            self.params, element_frozen, hmm_params)
         self.opt_loss_val = float(result.state.value)
