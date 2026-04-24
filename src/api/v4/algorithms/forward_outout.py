@@ -8,6 +8,7 @@ class ForwardOutput(BaseOutput):
     """
     ft: jnp.ndarray  # Forward probabilities at each time step, shape (T, num_states) 
     utt: jnp.ndarray # Observed sequence, shape (T,) 
+    ut: jnp.ndarray  # Filtered state probabilities at each time step, shape (T, num_states)
 
 
     def log_likelihood(self) -> jnp.ndarray:
