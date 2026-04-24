@@ -111,5 +111,20 @@ class HMM:
     def update_param(self, param_name: str, new_value: jax.Array, index: Tuple|float|None = None) -> None:
         self.params = self.params.update_param(param_name, new_value, index) 
 
+    # Todo: Refactor this method to be part of fit maybe 
+    def pseudo_residuals(self, ys: jnp.ndarray, xs: jnp.ndarray | None = None) -> jnp.ndarray:
+        from jax.scipy.stats import norm
+        inference_alg = self._set_inference_algorithm("forward")
+        output = inference_alg.run(self.params, self.u_pre, ys, xs) 
+        ut = output.ut  # shape (T, num_states) 
+        z_list = []
+        for t in range(0, len(ys) - 1):
+            G_t = self.emission.cdf(t, ys, xs)  # shape (1, num_states)
+            z_t = norm.ppf(jnp.sum(ut[t+1] * G_t))
+            z_list.append(z_t)
+        
+        return jnp.array(z_list)
+
+
     
 
