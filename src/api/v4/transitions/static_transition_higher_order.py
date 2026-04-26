@@ -4,26 +4,53 @@ import jax.numpy as jnp
 import equinox as eqx
 
 
-def _make_2_state_transition_logits(logits): 
+def _make_transition_logits(logits, order):
     """
-    Converts a 2D array of transition logits of shape (num_states, num_states - 1) to a 3D array of shape (num_states, num_states, num_states) where the diagonal elements are set to a large negative value (e.g., -1000) to represent impossible self-transitions, and the off-diagonal elements are filled with the provided logits.
+    Constructs the full (K^order, K^order) transition logit matrix for a higher-order HMM.
 
-    :param logits: A 2D array of shape (num_states, num_states - 1) containing the transition logits for the off-diagonal elements.
-    :return: A 3D array of shape (num_states, num_states, num_states) representing the full transition logits including self-transitions.
+    Augmented states are tuples of `order` base states in chronological order (oldest first),
+    indexed lexicographically. A transition from augmented state i to j is possible iff
+    the last (order-1) elements of i's tuple equal the first (order-1) elements of j's tuple.
+
+    For each row i, valid next states are sorted by index. The first K-1 of them receive
+    the provided logits[i, :]; the last receives 0.0 (log(1), the reference category).
+    Impossible transitions are set to -1000.0.
+
+    :param logits: Array of shape (K^order, K-1) — free transition logits per augmented state.
+    :param order: Order of the Markov chain.
+    :return: Array of shape (K^order, K^order) — full transition logit matrix.
     """
-    num_states = logits.shape[0]
-    full_logits = jnp.full((num_states, num_states), -1000.0)  # Start with all transitions impossible
-    given_indics = jnp.array([(0,0), (1,2), (2,2), (3,0)])
+    num_augmented = logits.shape[0]   # K^order
+    K = logits.shape[1] + 1          # base number of states
 
-    zero_indics = jnp.array([(0,1), (1, 3), (2, 3), (3, 1)]) 
+    def decode(i):
+        """Decode augmented state index i into a tuple of base states (oldest first)."""
+        result = []
+        for _ in range(order):
+            result.append(i % K)
+            i //= K
+        return tuple(reversed(result))
 
-    rows = jnp.array([idx[0] for idx in given_indics])
-    cols = jnp.array([idx[1] for idx in given_indics])
-    full_logits = full_logits.at[rows, cols].set(logits.flatten())  
-    rows_zero = jnp.array([idx[0] for idx in zero_indics])
-    cols_zero = jnp.array([idx[1] for idx in zero_indics])
-    full_logits = full_logits.at[rows_zero, cols_zero].set(0.0)  # Set the specified off-diagonal elements to 0.0 (log(1))
-    return full_logits  
+    state_tuples = [decode(i) for i in range(num_augmented)]
+
+    given_rows, given_cols = [], []
+    zero_rows, zero_cols = [], []
+
+    for i, tup in enumerate(state_tuples):
+        suffix = tup[1:]  # last (order-1) base states
+        valid_next = sorted(j for j, t in enumerate(state_tuples) if t[:-1] == suffix)
+        for k, j in enumerate(valid_next[:-1]):
+            given_rows.append(i)
+            given_cols.append(j)
+        zero_rows.append(i)
+        zero_cols.append(valid_next[-1])
+
+    full_logits = jnp.full((num_augmented, num_augmented), -1000.0)
+    full_logits = full_logits.at[jnp.array(given_rows), jnp.array(given_cols)].set(logits.flatten())
+    full_logits = full_logits.at[jnp.array(zero_rows), jnp.array(zero_cols)].set(0.0)
+    return full_logits
+
+
 
 
 def logits_to_transition_matrix_higher_order(logits):
@@ -45,14 +72,14 @@ class StaticTransitionHigherOrder(BaseTransition):
     def __init__(self, transition_logits, order=2, num_states = 2):
         super().__init__(transition_logits)
         self.order = order 
-        self._validate_transition_logits(num_states)  # Validate the shape of transition_logits based on the order
+        self._validate_transition_logits(transition_logits.shape[1] + 1)  # Validate the shape of transition_logits based on the order
 
     def _validate_transition_logits(self, num_states):
         """
         Should validate that the number of possible transitions match the number of possible transition logits. 
 
         """
-        expected_num_logits = num_states**(self.order + 1) - self.transition_logits.shape[0]  # Total transitions minus self-transitions
+        expected_num_logits = num_states**self.order * (num_states - 1)  # K^order augmented states, each with K-1 free logits
         actual_num_logits = self.transition_logits.size
         if actual_num_logits != expected_num_logits:
             raise ValueError(f"Expected {expected_num_logits} transition logits for order {self.order} and {num_states} states, but got {actual_num_logits}.")
@@ -72,7 +99,7 @@ class StaticTransitionHigherOrder(BaseTransition):
         :rtype: ndarray
         """
 
-        return _make_2_state_transition_logits(self.transition_logits) 
+        return _make_transition_logits(self.transition_logits, self.order)
     
     def transition_matrix(self, t:int| None = None, ys: jnp.ndarray | None = None, xs: jnp.ndarray | None = None) -> jnp.ndarray: 
         """

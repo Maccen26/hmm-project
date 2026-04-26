@@ -4,7 +4,7 @@ from src.api.v4.hmm_models import HMMParams, HMM
 from src.api.v4.algorithms import ForwardAlgorithm
 from src.api.v4.algorithms import ForwardOutput
 from src.api.v4.solvers import GradientSolver, LBFGSSolver, Minimizer
-
+from src.api.v4.hmm_models import AIC, BIC
 
 __all__ = [
     "StaticTransition",
@@ -17,5 +17,7 @@ __all__ = [
     "GradientSolver",
     "LBFGSSolver",
     "Minimizer",
-    "StaticTransitionHigherOrder"
+    "StaticTransitionHigherOrder", 
+    "AIC",
+    "BIC"
 ]

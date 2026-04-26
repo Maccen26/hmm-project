@@ -9,7 +9,8 @@ def load_y_data(no_of_days: int | None = None) -> jnp.ndarray:
     """ 
     df = load_and_aggregate_data(no_of_days=no_of_days)
     y_data = jnp.array(df["CO2C"].values)
-    return jnp.asarray(y_data)
+    return jnp.asarray(y_data) 
+
 
 
 def make_lag_matrix(ys: jnp.ndarray, k: int) -> jnp.ndarray:

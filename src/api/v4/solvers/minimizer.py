@@ -1,10 +1,12 @@
 import equinox as eqx
+import jax
+from jax.flatten_util import ravel_pytree
 from typing import Callable
 from src.base.base_solver import BaseSolver
 
 
 class Minimizer(BaseSolver):
-    def __init__(self, method: str = "Nelder-Mead", n_iter: int = 1000):
+    def __init__(self, method: str = "BFGS", n_iter: int = 1000):
         self.method = method
         self.n_iter = n_iter
         self.params = None
@@ -12,8 +14,6 @@ class Minimizer(BaseSolver):
 
     def fit(self, hmm_params, ys, xs=None, u_pre=None,
             frozen=None, loss_fn: Callable | None = None) -> None:
-        from jaxopt import ScipyMinimize
-
         whole_frozen, element_frozen = self._parse_frozen(frozen)
         filter_spec = self._build_filter_spec(hmm_params, whole_frozen)
         trainable, static = eqx.partition(hmm_params, filter_spec)
@@ -21,11 +21,18 @@ class Minimizer(BaseSolver):
                                        element_frozen=element_frozen,
                                        original_params=hmm_params)
 
-        solver = ScipyMinimize(fun=_loss_fn, method=self.method,
-                               maxiter=self.n_iter)
-        result = solver.run(trainable)
+        arrays, non_arrays = eqx.partition(trainable, eqx.is_array)
+        flat_arrays, unravel = ravel_pytree(arrays)
 
-        self.params = eqx.combine(result.params, static)
-        self.params = self._restore_frozen_elements(
-            self.params, element_frozen, hmm_params)
-        self.opt_loss_val = float(result.state.fun_val)
+        def flat_loss_fn(flat):
+            return _loss_fn(eqx.combine(unravel(flat), non_arrays))
+
+        result = jax.scipy.optimize.minimize(
+            flat_loss_fn, flat_arrays,
+            method=self.method,
+            options={"maxiter": self.n_iter}
+        )
+
+        self.params = eqx.combine(eqx.combine(unravel(result.x), non_arrays), static)
+        self.params = self._restore_frozen_elements(self.params, element_frozen, hmm_params)
+        self.opt_loss_val = float(result.fun)
