@@ -158,3 +158,26 @@ class TestHigherOrderStaticTransition(TestCase):
         transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
         matrix = transition.transition_matrix()
         self.assertEqual(matrix.shape, (self.dim, self.dim))
+
+    def test_transition_matrix_respects_augmented_state_structure(self):
+        """
+        In a 2nd-order chain with 2 base states, augmented states are (prev, curr):
+          0=(0,0), 1=(0,1), 2=(1,0), 3=(1,1)
+        From state i, the next state's 'prev' component must equal i's 'curr' component:
+          States 0,2 (curr=0) can only go to states 0,1 (next prev=0)
+          States 1,3 (curr=1) can only go to states 2,3 (next prev=1)
+        """
+        transition = StaticTransitionHigherOrder(self.transition_logits, order=2, num_states=2)
+        matrix = transition.transition_matrix()
+
+        # States 0=(0,0) and 2=(1,0): current is 0, so next must have prev=0 → states 0 or 1
+        self.assertAlmostEqual(float(matrix[0, 2]), 0.0, places=5)
+        self.assertAlmostEqual(float(matrix[0, 3]), 0.0, places=5)
+        self.assertAlmostEqual(float(matrix[2, 2]), 0.0, places=5)
+        self.assertAlmostEqual(float(matrix[2, 3]), 0.0, places=5)
+
+        # States 1=(0,1) and 3=(1,1): current is 1, so next must have prev=1 → states 2 or 3
+        self.assertAlmostEqual(float(matrix[1, 0]), 0.0, places=5)
+        self.assertAlmostEqual(float(matrix[1, 1]), 0.0, places=5)
+        self.assertAlmostEqual(float(matrix[3, 0]), 0.0, places=5)
+        self.assertAlmostEqual(float(matrix[3, 1]), 0.0, places=5)

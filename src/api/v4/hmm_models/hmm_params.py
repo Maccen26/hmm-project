@@ -41,6 +41,12 @@ class HMMParams(BaseHMM):
         yield 'transition', self.transition
         yield 'emission', self.emission 
 
+    def __len__(self):
+        """Returns the number of trainable parameters in the model."""
+        num_transition_params = self.transition.transition_logits.size
+        num_emission_params = sum(param.size for _, param in self.emission.__iter__())
+        return num_transition_params + num_emission_params
+
 
     
 

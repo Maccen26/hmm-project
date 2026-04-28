@@ -47,7 +47,8 @@ class AutoregressiveGaussEmission(BaseEmission):
         k = len(self.phi_tilde)
         
         # Always produces shape (k,) — safe even when t < k
-        lags = jax.lax.dynamic_slice(ys, (jnp.maximum(t - k, 0),), (k,))
+        # After flip: lags[0] = y_{t-1} (lag 1), lags[k-1] = y_{t-k} (lag k), matching phi row ordering
+        lags = jnp.flip(jax.lax.dynamic_slice(ys, (jnp.maximum(t - k, 0),), (k,)))
         
         ar = jnp.sum(self.phi() * (lags[:, None] - base_mu[None, :]), axis=0)
         

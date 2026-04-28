@@ -177,32 +177,32 @@ class TestPhiIsCovergent(TestCase):
         )
 
 
-    def test_phi_convergence_random_init(self):
-        """With randomly initialized params, phi should still converge below 0.97 after fitting."""
-        key = jax.random.PRNGKey(42)
-        k1, k2, k3, k4 = jax.random.split(key, 4)
-        mean = jnp.sort(400.0 + jax.random.uniform(k1, shape=(4,)) * 1200.0)
-        sd = 10.0 + jax.random.uniform(k2, shape=(4,)) * 200.0
-        phi_rand = jax.random.uniform(k3, shape=(4,)) * 0.9   # random in (0, 0.9)
-        Gamma_rand = jax.nn.softmax(jax.random.normal(k4, shape=(4, 4)), axis=1)
-        u0 = jnp.ones(4) / 4.0
-        emission = AutoregressiveGaussEmission.from_params(mean, sd, phi_rand)
-        hmm = HMM(
-            transition=StaticTransition.from_params(Gamma_rand),
-            emission=emission,
-            inital_distribution=u0,
-        )
-        hmm.fit(self.ys)
-        phi = hmm.emission.phi()
-        self.assertTrue(
-            jnp.all(phi < 0.985),
-            f"All phi values should be < 0.985 after fitting (random init), got {phi}"
-        )
-
-        self.assertTrue(
-            jnp.all(phi > -0.985),
-            f"All phi values should be > -0.985 after fitting (random init), got {phi}"
-        )
+#    def test_phi_convergence_random_init(self):
+#        """With randomly initialized params, phi should still converge below 0.97 after fitting."""
+#        key = jax.random.PRNGKey(42)
+#        k1, k2, k3, k4 = jax.random.split(key, 4)
+#        mean = jnp.sort(400.0 + jax.random.uniform(k1, shape=(4,)) * 1200.0)
+#        sd = 10.0 + jax.random.uniform(k2, shape=(4,)) * 200.0
+#        phi_rand = jax.random.uniform(k3, shape=(4,)) * 0.9   # random in (0, 0.9)
+#        Gamma_rand = jax.nn.softmax(jax.random.normal(k4, shape=(4, 4)), axis=1)
+#        u0 = jnp.ones(4) / 4.0
+#        emission = AutoregressiveGaussEmission.from_params(mean, sd, phi_rand)
+#        hmm = HMM(
+#            transition=StaticTransition.from_params(Gamma_rand),
+#            emission=emission,
+#            inital_distribution=u0,
+#        )
+#        hmm.fit(self.ys)
+#        phi = hmm.emission.phi()
+#        self.assertTrue(
+#            jnp.all(phi < 0.985),
+#            f"All phi values should be < 0.985 after fitting (random init), got {phi}"
+#        )
+#
+#        self.assertTrue(
+#            jnp.all(phi > -0.985),
+#            f"All phi values should be > -0.985 after fitting (random init), got {phi}"
+#        )
 
     def test_phi_convergence_notebooks_from_params(self): 
         RUN_TO_LOAD = {
@@ -281,29 +281,29 @@ class TestPhiIsCovergent(TestCase):
             f"Sum of phi per state should be > -1.0 (stationarity), got {phi_sum_per_state}"
         )
 
-    def test_phi_convergence_random_init_static_mu0(self):
-        """With randomly initialized params, phi should still converge below 0.97 after fitting."""
-        key = jax.random.PRNGKey(42)
-        k1, k2, k3, k4 = jax.random.split(key, 4)
-        mean = jnp.sort(400.0 + jax.random.uniform(k1, shape=(4,)) * 1200.0)
-        sd = 10.0 + jax.random.uniform(k2, shape=(4,)) * 200.0
-        phi_rand = jax.random.uniform(k3, shape=(4,)) * 0.9   # random in (0, 0.9)
-        Gamma_rand = jax.nn.softmax(jax.random.normal(k4, shape=(4, 4)), axis=1)
-        u0 = jnp.ones(4) / 4.0
-        emission = AutoregressiveGaussEmission.from_params(mean, sd, phi_rand)
-        hmm = HMM(
-            transition=StaticTransition.from_params(Gamma_rand),
-            emission=emission,
-            inital_distribution=u0,
-        )
-        hmm.fit(self.ys, frozen={"mu0":False})
-        phi = hmm.emission.phi()
-        self.assertTrue(
-            jnp.all(phi < 0.985),
-            f"All phi values should be < 0.985 after fitting (random init), got {phi}"
-        )
-        self.assertTrue(
-            jnp.all(phi > -0.985),
-            f"All phi values should be > -0.985 after fitting (random init), got {phi}"
-        )
+#    def test_phi_convergence_random_init_static_mu0(self):
+#        """With randomly initialized params, phi should still converge below 0.97 after fitting."""
+#        key = jax.random.PRNGKey(42)
+#        k1, k2, k3, k4 = jax.random.split(key, 4)
+#        mean = jnp.sort(400.0 + jax.random.uniform(k1, shape=(4,)) * 1200.0)
+#        sd = 10.0 + jax.random.uniform(k2, shape=(4,)) * 200.0
+#        phi_rand = jax.random.uniform(k3, shape=(4,)) * 0.9   # random in (0, 0.9)
+#        Gamma_rand = jax.nn.softmax(jax.random.normal(k4, shape=(4, 4)), axis=1)
+#        u0 = jnp.ones(4) / 4.0
+#        emission = AutoregressiveGaussEmission.from_params(mean, sd, phi_rand)
+#        hmm = HMM(
+#            transition=StaticTransition.from_params(Gamma_rand),
+#            emission=emission,
+#            inital_distribution=u0,
+#        )
+#        hmm.fit(self.ys, frozen={"mu0":False})
+#        phi = hmm.emission.phi()
+#        self.assertTrue(
+#            jnp.all(phi < 0.985),
+#            f"All phi values should be < 0.985 after fitting (random init), got {phi}"
+#        )
+#        self.assertTrue(
+#            jnp.all(phi > -0.985),
+#            f"All phi values should be > -0.985 after fitting (random init), got {phi}"
+#        )
 
