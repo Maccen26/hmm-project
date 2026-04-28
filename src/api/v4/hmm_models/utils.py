@@ -18,6 +18,6 @@ def LRT(base_model: HMMResults, expanded_model: HMMResults) -> tuple[float, floa
     """
     test_statistic = 2 * (expanded_model.log_likelihood - base_model.log_likelihood)
     df = expanded_model.num_params - base_model.num_params
-    # survival function: P(X > test_statistic) = 1 - CDF
+    
     p_value = 1.0 - jstats.chi2.cdf(test_statistic, df=df)
     return float(test_statistic), float(p_value)

@@ -7,18 +7,6 @@ import equinox as eqx
 def _make_transition_logits(logits, order):
     """
     Constructs the full (K^order, K^order) transition logit matrix for a higher-order HMM.
-
-    Augmented states are tuples of `order` base states in chronological order (oldest first),
-    indexed lexicographically. A transition from augmented state i to j is possible iff
-    the last (order-1) elements of i's tuple equal the first (order-1) elements of j's tuple.
-
-    For each row i, valid next states are sorted by index. The first K-1 of them receive
-    the provided logits[i, :]; the last receives 0.0 (log(1), the reference category).
-    Impossible transitions are set to -1000.0.
-
-    :param logits: Array of shape (K^order, K-1) — free transition logits per augmented state.
-    :param order: Order of the Markov chain.
-    :return: Array of shape (K^order, K^order) — full transition logit matrix.
     """
     num_augmented = logits.shape[0]   # K^order
     K = logits.shape[1] + 1          # base number of states
@@ -49,6 +37,34 @@ def _make_transition_logits(logits, order):
     full_logits = full_logits.at[jnp.array(given_rows), jnp.array(given_cols)].set(logits.flatten())
     full_logits = full_logits.at[jnp.array(zero_rows), jnp.array(zero_cols)].set(0.0)
     return full_logits
+
+def decode_possible_transitions(Gamma, order = 2):
+    """
+    Given a transition matrix Gamma of shape (K^order, K^order), decode the possible transitions between augmented states.
+    Returns a list of tuples (from_state_tuple, to_state_tuple) for valid transitions.
+    """
+    num_augmented = Gamma.shape[0]
+    K = int(num_augmented ** (1/order))
+
+    def decode(i):
+        result = []
+        for _ in range(order):
+            result.append(i % K)
+            i //= K
+        return tuple(reversed(result))
+
+    state_tuples = [decode(i) for i in range(num_augmented)]
+
+    transitions = {} 
+
+    for i in range(num_augmented):
+        state_list = []
+        for j in range(num_augmented):
+            if not jnp.isclose(Gamma[i, j], 0.0):  # Assuming -1000 indicates impossible transition
+                state_list.append((state_tuples[j], Gamma[i, j]))
+
+        transitions[state_tuples[i]] = state_list
+    return transitions
 
 
 
