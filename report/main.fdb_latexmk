@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1780053604.81821 "main.xdv" "main.pdf" "main" 1780053605.30559 0
-  "main.xdv" 1780053604.77459 16712 ccd6626b00c8c23903740ce2f96f242f "xelatex"
+["xdvipdfmx"] 1780057179.44224 "main.xdv" "main.pdf" "main" 1780057179.89501 0
+  "main.xdv" 1780057179.40696 17012 b93f4f8fd5808db16b07661ee55765ea "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1780053603.98868 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780053605.30437 0
-  "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" 1780050586.01417 298 aa8d3a0e94d3c2304eb7111950e336f1 ""
+["xelatex"] 1780057178.69474 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780057179.89375 0
+  "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" 1780057178.60032 266 f2b49884794f56863140ab168620c8dc ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -156,16 +156,16 @@
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1747660068 5639810 eabaf9cb0a743eead1b7cfde91ae2eb6 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "graphs/DTULogo.png" 1780049584.90449 71324 14c6435e87a7c7138eabea522f8186e2 ""
-  "main.aux" 1780053604.7732 627 8680c07c5aa4587040d8d08fabac7e85 "xelatex"
-  "main.out" 1780053604.77425 103 9814c2d956916adb9290eca4e25c967a "xelatex"
-  "main.tex" 1780050586.01417 298 aa8d3a0e94d3c2304eb7111950e336f1 ""
-  "main.toc" 1780053604.77449 97 7b80eef03c11bafd6b639c956efb60ce "xelatex"
+  "main.aux" 1780057179.40607 627 8680c07c5aa4587040d8d08fabac7e85 "xelatex"
+  "main.out" 1780057179.40671 103 9814c2d956916adb9290eca4e25c967a "xelatex"
+  "main.tex" 1780057178.60032 266 f2b49884794f56863140ab168620c8dc ""
+  "main.toc" 1780057179.40691 97 7b80eef03c11bafd6b639c956efb60ce "xelatex"
   "mcode.sty" 1780036486 10953 f07d0b606633695e39d1c9706bbafa89 ""
   "preamble/Config.tex" 1780048970.52308 565 f4abef26047dbb11098f58df8add5a61 ""
   "preamble/Cover.tex" 1780048659.51439 2630 4af4799975b48fc629742fde737636d4 ""
   "preamble/Packages.tex" 1780036486 2507 4b0ac160bb6d38dd73116bde51dab41d ""
   "sections/AI_declaration.tex" 1780049380.40962 458 04696664498662c4ed55bd783d4875f4 ""
-  "sections/introduction/introduction.tex" 1780053603.87604 296 f608a609871a46de85f9a919dbe43b28 ""
+  "sections/introduction/introduction.tex" 1780057141.10558 327 9ce7abe78d587a4debedc0272cc66ec2 ""
   (generated)
   "main.aux"
   "main.log"
