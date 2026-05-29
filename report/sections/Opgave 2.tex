@@ -1,0 +1,38 @@
+\section{Figurer og referencer}
+
+For at indsætte en figur benyttes følgende kode
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{Billeder/DTULogo.png}
+    \caption{DTU logo}
+    \label{fig:DTU_logo}
+\end{figure}
+Hvis man ønsker at lave en reference til en figur eller graf, kan man bruge dets label således: \autoref{fig:DTU_logo} eller \ref{fig:DTU_logo}.
+
+Man kan også indsætte flere billeder sammen: 
+\begin{figure}[H] % når man tilføjer H, betyder det at man ønkser figuren bliver placeret lige her - ellers har billeder en tendens til at flyve rundt i et latex dokument
+     \centering
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Billeder/abe.jpeg}
+         \caption{Klog abe}
+         \label{fig:abe}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Billeder/kanin.jpeg}
+         \caption{Cute kanin}
+         \label{fig:kanin}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Billeder/kat.jpeg}
+         \caption{En lidt sad kat}
+         \label{fig:kat}
+     \end{subfigure}
+        \caption{Tre meget imponerende dyr}
+        \label{fig:three graphs}
+\end{figure}
+Aben findes her: \ref{fig:abe}

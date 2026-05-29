@@ -1,0 +1,141 @@
+\section{Ligninger}
+
+\subsubsection*{Eksempel 1)}
+Der er mange måder at skrive ligninger! Blandet andet kan du bruge \textbf{\textbackslash begin \{equation\}}:
+\begin{equation}
+    y=5x+\frac{1}{2}
+\end{equation}
+
+\begin{equation*}
+    y=5x+\frac{1}{2}
+\end{equation*}
+
+$$y=5x+\frac{1}{2}$$
+
+\[y=5x+\frac{1}{2}\]
+
+Alternativt kan du bruge \textbf{\textbackslash \{align\}} for at få ligningerne lige under hinanden:
+\begin{align*}
+    x&=12\\
+    x131212&=12213
+\end{align*}
+
+\begin{align}
+    x&=12\\
+    x131212&=12213
+\end{align}
+
+\subsubsection*{Eksempel 2)}
+Du kan også tilgå "matematik-mode" ved at bruge dollar tegn omkring matematikken \textbf{\$ \$}: \\
+Normal Approximation to the Binomial Distribution
+For $n$ independent trials with success probability $p^2$
+$$
+P(a \text { to } b \text { successes }) \approx \Phi\left(\frac{b+\frac{1}{2}-\mu}{\sigma}\right)-\Phi\left(\frac{a-\frac{1}{2}-\mu}{\sigma}\right)
+$$
+where $\mu=n p$ is the mean, and $\sigma=\sqrt{n p q}$ is the standard deviation.
+
+
+
+In physics, the mass-energy equivalence is stated 
+by the equation $E=mc^2$, discovered in 1905 by Albert Einstein.
+
+\subsection*{Matricer}
+\subsubsection*{bmatrix}
+\[\begin{bmatrix}
+    3 & 6 & 9\\
+    2 & 4 & 6\\
+    4 & 5 & 2\\
+\end{bmatrix}\]
+
+\subsubsection*{pmatrix}
+\[\begin{pmatrix}
+    3 & 6 & 9\\
+    2 & 4 & 6\\
+    4 & 5 & 2\\
+\end{pmatrix}\]
+\subsubsection*{matrix}
+\[\begin{matrix}
+    3 & 6 & 9\\
+    2 & 4 & 6\\
+    4 & 5 & 2\\
+\end{matrix}\]
+\subsubsection*{Andre typer Matricer:}
+https://www.overleaf.com/learn/latex/Matrices
+
+
+
+
+\subsection*{Tuborgparanteser!}
+I det følgende kan I se eksempler på, hvad der sker, når man bruger tuborgparenteser! Se eksempelvis når vi forsøger at skrive n opløftet i 21: \\
+
+Uden Tuborgparenteser:
+\[n^21\]
+
+Med Tuborgparenteser:
+\[n^{21}\]
+
+Her er to eksempler når man skal lave brøker. Når der kun er to tal fungere det ok:
+
+\[\frac{2}{3}\]
+
+
+\[\frac 2 3\]
+
+
+Imidlertid opstår der problemer, når vi forsøger med mere komplicerede udtryk! Se følgende:
+\[\frac{x*3+5}{4^x}\]
+
+\[\frac x*3+5 4^x\]
+
+
+\subsection*{Symbol liste}
+Symbol Pallet i Overleaf $\Omega$
+
+Eller:
+
+https://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf 
+
+Eller:
+
+https://gitlab.gbar.dtu.dk/latex/latex-website-resources/raw/master/guides/latex\_cheatsheet.pdf
+
+\newpage
+\subsection{Redskaber til tegn og ligninger}
+Det kan være smart at benytte mathpix, så man slipper for at sætte en ligning ind selv.
+\subsubsection{Mathpix}
+
+
+
+Nedenstående ligning er skrevet vha. MathPix. Oprindeligt var den skrevet i maple:
+\begin{equation}
+-\frac{1}{4} t^{2}-\frac{1}{2} x+\frac{1}{4} t^{3}+t x
+\end{equation}
+\begin{equation}
+-\frac{1}{4} t^{2}-\frac{1}{2} x+\frac{1}{4} t^{3}+t x
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.25]{Billeder/mathPix1.png}
+    \caption{MathPix på computeren}
+    \label{fig:Mathpix_computer}
+\end{figure}
+
+\newpage
+Man kan også benytte MathPix til at tyde symboler:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.2]{Billeder/2021-09-09 12-18-39.png}
+    \caption{MathPix brugt på telefonen}
+    \label{fig:mathpix_telefon}
+\end{figure}
+
+\newpage
+\subsubsection{Detexify}
+For at tyde tegn kan man benytte http://detexify.kirelabs.org/classify.html:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{Billeder/detextify.png}
+    \caption{\url{http://detexify.kirelabs.org/classify.html}, benyttes til at finde latex koden til bl.a. tegn som $\Omega$}
+    \label{fig:detextify}
+\end{figure}
