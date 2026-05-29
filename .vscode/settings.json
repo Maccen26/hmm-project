@@ -1,4 +1,7 @@
 {
+    "latex-workshop.synctex.afterBuild.enabled": true,
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.autoBuild.run": "never",
     "python.testing.unittestArgs": [
         "-v",
         "-s",

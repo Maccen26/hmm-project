@@ -9,16 +9,16 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/size10.clo
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/size10.clo
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/size10.clo
-INPUT ./preamble/OpsætningsInfo.tex
-INPUT ./preamble/OpsætningsInfo.tex
-INPUT ./preamble/OpsætningsInfo.tex
-INPUT ./preamble/OpsætningsInfo.tex
-INPUT preamble/OpsætningsInfo.tex
-INPUT ./preamble/Pakker.tex
-INPUT ./preamble/Pakker.tex
-INPUT ./preamble/Pakker.tex
-INPUT ./preamble/Pakker.tex
-INPUT preamble/Pakker.tex
+INPUT ./preamble/Config.tex
+INPUT ./preamble/Config.tex
+INPUT ./preamble/Config.tex
+INPUT ./preamble/Config.tex
+INPUT preamble/Config.tex
+INPUT ./preamble/Packages.tex
+INPUT ./preamble/Packages.tex
+INPUT ./preamble/Packages.tex
+INPUT ./preamble/Packages.tex
+INPUT preamble/Packages.tex
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/inputenc.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/inputenc.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/generic/babel/babel.sty
@@ -309,14 +309,14 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/pdflscape/pdflscape-nometadat
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/pdflscape/pdflscape-nometadata.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/caption/ltcaption.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/caption/ltcaption.sty
-INPUT ./preamble/Forside.tex
-INPUT ./preamble/Forside.tex
-INPUT ./preamble/Forside.tex
-INPUT ./preamble/Forside.tex
-INPUT preamble/Forside.tex
-INPUT ./Billeder/DTULogo.png
-INPUT ./Billeder/DTULogo.png
-INPUT ./Billeder/DTULogo.png
+INPUT ./preamble/Cover.tex
+INPUT ./preamble/Cover.tex
+INPUT ./preamble/Cover.tex
+INPUT ./preamble/Cover.tex
+INPUT preamble/Cover.tex
+INPUT ./graphs/DTULogo.png
+INPUT ./graphs/DTULogo.png
+INPUT ./graphs/DTULogo.png
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -332,111 +332,18 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm1
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm5.tfm
 OUTPUT main.xdv
+INPUT ./sections/AI_declaration.tex
+INPUT ./sections/AI_declaration.tex
+INPUT ./sections/AI_declaration.tex
+INPUT ./sections/AI_declaration.tex
+INPUT sections/AI_declaration.tex
 INPUT ./main.toc
 INPUT ./main.toc
 INPUT main.toc
 OUTPUT main.toc
-INPUT ./Opgave 1.tex
-INPUT ./Opgave 1.tex
-INPUT ./Opgave 1.tex
-INPUT ./Opgave 1.tex
-INPUT Opgave 1.tex
-INPUT ./Opgave 2.tex
-INPUT ./Opgave 2.tex
-INPUT ./Opgave 2.tex
-INPUT ./Opgave 2.tex
-INPUT Opgave 2.tex
-INPUT ./Billeder/DTULogo.png
-INPUT ./Billeder/DTULogo.png
-INPUT ./Billeder/DTULogo.png
-INPUT ./Billeder/abe.jpeg
-INPUT ./Billeder/abe.jpeg
-INPUT ./Billeder/abe.jpeg
-INPUT ./Billeder/kanin.jpeg
-INPUT ./Billeder/kanin.jpeg
-INPUT ./Billeder/kanin.jpeg
-INPUT ./Billeder/kat.jpeg
-INPUT ./Billeder/kat.jpeg
-INPUT ./Billeder/kat.jpeg
-INPUT ./Opgave 3.tex
-INPUT ./Opgave 3.tex
-INPUT ./Opgave 3.tex
-INPUT ./Opgave 3.tex
-INPUT Opgave 3.tex
-INPUT ./Billeder/tabeleks.png
-INPUT ./Billeder/tabeleks.png
-INPUT ./Billeder/tabeleks.png
-INPUT ./Opgave 4.tex
-INPUT ./Opgave 4.tex
-INPUT ./Opgave 4.tex
-INPUT ./Opgave 4.tex
-INPUT Opgave 4.tex
-INPUT ./Billeder/mathPix1.png
-INPUT ./Billeder/mathPix1.png
-INPUT ./Billeder/mathPix1.png
-INPUT ./Billeder/2021-09-09 12-18-39.png
-INPUT ./Billeder/2021-09-09 12-18-39.png
-INPUT ./Billeder/2021-09-09 12-18-39.png
-INPUT ./Billeder/detextify.png
-INPUT ./Billeder/detextify.png
-INPUT ./Billeder/detextify.png
-INPUT ./Opgave 5.tex
-INPUT ./Opgave 5.tex
-INPUT ./Opgave 5.tex
-INPUT ./Opgave 5.tex
-INPUT Opgave 5.tex
-OUTPUT _FAD58DE7366495DB4650CFEFAC2FCD61.data.minted
-INPUT ./_FAD58DE7366495DB4650CFEFAC2FCD61.config.minted
-INPUT ./_FAD58DE7366495DB4650CFEFAC2FCD61.config.minted
-INPUT _FAD58DE7366495DB4650CFEFAC2FCD61.config.minted
-INPUT ./_minted/_FAD58DE7366495DB4650CFEFAC2FCD61.index.minted
-INPUT ./_minted/_FAD58DE7366495DB4650CFEFAC2FCD61.index.minted
-INPUT ./_minted/default.style.minted
-INPUT ./_minted/default.style.minted
-INPUT _minted/default.style.minted
-INPUT ./_minted/6ABAD1D8A8BC5FE5662FDD39D6D71CD8.highlight.minted
-INPUT ./_minted/6ABAD1D8A8BC5FE5662FDD39D6D71CD8.highlight.minted
-INPUT _minted/6ABAD1D8A8BC5FE5662FDD39D6D71CD8.highlight.minted
-INPUT ./_minted/monokai.style.minted
-INPUT ./_minted/monokai.style.minted
-INPUT _minted/monokai.style.minted
-INPUT ./_minted/3DE2DEA58BE1C82B21BFBD2A8AA7D0AB.highlight.minted
-INPUT ./_minted/3DE2DEA58BE1C82B21BFBD2A8AA7D0AB.highlight.minted
-INPUT _minted/3DE2DEA58BE1C82B21BFBD2A8AA7D0AB.highlight.minted
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
-INPUT ./Opgave 6.tex
-INPUT ./Opgave 6.tex
-INPUT ./Opgave 6.tex
-INPUT ./Opgave 6.tex
-INPUT Opgave 6.tex
-INPUT ./Billeder/overleaf learn.png
-INPUT ./Billeder/overleaf learn.png
-INPUT ./Billeder/overleaf learn.png
-INPUT ./Opgaver.tex
-INPUT ./Opgaver.tex
-INPUT ./Opgaver.tex
-INPUT ./Opgaver.tex
-INPUT Opgaver.tex
-INPUT ./Billeder/Opgave 1.png
-INPUT ./Billeder/Opgave 1.png
-INPUT ./Billeder/Opgave 1.png
-INPUT ./Billeder/Opgave 2.png
-INPUT ./Billeder/Opgave 2.png
-INPUT ./Billeder/Opgave 2.png
-INPUT ./Billeder/Opgave 6.png
-INPUT ./Billeder/Opgave 6.png
-INPUT ./Billeder/Opgave 6.png
+INPUT ./sections/introduction/introduction.tex
+INPUT ./sections/introduction/introduction.tex
+INPUT sections/introduction/introduction.tex
 INPUT main.aux
 INPUT ./main.out
 INPUT ./main.out
