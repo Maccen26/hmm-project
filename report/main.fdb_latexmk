@@ -1,11 +1,24 @@
 # Fdb version 4
-["xdvipdfmx"] 1780057179.44224 "main.xdv" "main.pdf" "main" 1780057179.89501 0
-  "main.xdv" 1780057179.40696 17012 b93f4f8fd5808db16b07661ee55765ea "xelatex"
+["bibtex main"] 1780151739.52279 "main.aux" "main.bbl" "main" 1780151741.54414 0
+  "./references.bib" 1780151739.38912 1934 1de4bfeb85a601a147a1c98b4a32fd32 ""
+  "/usr/local/texlive/2025/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
+  "main.aux" 1780151740.53961 8221 389d71d5b937641959010362152ef2b6 "xelatex"
+  (generated)
+  "main.bbl"
+  "main.blg"
+  (rewritten before read)
+["xdvipdfmx"] 1780151740.73335 "main.xdv" "main.pdf" "main" 1780151741.54545 0
+  "main.xdv" 1780151740.54131 135664 d3f61d31fe4a94700aa51d1ada5e1b28 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1780057178.69474 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780057179.89375 0
-  "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" 1780057178.60032 266 f2b49884794f56863140ab168620c8dc ""
+["xelatex"] 1780151739.61702 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780151741.54421 0
+  "../diagrams/01_system_composition.png" 1780147425.35947 68987 44a5d78ead0d72fa6ee8a30292c22800 ""
+  "../diagrams/02_emissions.png" 1780147426.23046 43229 7c5619d24ecdaeb4cf15b12f4a0097f2 ""
+  "../diagrams/03_transitions.png" 1780147427.09784 43025 0edc7029963332db88f607978a989663 ""
+  "../diagrams/04_inference_output.png" 1780147427.98922 50202 cfded462863a3d29f2d101caa30a7259 ""
+  "../diagrams/05_solvers.png" 1780147429.00586 65338 13093f4706e9e6052df9df50ce675b62 ""
+  "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" 1780147605.3643 597 ef279ac0b1e1cfe8965f4e914500233f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -156,16 +169,29 @@
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1747660068 5639810 eabaf9cb0a743eead1b7cfde91ae2eb6 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "graphs/DTULogo.png" 1780049584.90449 71324 14c6435e87a7c7138eabea522f8186e2 ""
-  "main.aux" 1780057179.40607 627 8680c07c5aa4587040d8d08fabac7e85 "xelatex"
-  "main.out" 1780057179.40671 103 9814c2d956916adb9290eca4e25c967a "xelatex"
-  "main.tex" 1780057178.60032 266 f2b49884794f56863140ab168620c8dc ""
-  "main.toc" 1780057179.40691 97 7b80eef03c11bafd6b639c956efb60ce "xelatex"
+  "main.aux" 1780151740.53961 8221 389d71d5b937641959010362152ef2b6 "xelatex"
+  "main.bbl" 1780151739.6092 1285 e2c3e3ddfffd31d11eb83ce09492b44f "bibtex main"
+  "main.out" 1780151740.54103 1745 37517f4a86826c7069be261cdf07f177 "xelatex"
+  "main.tex" 1780147605.3643 597 ef279ac0b1e1cfe8965f4e914500233f ""
+  "main.toc" 1780151740.54123 1137 ae4b4224a1f9ec19c1ba6975a8abde97 "xelatex"
   "mcode.sty" 1780036486 10953 f07d0b606633695e39d1c9706bbafa89 ""
   "preamble/Config.tex" 1780048970.52308 565 f4abef26047dbb11098f58df8add5a61 ""
   "preamble/Cover.tex" 1780048659.51439 2630 4af4799975b48fc629742fde737636d4 ""
   "preamble/Packages.tex" 1780036486 2507 4b0ac160bb6d38dd73116bde51dab41d ""
   "sections/AI_declaration.tex" 1780049380.40962 458 04696664498662c4ed55bd783d4875f4 ""
-  "sections/introduction/introduction.tex" 1780057141.10558 327 9ce7abe78d587a4debedc0272cc66ec2 ""
+  "sections/appendix.tex" 1780150517.19697 3992 e9909376cd3c70655dda8a71f5e0ddab ""
+  "sections/conclusion.tex" 1780132362.27818 20 b50204e17c0a475d3d65191e029fdf1d ""
+  "sections/diagrams/fig_01_composition.tex" 1780147542.91026 565 067d560faa1c077fb89437e620ebf2b3 ""
+  "sections/diagrams/fig_02_emissions.tex" 1780147553.61962 624 e4bd2d47d54985e3ede8e172be595fc5 ""
+  "sections/diagrams/fig_03_transitions.tex" 1780147558.77855 563 5ed37fd76d110ca283a0a8cb7b104d36 ""
+  "sections/diagrams/fig_04_inference.tex" 1780147564.76968 648 a632287dafc7418360afe420d78d8f95 ""
+  "sections/diagrams/fig_05_solvers.tex" 1780147570.74476 702 cd1f0043f82790905aa652c5fbd55680 ""
+  "sections/discussion.tex" 1780132347.41798 20 0e9daa63e73e84f4a684b671b2ca76db ""
+  "sections/future_work.tex" 1780132424.11194 21 2b9e5ddfd46934d02ebe77a19fb22599 ""
+  "sections/hmm_theory.tex" 1780132308.10461 16 3614e197dcd7029b5b3456ecca48137f ""
+  "sections/introduction.tex" 1780139459.49957 1691 c4053302f3777f70b77b402461afb005 ""
+  "sections/results.tex" 1780132327.56647 17 e5aa29df4c37f93cdad04a47e60f71d0 ""
+  "sections/software.tex" 1780151739.41306 2514 ceb635ddf392f2e96242804ec6e622a2 ""
   (generated)
   "main.aux"
   "main.log"

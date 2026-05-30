@@ -7,10 +7,56 @@
 \HyPL@Entry{0<</S/D>>}
 \babel@aux{danish}{}
 \HyPL@Entry{1<</S/D>>}
+\citation{ultralytics_hmm_glossary}
+\citation{jax2018github}
+\citation{kidger2021equinox}
+\citation{optax2020github}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{3}{section.1}\protected@file@percent }
+\citation{jax2018github}
+\citation{kidger2021equinox}
+\citation{optax2020github}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Software}{4}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Class overview}{4}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Design Principles}{4}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Primary Libraries}{4}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Theory}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{6}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{7}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{8}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Future Work}{9}{section.7}\protected@file@percent }
+\bibstyle{plain}
+\bibdata{references}
+\bibcite{astral_uv_docs}{1}
+\bibcite{jax2018github}{2}
+\bibcite{optax2020github}{3}
+\bibcite{kidger2021equinox}{4}
+\bibcite{ultralytics_hmm_glossary}{5}
+\citation{astral_uv_docs}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Appendix}{11}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Source Code Repository}{11}{subsection.8.1}\protected@file@percent }
+\newlabel{section:app:repo}{{8.1}{11}{Source Code Repository}{subsection.8.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Source code \& Envoriment}{11}{subsection.8.2}\protected@file@percent }
+\newlabel{section:app:env}{{8.2}{11}{Source code \& Envoriment}{subsection.8.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Python libraries used in this project.}}{11}{table.caption.4}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:libraries}{{1}{11}{Python libraries used in this project}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Class Diagrams}{12}{subsection.8.3}\protected@file@percent }
+\newlabel{section:app:diagrams}{{8.3}{12}{Class Diagrams}{subsection.8.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces System composition overview. The user-facing \texttt  {HMM} class owns an \texttt  {HMMParams} instance composed of a \texttt  {BaseTransition} and a \texttt  {BaseEmission}. Fitting is delegated to a \texttt  {BaseSolver} subclass and state inference is handled by \texttt  {ForwardAlgorithm}, producing \texttt  {HMMResults} and \texttt  {StateResults}.}}{12}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:diagram:composition}{{1}{12}{System composition overview. The user-facing \texttt {HMM} class owns an \texttt {HMMParams} instance composed of a \texttt {BaseTransition} and a \texttt {BaseEmission}. Fitting is delegated to a \texttt {BaseSolver} subclass and state inference is handled by \texttt {ForwardAlgorithm}, producing \texttt {HMMResults} and \texttt {StateResults}}{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Emission class hierarchy. \texttt  {GaussEmission} models state-dependent Gaussian distributions with monotonically ordered means enforced via cumulative exponentiation of \texttt  {log\_mu\_diff}. \texttt  {AutoregressiveGaussEmission} extends this with AR($p$) dynamics, where coefficients are stored unconstrained (\texttt  {phi\_tilde}) and mapped to $(-1, 1)$ via $\tanh $ to guarantee stationarity.}}{12}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:diagram:emissions}{{2}{12}{Emission class hierarchy. \texttt {GaussEmission} models state-dependent Gaussian distributions with monotonically ordered means enforced via cumulative exponentiation of \texttt {log\_mu\_diff}. \texttt {AutoregressiveGaussEmission} extends this with AR($p$) dynamics, where coefficients are stored unconstrained (\texttt {phi\_tilde}) and mapped to $(-1, 1)$ via $\tanh $ to guarantee stationarity}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Transition class hierarchy. Both implementations store parameters as logits and convert them to a row-stochastic matrix via row-wise softmax. \texttt  {StaticTransition} uses a constant $K \times K$ matrix, while \texttt  {StaticTransitionHigherOrder} augments the state space to $K^{\text  {order}}$ states to represent a higher-order Markov chain.}}{13}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:diagram:transitions}{{3}{13}{Transition class hierarchy. Both implementations store parameters as logits and convert them to a row-stochastic matrix via row-wise softmax. \texttt {StaticTransition} uses a constant $K \times K$ matrix, while \texttt {StaticTransitionHigherOrder} augments the state space to $K^{\text {order}}$ states to represent a higher-order Markov chain}{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Inference and output class hierarchy. \texttt  {BaseInference.run()} iterates \texttt  {step()} across the time axis using \texttt  {jax.lax.scan}. \texttt  {ForwardAlgorithm} implements the forward filtering pass and produces a \texttt  {ForwardOutput} storing the scaling factors $f_t$, filtered state probabilities $u_{t|t}$, and predicted state probabilities $u_t$. The log-likelihood is computed as $\DOTSB \sum@ \slimits@ _t \log f_t$.}}{13}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:diagram:inference}{{4}{13}{Inference and output class hierarchy. \texttt {BaseInference.run()} iterates \texttt {step()} across the time axis using \texttt {jax.lax.scan}. \texttt {ForwardAlgorithm} implements the forward filtering pass and produces a \texttt {ForwardOutput} storing the scaling factors $f_t$, filtered state probabilities $u_{t|t}$, and predicted state probabilities $u_t$. The log-likelihood is computed as $\sum _t \log f_t$}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Solver class hierarchy. \texttt  {BaseSolver} partitions parameters into trainable and frozen subsets and wraps the negative log-likelihood as the loss function. The three concrete solvers share the same interface but differ in their optimization backend: \texttt  {GradientSolver} uses first-order gradient descent via \texttt  {optax}, \texttt  {LBFGSSolver} uses quasi-Newton L-BFGS via \texttt  {optax}, and \texttt  {Minimizer} wraps \texttt  {jax.scipy.optimize.minimize}.}}{14}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:diagram:solvers}{{5}{14}{Solver class hierarchy. \texttt {BaseSolver} partitions parameters into trainable and frozen subsets and wraps the negative log-likelihood as the loss function. The three concrete solvers share the same interface but differ in their optimization backend: \texttt {GradientSolver} uses first-order gradient descent via \texttt {optax}, \texttt {LBFGSSolver} uses quasi-Newton L-BFGS via \texttt {optax}, and \texttt {Minimizer} wraps \texttt {jax.scipy.optimize.minimize}}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Class Design}{14}{subsection.8.4}\protected@file@percent }
+\newlabel{section:app:class_design}{{8.4}{14}{Class Design}{subsection.8.4}{}}
 \xdef \mintedoldcachechecksum{\detokenize{\minted@cachechecksum }}
 \gdef\svg@ink@ver@settings{{\m@ne }{inkscape}{\m@ne }}
-\newlabel{LastPage}{{1}{3}{Introduction}{page.3}{}}
-\gdef\lastpage@lastpage{3}
-\gdef\lastpage@lastpageHy{3}
-\gdef \@abspage@last{4}
+\newlabel{LastPage}{{8.4}{14}{Class Design}{page.14}{}}
+\gdef\lastpage@lastpage{14}
+\gdef\lastpage@lastpageHy{14}
+\gdef \@abspage@last{15}

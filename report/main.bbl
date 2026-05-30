@@ -1,0 +1,28 @@
+\begin{thebibliography}{1}
+
+\bibitem{astral_uv_docs}
+{Astral Software Inc.}
+\newblock uv: An ultra-fast python package installer and resolver.
+\newblock \url{https://docs.astral.sh/uv/}, 2024.
+\newblock Accessed: 2026-05-30.
+
+\bibitem{jax2018github}
+James Bradbury, Roy Frostig, Peter Hawkins, Matthew~James Johnson, Yash Katariya, Chris Leary, Dougal Maclaurin, George Necula, Adam Paszke, Jake Vander{P}las, Skye Wanderman-{M}ilne, and Qiao Zhang.
+\newblock {JAX}: composable transformations of {P}ython+{N}um{P}y programs, 2018.
+
+\bibitem{optax2020github}
+Matteo Hessel, David Budden, Fabio Viola, Mihaela Rosca, Eren Sezener, and Tom Hennigan.
+\newblock Optax: composable gradient transformation and optimisation, in jax!, 2020.
+
+\bibitem{kidger2021equinox}
+Patrick Kidger and Cristian Garcia.
+\newblock {E}quinox: neural networks in {JAX} via callable {P}y{T}rees and filtered transformations.
+\newblock {\em Differentiable Programming workshop at Neural Information Processing Systems 2021}, 2021.
+
+\bibitem{ultralytics_hmm_glossary}
+{Ultralytics LLC}.
+\newblock Hidden markov model (hmm) - real-world applications.
+\newblock \url{https://www.ultralytics.com/glossary/hidden-markov-model-hmm#real-world-applications}, 2024.
+\newblock Accessed: 2026-05-30.
+
+\end{thebibliography}
