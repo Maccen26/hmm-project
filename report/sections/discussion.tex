@@ -1,1 +1,26 @@
 \section{Discussion}
+
+To compare the five fitted models we use the likelihood-ratio test (LRT)
+together with AIC and BIC. The LRT applies to nested pairs of models: for a
+base model with log-likelihood $\ell_0$ and an expanded model with
+log-likelihood $\ell_1$ the statistic
+\begin{equation*}
+    \Lambda = 2(\ell_1 - \ell_0)
+\end{equation*}
+is asymptotically $\chi^2$-distributed with degrees of freedom equal to the
+difference in the number of free parameters, under the null that the base
+model is adequate. Small $p$-values therefore favour the expanded model.
+AIC and BIC do not require nesting; lower values indicate a better
+likelihood--complexity trade-off, with BIC penalising parameters more
+heavily than AIC.
+
+Table~\ref{tab:model_stats} reports the per-model statistics for all five
+models in the hierarchy of Figure~\ref{fig:diagram:model_hierarchy}.
+Table~\ref{tab:lrt_comparison} reports the LRT, $p$-value, $\Delta\text{AIC}$
+and $\Delta\text{BIC}$ for each edge of the hierarchy, where the difference
+is taken as expanded minus base so that negative values favour the expanded
+model.
+
+\input{model_results/comparison/model_stats}
+
+\input{model_results/comparison/lrt_comparison}

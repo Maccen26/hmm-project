@@ -2,9 +2,29 @@
 For generel theory on HMM's, see \cite{zucchini2016hidden} and \cite{moler2024statistical} chapter 11. 
 All the models implemented are 4 state Gaussian HMMs (emission density is a Gaussian distribution) 
 and we have kept the the mean value of state 1 fixed at 400 as this is the baseline $\text{CO}_2$ level in the room 
-when no one is present and all windows are closed. This is also shown in the figure \ref{fig:app:co2_data}. 
+when no one is present and all windows are closed. This is also shown in the figure \ref{fig:app:co2_data}.
 
+Five models are considered, organised along two axes: the order of the AR
+component in the emission and the order of the latent Markov chain. Their
+relationship is shown in Figure \ref{fig:diagram:model_hierarchy}.
+\begin{itemize}
+    \item \textbf{HMM(1)} --- ordinary HMM: serves as the baseline with a
+          first-order chain and i.i.d.\ Gaussian emissions.
+    \item \textbf{AR(1), HMM(1)} --- adds within-state autocorrelation to
+          absorb the temporal structure left in the residuals of the
+          ordinary HMM.
+    \item \textbf{AR(2), HMM(1)} --- extends the AR emission to two lags to
+          capture richer within-regime dynamics (e.g.\ non-monotone impulse
+          response).
+    \item \textbf{AR(1), HMM(2)} --- keeps the AR(1) emission but relaxes
+          the Markov assumption on the latent chain so that transitions
+          depend on the two most recent states.
+    \item \textbf{AR(2), HMM(2)} --- combines both extensions, giving the
+          most flexible model with pair-specific AR(2) emissions and a
+          second-order latent chain.
+\end{itemize}
 
+\input{sections/diagrams/fig_06_model_hierarchy}
 
 \subsection{Ordinary HMM model}
 \subsubsection{Theory}

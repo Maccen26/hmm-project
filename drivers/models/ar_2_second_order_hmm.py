@@ -17,8 +17,9 @@ def run_ar_2_second_order_hmm(model_name: str):
     PRE_ARR_PATH = "results/models/ar_2_hmm.pkl" 
 
     model = load_model(PRE_MODEL_PATH)
-    transition = model.params.transition 
+    transition = model.params.transition
     mu = model.emission.mu(0, ys)
+    mu = mu + jnp.arange(mu.shape[0]) * 1e-2
     std = model.emission.sigma(0, ys)
 
     ar2_model = load_model(PRE_ARR_PATH)
@@ -53,6 +54,7 @@ def run_ar_2_second_order_hmm(model_name: str):
     print("------------------------------------")
     print("Phi values:")
     print(model.emission.phi())
+    print(f"Phi Summed across states: {jnp.sum(model.emission.phi(), axis=0)}")
     return model
 
 

@@ -39,7 +39,8 @@ def run_ar_2_hmm(model_name: str):
     print("Emission stds:")
     print(model.emission.sigma(0,0))
     print("Emission phis :")
-    print(model.emission.phi())
+    print(model.emission.phi()) 
+    print(f"Phi Summed across states: {jnp.sum(model.emission.phi(), axis=0)}")
     print("------------------------------------")
 
     return model

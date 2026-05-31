@@ -9,6 +9,50 @@ from scipy import stats
 from statsmodels.graphics.tsaplots import plot_acf
 import pickle
 
+import pandas as pd
+
+
+_LATEX_HEADER_MAP = {
+    "#Params": "\\#Params",
+    "ΔAIC": "$\\Delta$AIC",
+    "ΔBIC": "$\\Delta$BIC",
+    "P-val": "$p$-value",
+}
+
+
+def _fmt_cell(value, col, float_cols_4dp):
+    if isinstance(value, float):
+        return f"{value:.4f}" if col in float_cols_4dp else f"{value:.2f}"
+    return str(value)
+
+
+def write_latex_table(df: "pd.DataFrame", path: str, caption: str, label: str, float_cols_4dp=None):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    float_cols_4dp = set(float_cols_4dp or [])
+    col_spec = "l" + "c" * (len(df.columns) - 1)
+    header = " & ".join(_LATEX_HEADER_MAP.get(c, c) for c in df.columns) + " \\\\"
+    body_rows = []
+    for _, row in df.iterrows():
+        cells = [_fmt_cell(row[col], col, float_cols_4dp) for col in df.columns]
+        body_rows.append(" & ".join(cells) + " \\\\")
+    tex = (
+        "\\begin{table}[ht]\n"
+        "\\centering\n"
+        f"\\begin{{tabular}}{{{col_spec}}}\n"
+        "\\hline\n"
+        f"{header}\n"
+        "\\hline\n"
+        + "\n".join(body_rows) + "\n"
+        "\\hline\n"
+        "\\end{tabular}\n"
+        f"\\caption{{{caption}}}\n"
+        f"\\label{{{label}}}\n"
+        "\\end{table}\n"
+    )
+    with open(path, "w") as f:
+        f.write(tex)
+
+
 def format_transition_matrix(matrix: jnp.ndarray) -> str:
     formatted = "\n".join(["\t" + " ".join(f"{val:.4f}" for val in row) for row in matrix])
     return f"Transition Matrix:\n{formatted}"
