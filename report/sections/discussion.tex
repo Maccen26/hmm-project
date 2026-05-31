@@ -4,9 +4,10 @@ To compare the five fitted models we use the likelihood-ratio test (LRT)
 together with AIC and BIC. The LRT applies to nested pairs of models: for a
 base model with log-likelihood $\ell_0$ and an expanded model with
 log-likelihood $\ell_1$ the statistic
-\begin{equation*}
+\begin{equation}
     \Lambda = 2(\ell_1 - \ell_0)
-\end{equation*}
+    \label{eq:lrt_statistic}
+\end{equation}
 is asymptotically $\chi^2$-distributed with degrees of freedom equal to the
 difference in the number of free parameters, under the null that the base
 model is adequate. Small $p$-values therefore favour the expanded model.

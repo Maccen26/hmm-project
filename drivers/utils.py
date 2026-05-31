@@ -90,6 +90,7 @@ def plot_hmm_diagnostics(model, save_path: str | None = None):
     axes[1].set_title("Normal Q-Q of pseudo-residuals")
 
     lags = min(40, max(1, len(residuals) // 4))
+    #lags = 1 
     plot_acf(residuals, lags=lags, ax=axes[2])
     axes[2].set_title("ACF of pseudo-residuals")
     axes[2].set_ylim(-0.25, 1.05)

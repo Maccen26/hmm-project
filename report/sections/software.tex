@@ -14,12 +14,12 @@ A detailed explanation of each class and the motivation behind the design choice
 An Object-Oriented Programming (OOP) design was chosen for this project to promote modularity, extensibility, and separation of concerns.
 The Dependency Inversion Principle (DIP) was central to the design of all core components. They are defined as abstract interfaces, so different implementations can be swapped in without affecting the rest of the system.
 This modularity is also motivated by the mathematical structure of HMMs themselves.
-The forward algorithm, and HMM inference in general, depends only on two quantities. The emission density $p(o_t \mid s_t)$ and the transition probability $p(s_t \mid s_{t-1})$.
+The forward algorithm, and HMM inference in general, depends only on two quantities. The emission density $p(y_t \mid x_t)$ and the transition probability $p(x_t \mid x_{t-1})$.
 It is entirely agnostic to how those quantities are computed.
 By encapsulating each behind an abstract interface, different HMM variants can be used interchangeably without modifying the inference or optimization code, so modularity follows naturally from the structure of the model.
 This also makes it straightforward to extend the project by adding new emission distributions, transition models, or inference algorithms without modifying existing code.\newline
 \subsection{Primary Libraries}
-The primary libraries used in this projects are \texttt{JAX} \cite{jax2018github}, \texttt{EQUINOX} \cite{kidger2021equinox}, and \texttt{Optax} \cite{optax2020github}. \newline
+The primary libraries used in this projects are \texttt{JAX} \citep{jax2018github}, \texttt{EQUINOX} \citep{kidger2021equinox}, and \texttt{Optax} \citep{optax2020github}. \newline
 \texttt{JAX} was chosen over \texttt{NumPy} for its automatic differentiation capabilities and performance optimizations. However, \texttt{JAX} is designed for functional programming and does not natively support classes or object-oriented design.
 Therefore, \texttt{EQUINOX} was chosen as it's a library built on top of \texttt{JAX} 
 that provides a simple and flexible interface for defining classes as pytrees. \footnote{A pytree is a nested data strucure in \texttt{JAX}:\url{https://docs.jax.dev/en/latest/pytrees.html} }, 
