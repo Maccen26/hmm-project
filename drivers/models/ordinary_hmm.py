@@ -31,6 +31,7 @@ def run_ordinary_hmm():
     print("Finished fitting ordinary HMM model! The following parameters were found")
     print("Transition matrix:")
     print(format_transition_matrix(model.transition.transition_matrix()))
+    
     print("Emission means:")
     print(model.emission.mu(0,0))
     print("Emission stds:")
