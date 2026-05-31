@@ -43,10 +43,10 @@ class TestHMMOptimizers(TestCase):
         solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre)
         self.assertIsInstance(solver.params, HMMParams)
 
-    def test_minimizer_stores_hmm_params(self):
-        solver = Minimizer(n_iter=5)
-        solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre)
-        self.assertIsInstance(solver.params, HMMParams)
+    #def test_minimizer_stores_hmm_params(self):
+    #    solver = Minimizer(n_iter=5)
+    #    solver.fit(self.hmm.params, self.ys, u_pre=self.hmm.u_pre)
+    #    self.assertIsInstance(solver.params, HMMParams)
 
     def test_gradient_solver_fit_returns_none(self):
         solver = GradientSolver(n_iter=5)

@@ -19,10 +19,20 @@ Patrick Kidger and Cristian Garcia.
 \newblock {E}quinox: neural networks in {JAX} via callable {P}y{T}rees and filtered transformations.
 \newblock {\em Differentiable Programming workshop at Neural Information Processing Systems 2021}, 2021.
 
+\bibitem{moler2024statistical}
+Jan~Kloppenborg M{\o}ller, Marcel Schweiker, Rune~Korsholm Andersen, Burak Gunay, Selin Yilmaz, Verena~Marie Barthelmes, and Henrik Madsen.
+\newblock {\em Statistical Modelling of Occupant Behaviour}.
+\newblock A Chapman \& Hall Book. Chapman and Hall/CRC, 1st edition, 2024.
+
 \bibitem{ultralytics_hmm_glossary}
 {Ultralytics LLC}.
 \newblock Hidden markov model (hmm) - real-world applications.
 \newblock \url{https://www.ultralytics.com/glossary/hidden-markov-model-hmm#real-world-applications}, 2024.
 \newblock Accessed: 2026-05-30.
+
+\bibitem{zucchini2016hidden}
+Walter Zucchini, Iain~L. MacDonald, and Roland Langrock.
+\newblock {\em Hidden Markov Models for Time Series: An Introduction Using R}.
+\newblock Number 150 in Monographs on Statistics and Applied Probability. CRC Press, second edition, 2016.
 
 \end{thebibliography}

@@ -1,7 +1,7 @@
 \section{Software}
-This section will explain the code design, libraries used and optimizers used.
+This section will will give a explanation of the classes implemented, the design choices made and the primarylibraries used.
 A repository link can be found in \ref{section:app:repo} and the envoriment details and short source code overview can be found in \ref{section:app:env}.
-Class diagrams can be found in \ref{section:app:diagrams} and code design choices will be explained in the following section.
+Class diagrams can be found in \ref{section:app:diagrams}.
 \subsection{Class overview}
 The source code is organized into 6 main components: the \texttt{HMM} class, the \texttt{Emissions} class, the \texttt{Transitions} class, the \texttt{HMMParams} class, the \texttt{Inference} class, and the \texttt{Solvers} class.
 All classes except \texttt{HMM} are abstract interfaces.
@@ -11,11 +11,19 @@ A detailed explanation of each class and the motivation behind the design choice
 
 
 \subsection{Design Principles}
-A Object Orientated Programming (OOP) design was chosen for this project to promote modularity, extensibility, and separation of concerns. \newline
-The Design Inversion Principle (DIP) was a key principle in the design of the codebase, 
-The use of abstract interfaces for the core components of the HMM allows for different implementations to be easily swapped in and out without affecting the rest of the system.\newline
-This design also promotes code reuse and makes it easier to extend the project in the future by adding new types of emissions, transitions, or inference algorithms without modifying existing code. \newline
-Overall, the OOP design provides a clear structure for the codebase and facilitates future development and maintenance of the project. \newline
+An Object-Oriented Programming (OOP) design was chosen for this project to promote modularity, extensibility, and separation of concerns.
+The Dependency Inversion Principle (DIP) was central to the design of all core components. They are defined as abstract interfaces, so different implementations can be swapped in without affecting the rest of the system.
+This modularity is also motivated by the mathematical structure of HMMs themselves.
+The forward algorithm, and HMM inference in general, depends only on two quantities. The emission density $p(o_t \mid s_t)$ and the transition probability $p(s_t \mid s_{t-1})$.
+It is entirely agnostic to how those quantities are computed.
+By encapsulating each behind an abstract interface, different HMM variants can be used interchangeably without modifying the inference or optimization code, so modularity follows naturally from the structure of the model.
+This also makes it straightforward to extend the project by adding new emission distributions, transition models, or inference algorithms without modifying existing code.\newline
 \subsection{Primary Libraries}
 The primary libraries used in this projects are \texttt{JAX} \cite{jax2018github}, \texttt{EQUINOX} \cite{kidger2021equinox}, and \texttt{Optax} \cite{optax2020github}. \newline
-\texttt{JAX} was chosen over \texttt{NumPy} for its automatic differentiation capabilities and performance optimizations. It allows for efficient computation of gradients, which is essential for training the HMM parameters using gradient-based optimization methods. \newline
+\texttt{JAX} was chosen over \texttt{NumPy} for its automatic differentiation capabilities and performance optimizations. However, \texttt{JAX} is designed for functional programming and does not natively support classes or object-oriented design.
+Therefore, \texttt{EQUINOX} was chosen as it's a library built on top of \texttt{JAX} 
+that provides a simple and flexible interface for defining classes as pytrees. \footnote{A pytree is a nested data strucure in \texttt{JAX}:\url{https://docs.jax.dev/en/latest/pytrees.html} }, 
+\texttt{JAX} can then automatically differentiate trough the classes and the leaves of the pytree. \newline
+\texttt{Optax} was chosen as the optimization library for its seamless integration with \texttt{JAX} and \texttt{EQUINOX}, providing a wide range
+of optimization algorithms and utilities for training machine learning models. \texttt{Optax} was purely
+choosen as it's the default optimization library for \texttt{JAX} and there may be a better choice for this project, but it was not explored due to time constraints. \newline
