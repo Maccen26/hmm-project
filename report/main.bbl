@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{astral_uv_docs}
 {Astral Software Inc.}
@@ -29,6 +29,21 @@ Jan~Kloppenborg M{\o}ller, Marcel Schweiker, Rune~Korsholm Andersen, Burak Gunay
 \newblock Hidden markov model (hmm) - real-world applications.
 \newblock \url{https://www.ultralytics.com/glossary/hidden-markov-model-hmm#real-world-applications}, 2024.
 \newblock Accessed: 2026-05-30.
+
+\bibitem{wiki:aic}
+{Wikipedia contributors}.
+\newblock {Akaike information criterion} --- {Wikipedia}{,} the free encyclopedia, 2026.
+\newblock [Online; accessed 31-May-2026].
+
+\bibitem{wiki:bic}
+{Wikipedia contributors}.
+\newblock {Bayesian information criterion} --- {Wikipedia}{,} the free encyclopedia, 2026.
+\newblock [Online; accessed 31-May-2026].
+
+\bibitem{wiki:lrt}
+{Wikipedia contributors}.
+\newblock {Likelihood-ratio test} --- {Wikipedia}{,} the free encyclopedia, 2026.
+\newblock [Online; accessed 31-May-2026].
 
 \bibitem{zucchini2016hidden}
 Walter Zucchini, Iain~L. MacDonald, and Roland Langrock.

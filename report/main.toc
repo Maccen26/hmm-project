@@ -4,18 +4,20 @@
 \contentsline {subsection}{\numberline {2.1}Class overview}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Design Principles}{4}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Primary Libraries}{4}{subsection.2.3}%
-\contentsline {section}{\numberline {3}HMM Theory}{5}{section.3}%
+\contentsline {section}{\numberline {3}Generel Theory}{5}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Forward Algorithm}{5}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Base HMM model}{5}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.1}Theory}{5}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2}Results}{5}{subsubsection.3.2.2}%
-\contentsline {section}{\numberline {4}Results}{6}{section.4}%
-\contentsline {section}{\numberline {5}Discussion}{7}{section.5}%
-\contentsline {section}{\numberline {6}Conclusion}{8}{section.6}%
-\contentsline {section}{\numberline {7}Future Work}{9}{section.7}%
-\contentsline {section}{\numberline {8}Appendix}{11}{section.8}%
-\contentsline {subsection}{\numberline {8.1}Source Code Repository}{11}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Source code \& Envoriment}{11}{subsection.8.2}%
-\contentsline {subsection}{\numberline {8.3}CO\textsubscript {2} Data}{12}{subsection.8.3}%
-\contentsline {subsection}{\numberline {8.4}Class Diagrams}{13}{subsection.8.4}%
-\contentsline {subsection}{\numberline {8.5}Class Design}{15}{subsection.8.5}%
+\contentsline {subsection}{\numberline {3.2}Forecast Pseudo Residuals}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Test Statistics}{6}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Models \& Results}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ordinary HMM model}{7}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Theory}{7}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Results}{8}{subsubsection.4.1.2}%
+\contentsline {section}{\numberline {5}Discussion}{9}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{10}{section.6}%
+\contentsline {section}{\numberline {7}Future Work}{11}{section.7}%
+\contentsline {section}{\numberline {8}Appendix}{13}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Source Code Repository}{13}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Source code \& Envoriment}{13}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}CO\textsubscript {2} Data}{14}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Class Diagrams}{15}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Class Design}{17}{subsection.8.5}%
