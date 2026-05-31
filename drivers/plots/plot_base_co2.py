@@ -22,7 +22,7 @@ def plot_co2_data(save_path: str | None = None):
 
 if __name__ == "__main__":
 
-    plot_co2_data(save_path=os.path.join("plots", "co2_data.png"))
+    plot_co2_data(save_path=os.path.join("results/plots", "co2_data.png"))
 
 
 
