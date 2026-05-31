@@ -285,42 +285,51 @@ Table \ref{tab:second_order_hmm_transition} and the estimated emission
 parameters in Table \ref{tab:second_order_hmm_emissions}.
 
 \input{model_results/second_order_hmm/transition_matrix}
+We see in the estimated transition matrix that the previous state
+you were in effect the transition probabilities of the next state.
+For example, if you are in state 1 and you were in state 1 in the previous time step, 
+then you have a high probability of staying in state 1 and a low probability of transitioning to state 4.
+Where at, if you previously were in state 4 and is now in state 1, there is a much higher 
+probability of transitioning to state 4. 
+We also see that state 3 has low self-transition probabilities and 
+the system in generel quicly transitions out of state 3, which is in line of state 3
+being a transition state between the baseline and the high-CO$_2$ state. 
+State 2 on the other hand has a higher self-transition probability, and 
+its in generel more likely to transition to state 2 than state 3 given previous states. 
+This indicates that state 2 is more of a "sticky" state than state 3. 
 
-The second-order transition table shows that for most state state pairs $(i,j)$, 
-want to transition 
+\input{model_results/second_order_hmm/emission_params.tex}
 
-\input{model_results/second_order_hmm/diagnostics}
+We see in Table \ref{tab:second_order_hmm_emissions} that the state means are similar to the previous models. 
+The means are more evenly spread out and the high CO$_2$ state (state 4) has a higher mean than in the previous models. 
+The standard deviations is about the same and almost all of the $|\phi|$ vals
+are below 1. However, two are not. This is for the state pairs
+$(3,4)$ and $(4,1)$. This could be explained by that when moving from
+state 3 to state 4, the CO$_2$ level is rising and the mean of the next observation is higher than the current one, which could lead to a high positive AR coefficient. 
+When moving from state 4 to state 1, the CO$_2$ level is 
+dropping and one would expect a hight negative AR coefficient.
+But looking at the transition matrix \ref{tab:second_order_hmm_transition}, we see
+that its likely to transtion back into a higher CO$_2$ state after transitioning 
+from state 4 to state 1, which could explain the high positive AR coefficient.
+
+\input{model_results/second_order_hmm/diagnostics.tex}
 
 Figure \ref{fig:second_order_hmm_diagnostics} shows the diagnostics for the
 second-order HMM. The log-likelihood converges quickly toward the minimum of
 the negative log-likelihood, in the same way as for the previous models. The
-Q--Q plot of the pseudo-residuals is comparable to the ordinary HMM, and the
+Q-Q plot of the pseudo-residuals is comparable to the AR(2) HMM, and the
 ACF of the residuals still shows a slow decay with several lags well outside
-the confidence band. The second-order extension therefore improves the
-flexibility of the latent dynamics, but --- because it does not introduce any
-within-state autocorrelation in the observations --- it does not remove the
-residual time-series structure in the same way the AR-HMM does.
+the confidence band, and the dianostic plots are overall similiar to the AR(2)-HMM. 
 
-\subsection{AR(2) second-order HMM}
+This indicates the the second order chain preforms as well as the AR(2) when
+capturing the temporal structure in the data. 
+This motivates the introduction of the AR(2) second-order HMM in the next section,
+\subsection{AR(2)-HMM(2)}
 \subsubsection{Theory}
-The AR(2) second-order HMM combines the two previous extensions: the latent
-chain is second-order (transitions depend on the pair $(x_{t-1}, x_t)$) and
+The Autoregressive lag 2 Second-order HMM (AR(2)-HMM(2)) combines the two previous extensions. The markov chain
+is second-order (transitions depend on the pair $(x_{t-1}, x_t)$) and
 the emission density carries an AR(2) component whose parameters also depend
-on the pair $(x_{t-1}, x_t)$. Conditional on
-$(X_{t-1}, X_t) = (i, j)$ and the two most recent observations, the
-observation density is
-\begin{equation}
-    Y_t \mid (i,j),\; y_{t-1}, y_{t-2} \;\sim\; \mathcal{N}\!\left(\mu_j + \phi_{(i,j),1}(y_{t-1} - \mu_j) + \phi_{(i,j),2}(y_{t-2} - \mu_j),\; \sigma_{(i,j)}^2\right).
-    \label{eq:ar2_second_order_emission}
-\end{equation}
-The mean depends only on the current state $x_t$, while
-$\sigma_{(i,j)}^2$ and the AR coefficients $(\phi_{(i,j),1}, \phi_{(i,j),2})$
-are pair-specific. The transition tensor is the same as in the second-order
-HMM, and the same reparametrisations are used for the transition rows, the
-log-variances and the AR coefficients. The full parameter vector to be
-estimated is
-$\theta = \{\Gamma_{(\cdot,\cdot),\cdot},\, \mu,\, \sigma^2,\, \phi_1,\, \phi_2\}$.
-
+on the pair $(x_{t-1}, x_t)$. 
 \subsubsection{Results}
 The AR(2) second-order HMM was fitted on the same CO$_2$ observations, with
 $\mu_1$ frozen at 400 ppm and the previous models used as a warm start. The

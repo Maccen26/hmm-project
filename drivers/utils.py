@@ -21,8 +21,12 @@ _LATEX_HEADER_MAP = {
 
 
 def _fmt_cell(value, col, float_cols_4dp):
+    if isinstance(value, bool):
+        return str(value)
     if isinstance(value, float):
         return f"{value:.4f}" if col in float_cols_4dp else f"{value:.2f}"
+    if isinstance(value, (int, np.integer)):
+        return str(int(value) + 1)
     return str(value)
 
 

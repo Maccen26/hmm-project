@@ -443,8 +443,9 @@ INPUT ./model_results/second_order_hmm/transition_matrix.tex
 INPUT ./model_results/second_order_hmm/transition_matrix.tex
 INPUT ./model_results/second_order_hmm/transition_matrix.tex
 INPUT model_results/second_order_hmm/transition_matrix.tex
-INPUT ./model_results/second_order_hmm/diagnostics.tex
-INPUT ./model_results/second_order_hmm/diagnostics.tex
+INPUT ./model_results/second_order_hmm/emission_params.tex
+INPUT ./model_results/second_order_hmm/emission_params.tex
+INPUT model_results/second_order_hmm/emission_params.tex
 INPUT ./model_results/second_order_hmm/diagnostics.tex
 INPUT ./model_results/second_order_hmm/diagnostics.tex
 INPUT model_results/second_order_hmm/diagnostics.tex

@@ -195,12 +195,12 @@ def render_second_order_transition(model, ys, caption: str, label: str) -> str:
             row[s_next] = float(prob)
         next_probs[from_tuple] = row
 
-    col_headers = [f"$s_{{t+1}} = {j}$" for j in range(K)]
+    col_headers = [f"$s_{{t+1}} = {j + 1}$" for j in range(K)]
     rows = []
     for s_prev in range(K):
         for s_t in range(K):
             row_probs = next_probs.get((s_prev, s_t), {})
-            cells = [f"$({s_prev}, {s_t})$"]
+            cells = [f"$({s_prev + 1}, {s_t + 1})$"]
             for j in range(K):
                 if j in row_probs and not jnp.isclose(row_probs[j], 0.0, atol=5e-5):
                     cells.append(f"{row_probs[j]:.4f}")
@@ -246,8 +246,8 @@ def render_second_order_emission(model, ys, ar_lag: int, caption: str, label: st
         for s_prev in range(K):
             idx = s_prev * K + s_t
             cells = [
-                f"{s_prev}",
-                f"{s_t}",
+                f"{s_prev + 1}",
+                f"{s_t + 1}",
                 f"{float(mu[idx]):8.3f}",
                 f"{float(sigma[idx]):8.3f}",
             ]
