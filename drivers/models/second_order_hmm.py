@@ -21,8 +21,7 @@ def run_ar_1_second_order_hmm(model_name: str):
 
     transition = StaticTransitionHigherOrder(jnp.asarray(transition_logits * 4), order=2)
 
-    mu_init = jnp.sort(jnp.repeat(params.emission.mu(0, ys), 4))
-    mu_init = mu_init + jnp.arange(mu_init.shape[0]) * 1e-2
+    mu_init = jnp.asarray(params.emission.mu(0, ys))  # length 4, tied across s_{t-1}
     sigma_init = jnp.sort(jnp.repeat(params.emission.sigma(0, ys), 4))
     phi_vals = jnp.repeat(params.emission.phi(), 4, axis=1)
     emission = AutoregressiveGaussEmission.from_params(mu=mu_init, sigma=sigma_init, phi=phi_vals)

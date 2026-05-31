@@ -18,8 +18,7 @@ def run_ar_2_second_order_hmm(model_name: str):
 
     model = load_model(PRE_MODEL_PATH)
     transition = model.params.transition
-    mu = model.emission.mu(0, ys)
-    mu = mu + jnp.arange(mu.shape[0]) * 1e-2
+    mu = jnp.asarray(model.emission.mu_vals(0, ys))[:4]  # 4 tied means
     std = model.emission.sigma(0, ys)
 
     ar2_model = load_model(PRE_ARR_PATH)
