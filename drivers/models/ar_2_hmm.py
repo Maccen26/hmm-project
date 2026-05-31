@@ -3,7 +3,7 @@ from src.api.v4 import HMM, AutoregressiveGaussEmission, StaticTransition
 import jax.numpy as jnp
 from drivers.utils import format_transition_matrix, load_model, save_model
 
-def run_arr_2_hmm(model_name: str):
+def run_ar_2_hmm(model_name: str):
     print(f"Starting {model_name} model run...")
     ys = load_y_data()
 
@@ -48,5 +48,5 @@ def run_arr_2_hmm(model_name: str):
 if __name__ == "__main__":
     model_name = "ar_2_hmm"
     PATH = f"results/models/{model_name}.pkl"
-    model = run_arr_2_hmm(model_name)
+    model = run_ar_2_hmm(model_name)
     save_model(model, PATH)

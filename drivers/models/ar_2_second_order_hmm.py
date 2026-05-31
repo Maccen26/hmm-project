@@ -8,7 +8,7 @@ from src.api.v4.transitions.static_transition_higher_order import decode_possibl
 import jax.numpy as jnp
 from drivers.utils import  load_model, save_model
 
-def run_second_order_hmm(model_name: str):
+def run_ar_2_second_order_hmm(model_name: str):
     print(f"Starting {model_name} model run...")
     ys = load_y_data()
 
@@ -59,5 +59,5 @@ def run_second_order_hmm(model_name: str):
 if __name__ == "__main__":
     model_name = "ar_2_second_order_hmm"
     PATH = f"results/models/{model_name}.pkl"
-    model = run_second_order_hmm(model_name)
+    model = run_ar_2_second_order_hmm(model_name)
     save_model(model, PATH)

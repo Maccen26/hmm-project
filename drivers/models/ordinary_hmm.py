@@ -3,8 +3,8 @@ from src.api.v4 import HMM, GaussEmission, StaticTransition
 import jax.numpy as jnp
 from drivers.utils import save_model, format_transition_matrix
 
-def run_ordinary_hmm():
-    print("Starting ordinary HMM model run...")
+def run_ordinary_hmm(model_name: str):
+    print(f"Starting {model_name} model run...")
     ys = load_y_data()
 
     #Initiing parameters 
@@ -31,7 +31,7 @@ def run_ordinary_hmm():
     print("Finished fitting ordinary HMM model! The following parameters were found")
     print("Transition matrix:")
     print(format_transition_matrix(model.transition.transition_matrix()))
-    
+
     print("Emission means:")
     print(model.emission.mu(0,0))
     print("Emission stds:")
@@ -43,7 +43,7 @@ def run_ordinary_hmm():
 
 if __name__ == "__main__":
     PATH = "results/models/ordinary_hmm.pkl"
-    model = run_ordinary_hmm()
+    model = run_ordinary_hmm("ordinary_hmm")
     save_model(model, PATH)
 
 

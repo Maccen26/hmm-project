@@ -266,3 +266,65 @@ the confidence band. The second-order extension therefore improves the
 flexibility of the latent dynamics, but --- because it does not introduce any
 within-state autocorrelation in the observations --- it does not remove the
 residual time-series structure in the same way the AR-HMM does.
+
+\subsection{AR(2) second-order HMM}
+\subsubsection{Theory}
+The AR(2) second-order HMM combines the two previous extensions: the latent
+chain is second-order (transitions depend on the pair $(s_{t-1}, s_t)$) and
+the emission density carries an AR(2) component whose parameters also depend
+on the pair $(s_{t-1}, s_t)$. Conditional on
+$(S_{t-1}, S_t) = (i, j)$ and the two most recent observations, the
+observation density is
+$$Y_t \mid (i,j),\; y_{t-1}, y_{t-2} \;\sim\; \mathcal{N}\!\left(\mu_j + \phi_{(i,j),1}(y_{t-1} - \mu_j) + \phi_{(i,j),2}(y_{t-2} - \mu_j),\; \sigma_{(i,j)}^2\right).$$
+The mean depends only on the current state $s_t$, while
+$\sigma_{(i,j)}^2$ and the AR coefficients $(\phi_{(i,j),1}, \phi_{(i,j),2})$
+are pair-specific. The transition tensor is the same as in the second-order
+HMM, and the same reparametrisations are used for the transition rows, the
+log-variances and the AR coefficients. The full parameter vector to be
+estimated is
+$\theta = \{\Gamma_{(\cdot,\cdot),\cdot},\, \mu,\, \sigma^2,\, \phi_1,\, \phi_2\}$.
+
+\subsubsection{Results}
+The AR(2) second-order HMM was fitted on the same CO$_2$ observations, with
+$\mu_1$ frozen at 400 ppm and the previous models used as a warm start. The
+estimated transition tensor is shown in
+Table \ref{tab:ar_2_second_order_hmm_transition} and the estimated emission
+parameters in Table \ref{tab:ar_2_second_order_hmm_emissions}.
+
+\input{model_results/ar_2_second_order_hmm/transition_matrix}
+
+The transition tensor follows the same overall pattern as the second-order
+HMM: rows like $(1,1)$, $(2,2)$ and $(3,3)$ keep most of their mass on the
+current state, while several rare two-step pairs end up with all the mass on
+a single successor. The presence of an AR(2) emission shifts some mass off
+the diagonal compared to the second-order HMM (e.g.\ $(0,0)$ now has
+$P(s_{t+1}=2 \mid 0,0) = 0.29$ versus essentially zero before), because the
+within-state autocorrelation already explains part of the persistence and the
+latent chain no longer needs as strong self-loops.
+
+\input{model_results/ar_2_second_order_hmm/emission_params}
+
+Table \ref{tab:ar_2_second_order_hmm_emissions} reports the pair-specific
+emission parameters. The four state means again order the regimes
+($400$, $489$, $710$, $1399$ ppm). The first-order AR coefficients
+$\hat{\phi}_1$ are uniformly large and positive (most are between $0.6$ and
+$1.0$), confirming that within-regime autocorrelation dominates the
+short-term dynamics regardless of $s_{t-1}$. The second-order coefficients
+$\hat{\phi}_2$ are mostly small and negative, in line with what was observed
+for the simpler AR(2)-HMM. The last column reports
+$\hat{\phi}_1 + \hat{\phi}_2$, which approximates the long-run persistence
+of the AR(2) component: a few pairs --- notably $(1,3)$ with
+$\hat{\phi}_1 + \hat{\phi}_2 = 1.23$ --- fall outside the stationarity region.
+These non-stationary pair-specific AR processes sit on transitions that are
+sparsely populated in the data and should be interpreted as weakly identified
+artifacts of the fit, in the same way as the inflated $\sigma$ values in the
+second-order HMM.
+
+\input{model_results/ar_2_second_order_hmm/diagnostics}
+
+Figure \ref{fig:ar_2_second_order_hmm_diagnostics} shows the diagnostics for
+the AR(2) second-order HMM. The log-likelihood again converges quickly to its
+optimum. The Q--Q plot of the pseudo-residuals is close to the diagonal, and
+the ACF is essentially white noise: combining a second-order chain with an
+AR(2) emission gives the best residual diagnostics of the four models, even
+though the marginal improvement over the plain AR-HMM is small.

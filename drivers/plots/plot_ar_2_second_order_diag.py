@@ -2,7 +2,7 @@ from drivers.utils import plot_hmm_diagnostics, load_model
 import matplotlib.pyplot as plt
 
 
-def plot_second_order_hmm_diagnostics():
+def plot_ar_2_second_order_hmm_diagnostics():
     model_path = "results/models/ar_2_second_order_hmm.pkl"
     save_path = "results/plots/ar_2_second_order_hmm_diagnostics.png"
     model = load_model(model_path)
@@ -11,5 +11,5 @@ def plot_second_order_hmm_diagnostics():
 
 
 if __name__ == "__main__":
-    fig = plot_second_order_hmm_diagnostics()
+    fig = plot_ar_2_second_order_hmm_diagnostics()
     plt.show()
