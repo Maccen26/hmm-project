@@ -51,8 +51,8 @@ class AutoregressiveGaussEmission(BaseEmission):
         lags = jnp.flip(jax.lax.dynamic_slice(ys, (jnp.maximum(t - k, 0),), (k,)))
         
         ar = jnp.sum(self.phi() * (lags[:, None] - base_mu[None, :]), axis=0)
-        
         return jnp.where(t < k, base_mu, base_mu + ar)
+    
     def mu_vals(self, t: int, ys: jnp.ndarray, xs: jnp.ndarray | None = None):
         return jnp.concatenate([jnp.array([self.mu0]), self.mu0 + jnp.cumsum(jnp.exp(self.log_mu_diff))]) 
 

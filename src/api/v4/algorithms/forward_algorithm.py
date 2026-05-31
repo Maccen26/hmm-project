@@ -41,7 +41,7 @@ class ForwardAlgorithm(BaseInference):
         #log_utt = jnp.log(u_t).flatten() + jnp.log(g_t).flatten() - log_f_t
         #u_tt = jnp.exp(log_utt).reshape(1, -1)  # shape (1, num_states)
         #clip f_t to avoid numerical issues
-        #f_t = jnp.clip(f_t, a_min=tol) 
+        f_t = jnp.clip(f_t, a_min=1e-10) 
 
         #u = u_t * g_t 
 

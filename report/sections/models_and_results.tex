@@ -58,3 +58,211 @@ where $\zeta \in \mathbb{R}^n$ is the unconstrained parameter vector that is opt
 
 
 \subsubsection{Results}
+The model was fitted on the $\text{CO}_2$ observations by minimising the negative
+log-likelihood with L-BFGS, with $\mu_1$ frozen at 400 ppm as discussed above.
+The estimated transition matrix is shown in Table \ref{tab:ordinary_hmm_transition}
+and the estimated emission parameters in Table \ref{tab:ordinary_hmm_emissions}.
+
+\input{model_results/ordinary_hmm/transition_matrix}
+
+The transition matrix has a strongly dominant diagonal, with self-transition
+probabilities between $0.68$ and $0.93$, so each regime is persistent once
+entered. The off-diagonal mass is concentrated on the immediate neighbours of
+each state: the probability of jumping between non-adjacent states
+(e.g.\ $1\!\leftrightarrow\!3$, $1\!\leftrightarrow\!4$, $2\!\leftrightarrow\!4$)
+is essentially zero. The chain therefore moves through the four CO$_2$ levels
+in a band-diagonal fashion rather than jumping directly from baseline to a high
+regime.
+
+\input{model_results/ordinary_hmm/emission_params}
+
+The four estimated state means in Table \ref{tab:ordinary_hmm_emissions}
+($400$, $536$, $890$, $1306$ ppm) admit a natural interpretation as a
+\emph{baseline}, \emph{low}, \emph{medium} and \emph{high} CO$_2$ regime. The
+emission standard deviations grow with the mean, which is consistent with the
+higher-occupancy regimes being noisier (more people, more variable activity in
+the room).
+
+\input{model_results/ordinary_hmm/diagnostics}
+
+Figure \ref{fig:ordinary_hmm_diagnostics} summarises the fit. The
+log-likelihood trace (left panel) shows that the optimiser converges quickly
+towards the minimum of the negative log-likelihood: almost all of the
+improvement happens in the first few iterations and the curve then plateaus.
+The Q--Q plot (centre) shows that the pseudo-residuals are approximately normal
+in the bulk, with some deviation in the tails. The ACF of the pseudo-residuals
+(right) is, however, clearly non-trivial: the autocorrelation decays only
+slowly and stays well above the confidence band for many lags. This indicates
+that the observations carry time-series structure --- autoregressive behaviour
+of the CO$_2$ signal --- that the ordinary HMM does not capture, and motivates
+the AR extensions considered in the following subsections.
+
+\subsection{Autoregressive HMM}
+\subsubsection{Theory}
+The Autoregressive HMM (AR-HMM) extends the ordinary HMM by letting the
+emission distribution depend on the previous observation. Conditional on
+being in state $i$ at time $t$, the observation is modelled as
+$$Y_t \mid S_t = i,\; Y_{t-1} = y_{t-1} \;\sim\; \mathcal{N}\!\left(\mu_i + \phi_i(y_{t-1} - \mu_i),\; \sigma_i^2\right),$$
+so each state carries its own AR(1) coefficient $\phi_i \in (-1, 1)$ in
+addition to a mean and variance. This captures the within-regime temporal
+correlation of the CO$_2$ signal that the ordinary HMM left in the
+pseudo-residuals. The transition matrix $\Gamma$ is parametrised exactly as in
+the ordinary HMM, and the AR coefficients are reparametrised via
+$\phi_i = \tanh(\psi_i)$ to enforce the stationarity constraint
+$|\phi_i| < 1$. The full parameter vector to be estimated is
+$\theta = \{\Gamma,\,\mu,\,\sigma^2,\,\phi\}$.
+
+\subsubsection{Results}
+The AR-HMM was fitted on the same CO$_2$ observations, again with $\mu_1$
+frozen at 400 ppm and using L-BFGS on the negative log-likelihood. The
+ordinary-HMM estimates were used as a warm start for $\Gamma$, $\mu$ and
+$\sigma$, and the AR coefficients were initialised at $\phi_i = 0.2$ for all
+states. The estimated transition matrix is shown in
+Table \ref{tab:ar_hmm_transition} and the estimated emission parameters in
+Table \ref{tab:ar_hmm_emissions}.
+
+\input{model_results/ar_hmm/transition_matrix}
+
+The transition matrix remains diagonally dominant but is noticeably less
+banded than for the ordinary HMM: non-neighbour transitions
+(e.g.\ $1\!\to\!4$, $2\!\to\!4$, $3\!\to\!1$) now carry small but non-zero
+probabilities, while the self-transition probabilities of the intermediate
+states have dropped (state 2 from $0.85$ to $0.60$, state 3 stays at $0.85$).
+Because the within-state AR term already explains a portion of the persistence
+in the signal, the chain no longer needs as strong self-loops to fit the data.
+
+\input{model_results/ar_hmm/emission_params}
+
+The four state means in Table \ref{tab:ar_hmm_emissions}
+($400$, $509$, $560$, $1367$ ppm) again separate a baseline, two
+low-to-medium regimes and a high regime, although states 2 and 3 are now much
+closer together than in the ordinary HMM. All four AR coefficients are
+positive and substantial, ranging from $\hat{\phi}_2 = 0.37$ up to
+$\hat{\phi}_3 = 0.95$; the high-CO$_2$ state (state 4) also has a strong AR
+component ($\hat{\phi}_4 = 0.83$). This confirms that a non-trivial amount of
+the temporal structure in the observations is within-regime autocorrelation
+rather than regime switching.
+
+\input{model_results/ar_hmm/diagnostics}
+
+Figure \ref{fig:ar_hmm_diagnostics} shows the diagnostics for the AR-HMM. As
+for the ordinary HMM, the optimiser converges quickly toward the minimum of
+the negative log-likelihood. The Q--Q plot of the pseudo-residuals is closer
+to the diagonal than in the ordinary case, and --- most importantly --- the
+ACF of the pseudo-residuals is now much closer to white noise: the strong,
+slowly decaying autocorrelation observed for the ordinary HMM has largely
+been absorbed by the AR(1) emission, leaving only a few small spikes outside
+the confidence band.
+
+\subsection{Autoregressive HMM of order 2}
+\subsubsection{Theory}
+The AR(2)-HMM extends the AR-HMM by letting the within-state autoregressive
+component depend on the \emph{two} most recent observations rather than just
+one. Conditional on being in state $i$ at time $t$, the observation is
+modelled as
+$$Y_t \mid S_t = i,\; y_{t-1}, y_{t-2} \;\sim\; \mathcal{N}\!\left(\mu_i + \phi_{i,1}(y_{t-1} - \mu_i) + \phi_{i,2}(y_{t-2} - \mu_i),\; \sigma_i^2\right),$$
+so each state now carries a pair of AR coefficients
+$(\phi_{i,1}, \phi_{i,2})$ in addition to a mean and variance. This allows the
+model to capture richer within-regime dynamics --- in particular a non-monotone
+impulse response of the CO$_2$ signal --- that an AR(1) emission cannot
+represent. The transition matrix and the mean/variance reparametrisations are
+the same as in the AR-HMM, and the full parameter vector is
+$\theta = \{\Gamma,\,\mu,\,\sigma^2,\,\phi_1,\,\phi_2\}$.
+
+\subsubsection{Results}
+The AR(2)-HMM was fitted on the same CO$_2$ observations with $\mu_1$ frozen
+at 400 ppm and L-BFGS on the negative log-likelihood. The AR-HMM estimates
+were used as a warm start, and the second-order AR coefficients were
+initialised at $\phi_{i,2} = 0.2$ for all states. The estimated transition
+matrix is shown in Table \ref{tab:ar_2_hmm_transition} and the estimated
+emission parameters in Table \ref{tab:ar_2_hmm_emissions}.
+
+\input{model_results/ar_2_hmm/transition_matrix}
+
+The transition matrix is very close to the one obtained for the AR-HMM: the
+diagonal dominance is preserved and the off-diagonal pattern is essentially
+unchanged. Adding a second AR lag therefore does not noticeably change the
+regime-switching structure --- it mainly refines the within-state dynamics.
+
+\input{model_results/ar_2_hmm/emission_params}
+
+The first-order AR coefficients in Table \ref{tab:ar_2_hmm_emissions} remain
+strongly positive across all states ($0.59$--$1.00$), while the second-order
+coefficients are small and mostly negative, ranging from $-0.21$ to $0.06$.
+This small negative $\phi_{i,2}$ partly corrects the overshoot of the AR(1)
+component and produces a slightly damped, more realistic impulse response of
+the CO$_2$ signal. Note that state 4 reaches $\hat{\phi}_{4,1} \approx 1$,
+which is on the edge of the stationarity region for the AR(2) process; this
+suggests the high-CO$_2$ regime behaves close to a unit-root process and
+could in principle be modelled with a non-stationary component.
+
+\input{model_results/ar_2_hmm/diagnostics}
+
+Figure \ref{fig:ar_2_hmm_diagnostics} shows the diagnostics for the
+AR(2)-HMM. The log-likelihood again converges quickly to its optimum, and the
+Q--Q plot of the pseudo-residuals is similar to that of the AR-HMM. The ACF
+of the pseudo-residuals is essentially indistinguishable from the AR-HMM
+case: most lags lie within the confidence band, with only a few small
+residual spikes. In other words, going from order 1 to order 2 yields only a
+marginal improvement in the residual diagnostics, indicating that an AR(1)
+emission already captures the bulk of the within-regime temporal structure
+in the CO$_2$ signal.
+
+\subsection{Second-order HMM}
+\subsubsection{Theory}
+The second-order HMM relaxes the Markov assumption on the latent chain: the
+next state depends on the \emph{two} most recent latent states rather than
+just one. The transition probabilities are therefore indexed by a pair of
+states,
+$$\Gamma_{(i,j),k} \;=\; P\!\left(S_{t+1} = k \mid S_{t-1} = i,\, S_t = j\right),$$
+which gives an $n^2 \times n$ tensor of conditional probabilities (still
+row-normalised in $k$). The emission density is again Gaussian, with the mean
+depending only on the current state $\mu(s_t)$, but the standard deviation
+allowed to depend on \emph{both} the previous and the current state:
+$\sigma(s_{t-1}, s_t)$. Operationally, the second-order chain is handled by
+augmenting the state space to pairs $(s_{t-1}, s_t)$ and applying the standard
+forward recursions on the augmented chain. The full parameter vector to be
+estimated is $\theta = \{\Gamma_{(\cdot,\cdot),\cdot},\, \mu,\, \sigma^2\}$,
+with the same row-normalised softmax / log-variance reparametrisations as
+before.
+
+\subsubsection{Results}
+The second-order HMM was fitted on the same CO$_2$ observations, with
+$\mu_1$ frozen at 400 ppm. The estimated transition tensor is shown in
+Table \ref{tab:second_order_hmm_transition} and the estimated emission
+parameters in Table \ref{tab:second_order_hmm_emissions}.
+
+\input{model_results/second_order_hmm/transition_matrix}
+
+The second-order transition table shows that for most state pairs the next
+state is essentially determined by the current state $s_t$, with only mild
+dependence on the previous state $s_{t-1}$ --- e.g.\ rows $(1,1)$, $(2,2)$
+and $(3,3)$ all assign most of the mass to staying in the current state, as
+in the ordinary HMM. Some pairs, however, are concentrated on a single
+successor (rows showing probability $1$), which reflects rare or transient
+two-step patterns where the fit has very little data: these entries should be
+read as data-driven artifacts rather than as strong dynamical statements.
+
+\input{model_results/second_order_hmm/emission_params}
+
+The emission means in Table \ref{tab:second_order_hmm_emissions} again order
+the four states into a baseline / low / medium / high CO$_2$ regime. The
+standard deviations, which now depend on the pair $(s_{t-1}, s_t)$, vary
+substantially across previous states: in particular, several $\sigma$ values
+are very large (e.g.\ $1881$ ppm for $s_t = 0$ coming from $s_{t-1} = 3$, or
+$1072$ ppm for $s_t = 3$ coming from $s_{t-1} = 0$). These large variances
+sit on transitions that are essentially never observed, so the corresponding
+$\sigma$ values are only weakly identified --- the optimiser is free to inflate
+them without affecting the likelihood.
+
+\input{model_results/second_order_hmm/diagnostics}
+
+Figure \ref{fig:second_order_hmm_diagnostics} shows the diagnostics for the
+second-order HMM. The log-likelihood converges quickly toward the minimum of
+the negative log-likelihood, in the same way as for the previous models. The
+Q--Q plot of the pseudo-residuals is comparable to the ordinary HMM, and the
+ACF of the residuals still shows a slow decay with several lags well outside
+the confidence band. The second-order extension therefore improves the
+flexibility of the latent dynamics, but --- because it does not introduce any
+within-state autocorrelation in the observations --- it does not remove the
+residual time-series structure in the same way the AR-HMM does.

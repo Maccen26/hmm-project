@@ -1,25 +1,28 @@
 # Fdb version 4
-["bibtex main"] 1780237486.00103 "main.aux" "main.bbl" "main" 1780237606.46055 0
+["bibtex main"] 1780244290.73261 "main.aux" "main.bbl" "main" 1780244293.11178 0
   "./references.bib" 1780233877.85151 3663 6299b3af550829c229b79f6c2ec58305 ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1780237605.42126 10170 2391687db8e7984da5b978392e104e49 "xelatex"
+  "main.aux" 1780244291.81201 14246 9bae5b54d7a405dc193a82e66199788d "xelatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["xdvipdfmx"] 1780237605.60966 "main.xdv" "main.pdf" "main" 1780237606.46219 0
-  "main.xdv" 1780237605.42265 224880 e9dfb34c21f6441fee41afd09dcf1fa9 "xelatex"
+["xdvipdfmx"] 1780244292.05582 "main.xdv" "main.pdf" "main" 1780244293.11334 0
+  "main.xdv" 1780244291.81367 328832 ba2d2913ab67a89bfd89078024ed4f0e "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1780237604.45661 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780237606.46062 0
+["xelatex"] 1780244290.85364 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780244293.11185 0
   "../docs/diagrams/01_system_composition.png" 1780147425.35947 68987 44a5d78ead0d72fa6ee8a30292c22800 ""
   "../docs/diagrams/02_emissions.png" 1780147426.23046 43229 7c5619d24ecdaeb4cf15b12f4a0097f2 ""
   "../docs/diagrams/03_transitions.png" 1780147427.09784 43025 0edc7029963332db88f607978a989663 ""
   "../docs/diagrams/04_inference_output.png" 1780147427.98922 50202 cfded462863a3d29f2d101caa30a7259 ""
   "../docs/diagrams/05_solvers.png" 1780147429.00586 65338 13093f4706e9e6052df9df50ce675b62 ""
+  "../results/plots/ar_2_hmm_diagnostics.png" 1780241855.68808 55380 94cffe96bad80707d06f8f39a8ccd847 ""
+  "../results/plots/ar_hmm_diagnostics.png" 1780240493.50518 58106 3c002219a656159a1c50ebf768b11209 ""
   "../results/plots/co2_data.png" 1780213437.64767 59580 848bb12a6015e41e66fdce26fe7f4038 ""
-  "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" 1780215635.26417 612 bd8257d789ae03545d24359e696a9b81 ""
+  "../results/plots/ordinary_hmm_diagnostics.png" 1780239129.56403 54333 4a347af2ab739c87f87bb46b72fb2d11 ""
+  "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" 1780244289.10416 612 bd8257d789ae03545d24359e696a9b81 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -190,17 +193,26 @@
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1747660068 5639810 eabaf9cb0a743eead1b7cfde91ae2eb6 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "graphs/DTULogo.png" 1780049584.90449 71324 14c6435e87a7c7138eabea522f8186e2 ""
-  "main.aux" 1780237605.42126 10170 2391687db8e7984da5b978392e104e49 "xelatex"
-  "main.bbl" 1780237486.08006 2393 b54bef60d08d941757270d88dccc4041 "bibtex main"
-  "main.out" 1780237605.42239 2769 b21def12e8db1f94d582cccadb808501 "xelatex"
-  "main.tex" 1780215635.26417 612 bd8257d789ae03545d24359e696a9b81 ""
-  "main.toc" 1780237605.4226 1753 8b787b663b88a1f642369f53876d8696 "xelatex"
+  "main.aux" 1780244291.81201 14246 9bae5b54d7a405dc193a82e66199788d "xelatex"
+  "main.bbl" 1780244290.85069 2393 b54bef60d08d941757270d88dccc4041 "bibtex main"
+  "main.out" 1780244291.8134 3537 2909a84a74e4c798d8fa460e5f727f18 "xelatex"
+  "main.tex" 1780244289.10416 612 bd8257d789ae03545d24359e696a9b81 ""
+  "main.toc" 1780244291.81363 2266 6d48df5127fa6fba5ecfbcd3d8fbcef4 "xelatex"
   "mcode.sty" 1780036486 10953 f07d0b606633695e39d1c9706bbafa89 ""
+  "model_results/ar_2_hmm/diagnostics.tex" 1780242114.04474 330 7efbcf2991be6ccfdd3de690b5449d7f ""
+  "model_results/ar_2_hmm/emission_params.tex" 1780242068.33263 557 d7343add89ceef2d1e72bf43b4eebdfb ""
+  "model_results/ar_2_hmm/transition_matrix.tex" 1780242059.82404 420 e8b62ad9facab8d52d1697fb290d2893 ""
+  "model_results/ar_hmm/diagnostics.tex" 1780240611.87733 323 97b9630c746f8798466f49ee87a186ec ""
+  "model_results/ar_hmm/emission_params.tex" 1780240439.71282 468 2ecfaa68ca27335b4da9f9369473747f ""
+  "model_results/ar_hmm/transition_matrix.tex" 1780240428.16116 415 c25462c164f735c7de7f743aaaf06974 ""
+  "model_results/ordinary_hmm/diagnostics.tex" 1780239921.32667 349 fdf8561e733b1b9be1db4e06ba437bcf ""
+  "model_results/ordinary_hmm/emission_params.tex" 1780239433.12063 402 861e5a45c8f831710f3e9c08e998522e ""
+  "model_results/ordinary_hmm/transition_matrix.tex" 1780239425.23423 435 ee6090e821b63b3d4e4f45362e16f2e0 ""
   "preamble/Config.tex" 1780048970.52308 565 f4abef26047dbb11098f58df8add5a61 ""
   "preamble/Cover.tex" 1780048659.51439 2630 4af4799975b48fc629742fde737636d4 ""
   "preamble/Packages.tex" 1780207116.16479 2605 c912ce1b70e586e9afb0a3f692299aa6 ""
   "sections/AI_declaration.tex" 1780049380.40962 458 04696664498662c4ed55bd783d4875f4 ""
-  "sections/appendix.tex" 1780237604.32059 4284 0653b87d84407ab809da7393cffaf9cb ""
+  "sections/appendix.tex" 1780237608.21495 4284 0653b87d84407ab809da7393cffaf9cb ""
   "sections/conclusion.tex" 1780132362.27818 20 b50204e17c0a475d3d65191e029fdf1d ""
   "sections/diagrams/fig_01_composition.tex" 1780237452.83095 570 620f68925b1597ce2fc163e4296339e3 ""
   "sections/diagrams/fig_02_emissions.tex" 1780237462.84785 629 c11da6a608fa2edfae944a37b9e09f81 ""
@@ -212,7 +224,7 @@
   "sections/future_work.tex" 1780132424.11194 21 2b9e5ddfd46934d02ebe77a19fb22599 ""
   "sections/generel_theory.tex" 1780234059.14967 2981 585516ab67973f09b3a5b78ddfc4ec27 ""
   "sections/introduction.tex" 1780139459.49957 1691 c4053302f3777f70b77b402461afb005 ""
-  "sections/models_and_results.tex" 1780236619.07583 3255 190d1396dca169739908412595895271 ""
+  "sections/models_and_results.tex" 1780242160.41155 11822 e51bd5970f596abcf89d3c6483d0842b ""
   "sections/software.tex" 1780154555.09827 3592 ba83469cd1675ed02d26a5d06901ccce ""
   (generated)
   "main.aux"
