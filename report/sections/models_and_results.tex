@@ -353,7 +353,28 @@ the baseline and the high-CO$_2$ state.
 \input{model_results/ar_2_second_order_hmm/emission_params}
 
 Table \ref{tab:ar_2_second_order_hmm_emissions} reports the pair-specific
-emission parameters. The 4 state ments are similar to the AR(1)-HMM(2) 
+emission parameters. The four state means are very close to the AR(1)-HMM(2)
+estimates, with a clear ordering from the baseline state 1 ($400$ ppm) up to
+the high-CO$_2$ state 4 ($1436$ ppm), and state 2 and 3 placed as
+intermediate states. As before, the standard deviations grow with the mean,
+which we attribute to more volatility in the CO$_2$ signal when occupants
+are present and windows are being opened and closed. \newline
+
+The first-order AR coefficients $\hat{\phi}_1$ remain strongly positive for
+most state pairs (typically $0.7$--$1.0$), while the second-order
+coefficients $\hat{\phi}_2$ are small and mostly negative, ranging from
+$-0.27$ up to $0.17$. This mirrors the pattern seen for the AR(2)-HMM. 
+The observation at time $t$ is dominated by the previous observation,
+while $y_{t-2}$ contributes a small negative correction. The exception is
+the pair $(1,2)$, where $\hat{\phi}_1 = -0.28$ and $\hat{\phi}_2 = 0.17$,
+which corresponds to the system entering state 2 from the baseline and so
+the level is increasing.
+
+Several pairs have $\hat{\phi}_1 + \hat{\phi}_2 > 1$, indicating a
+non-stationary AR process. These are the same kind of pairs that were
+flagged for the AR(1)-HMM(2). Transitions where the CO$_2$ level is
+changing sharply, such as $(3,4)$ and $(4,1)$, together with the
+self-transitions $(3,3)$ and $(4,3)$. 
 
 \input{model_results/ar_2_second_order_hmm/diagnostics}
 

@@ -298,7 +298,16 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/lastpage/lastpagemodern.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/lastpage/lastpagemodern.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
+INPUT ./main.aux
+INPUT ./main.aux
+INPUT main.aux
 OUTPUT main.aux
+INPUT ./main.out
+INPUT ./main.out
+INPUT main.out
+INPUT main.out
+INPUT ./main.out
+INPUT ./main.out
 OUTPUT main.out
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/pdflscape/pdflscape.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/pdflscape/pdflscape.sty
@@ -334,6 +343,9 @@ INPUT ./sections/AI_declaration.tex
 INPUT ./sections/AI_declaration.tex
 INPUT ./sections/AI_declaration.tex
 INPUT sections/AI_declaration.tex
+INPUT ./main.toc
+INPUT ./main.toc
+INPUT main.toc
 OUTPUT main.toc
 INPUT ./sections/introduction.tex
 INPUT ./sections/introduction.tex
