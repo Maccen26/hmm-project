@@ -2,7 +2,8 @@
 For generel theory on HMM's, see \citep{zucchini2016hidden} and \citep{moler2024statistical} chapter 11. 
 All the models implemented are 4 state Gaussian HMMs (emission density is a Gaussian distribution) 
 and we have kept the the mean value of state 1 fixed at 400 as this is the baseline $\text{CO}_2$ level in the room 
-when no one is present and all windows are closed. This is also shown in the figure \ref{fig:app:co2_data}.
+when no one is present and all windows are closed. This is also shown in the figure \ref{fig:app:co2_data}. All models werre
+fitted with the L-BFGS optimizer and the same initialisation strategy was used for all models, which is described in the results section of each model.
 
 Five models are considered, organised along two axes: the order of the AR
 component in the emission and the order of the latent Markov chain. Their

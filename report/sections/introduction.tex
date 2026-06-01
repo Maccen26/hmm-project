@@ -6,9 +6,15 @@ The goal of this project is to inference if a person is in a room based on $\tex
 To do this, we will use a Hidden Markov Model to model the relationship between the observed $\text{CO}_2$ levels and the hidden states of whether a person is in the room or not and if a window is open or not. 
 When training the models, we will use \texttt{JAX} \citep{jax2018github}  and \texttt{EQUINOX} \citep{kidger2021equinox} for automatic differentiation and optimization,
 and we will use \texttt{Optax} \citep{optax2020github} as our optimization library. \newline
-WRITE HERE THE RESULTS YOU FIND LATER ON. \newline
 
 
+In this report, we will implement 5 nested HMM's to best describe the state of the room 
+given the $\text{CO}_2$ data, and we will compare the models using test statistics such as AIC, BIC and Likelihood Ratio Tests. \newline
+We find that the best model is the AR(2) second-order HMM, which has both autoregressive emissions and a second-order latent chain and in
+all cases, the more complex model is favoured over the simpler model. \newline
+By looking at the ACF plot of the pseudo residuals, 
+we can see that the AR(2) second-order HMM still doesn't capture all of the 
+temporal structure in the data, which suggests that there is still room for improvement in the model. \newline
 
 
 This report is written for the purpose of given a concise outline of the projects achivements, 
