@@ -1,49 +1,24 @@
-# $ \text{CO}^2 $ modelling with Hidden Markov Models 
+# $\text{CO}_2$ Modelling with Hidden Markov Models
 
-This project is special couse a Denmarks Technical University which explores how to model $CO^2$ data with Hidden Markov Models. The couse has been conducted in the Spring Semester 2026 and is 5 ETCS points. 
+This project is a special course at the Technical University of Denmark (DTU) exploring how to model $\text{CO}_2$ data with Hidden Markov Models. It was conducted in the Spring Semester 2026 (5 ECTS) and leads up to a Bachelor Project. The focus is on designing flexible HMM software, exploring and interpreting HMM states, and testing different HMM variants (ordinary, AR, second-order) on $\text{CO}_2$ time series data.
 
-## Scope of project
-The projects leads up to a Bachelor Projects, and this course therefore focus on: 
+Package manager: `uv`.
 
-- Designing flexible software for implementation of HMM's 
-- Exploring & understanding what HMM's are and how they can used. This could include a lof of notes around the code and in the jupyternotebook files. 
-- Practiceing interpretability of HMM and their states
-- Testing HMM's 
+## Repository layout
 
+- **`src/`** — The HMM library. Contains the base classes (emission, transition, HMM), optimisation utilities, data loading, and the versioned APIs under `src/api/v1`–`v4` that compose emissions and transitions into concrete models.
+- **`tests/`** — Unit and integration tests for the library. Only `tests/v4` is current.
+- **`drivers/`** — Runnable entry points that use `src` to fit models, generate plots, and produce the result tables/figures consumed by the report. See `drivers/models/` for one driver per model variant.
+- **`report/`** — LaTeX source for the written report (`main.tex`, `sections/`, `preamble/`, `references.bib`) along with build artefacts and the compiled `main.pdf`.
 
-## Generel about the project
-Package manager is uv. 
+## API versioning — only v4 is active
 
-## AI Disclosure in this project. 
-1. Copilot chat completation has been used. 
-2. No Agents has written code. 
-3. Agents has been used to debug Jax Modules (sometimes). 
-4. Claude has been used to find sources and explain concepts.  
-5. Claude code has been used to generate documentation about my code.
+The `src/api/` directory contains four iterations of the modelling API (`v1`, `v2`, `v3`, `v4`). **Only `v4` should be treated as the working, supported API.** All earlier versions (`v1`, `v2`, `v3`) and anything under `src/deprecated/` are kept for historical reference only and should not be used or extended. New drivers, tests, and report results target `src/api/v4` exclusively.
 
-## Data and experiments. 
-In week 2, the mu values was free. In week 3, they are being constrained such that the mu must be incresing. 
+## AI disclosure
 
-The save model should only save the parameters and they are passed to the model. 
-
-
-## Notes
-
-### CHANGELOG: 
-6-04-2026:
-Removing dependecy on other classes. Inforcing dependecy injection such that models are more flexible. 
-
-
-### Software Design 
-3 classes: HMM Class, Transition Class, Emmission class. \
-The responsibilities of each class are: 
-1. Emission: Compute the state distribution given the $y_i$ observation. Base class should take $x$ arguments as covariates
-2. Transition: Compute the transition matrix at timestep $i$ given obs $y_i$. Should take $x$ as arguments as covarites. 
-3. HMM Model: Compose a transition and a emission class. The goal of this class is to step trough the markov chain using the state distributions and transition matrix. The class should also take a initial state distribution as argument such that we can vary this depending on the state we start in. 
-
-
-
-
-
-
-
+1. Copilot chat completion has been used.
+2. No agents have written code.
+3. Agents have been used to debug JAX modules (sometimes).
+4. Claude has been used to find sources and explain concepts.
+5. Claude Code has been used to generate documentation about the code.

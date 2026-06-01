@@ -30,6 +30,7 @@ class LBFGSSolver(BaseSolver):
 
         @jax.jit
         def run(arrays, opt_state):
+            
             def body(_, carry):
                 arrays, opt_state = carry
                 val, grads = jax.value_and_grad(array_loss_fn)(arrays)
