@@ -1,18 +1,18 @@
 # Fdb version 4
-["bibtex main"] 1780273643.73618 "main.aux" "main.bbl" "main" 1780274169.19572 0
+["bibtex main"] 1780273643.73618 "main.aux" "main.bbl" "main" 1780274261.05654 0
   "./references.bib" 1780233877.85151 3663 6299b3af550829c229b79f6c2ec58305 ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/natbib/plainnat.bst" 1233624470 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "main.aux" 1780274167.8502 21678 4325126458a4b5bc5cc871f1651f9910 "xelatex"
+  "main.aux" 1780274259.74201 21678 4325126458a4b5bc5cc871f1651f9910 "xelatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["xdvipdfmx"] 1780274168.06052 "main.xdv" "main.pdf" "main" 1780274169.19788 0
-  "main.xdv" 1780274167.85203 511328 42d70e6a6ba199335fc320719411db83 "xelatex"
+["xdvipdfmx"] 1780274259.93221 "main.xdv" "main.pdf" "main" 1780274261.05845 0
+  "main.xdv" 1780274259.74462 512964 c86a65d374251ed1dd607926b974f4c0 "xelatex"
   (generated)
   "main.pdf"
   (rewritten before read)
-["xelatex"] 1780274166.78611 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780274169.19582 0
+["xelatex"] 1780274258.61437 "/Users/madshaakonsson/Desktop/5. Semester/special/hmm-code/report/main.tex" "main.xdv" "main" 1780274261.05664 0
   "../docs/diagrams/01_system_composition.png" 1780248470.26276 68987 44a5d78ead0d72fa6ee8a30292c22800 ""
   "../docs/diagrams/02_emissions.png" 1780248471.12252 43229 7c5619d24ecdaeb4cf15b12f4a0097f2 ""
   "../docs/diagrams/03_transitions.png" 1780248472.05308 43025 0edc7029963332db88f607978a989663 ""
@@ -196,11 +196,11 @@
   "/usr/local/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt" 1747660068 5639810 eabaf9cb0a743eead1b7cfde91ae2eb6 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "graphs/DTULogo.png" 1780049584.90449 71324 14c6435e87a7c7138eabea522f8186e2 ""
-  "main.aux" 1780274167.8502 21678 4325126458a4b5bc5cc871f1651f9910 "xelatex"
+  "main.aux" 1780274259.74201 21678 4325126458a4b5bc5cc871f1651f9910 "xelatex"
   "main.bbl" 1780273643.82147 3587 58ca173e075472626e80069aff944b99 "bibtex main"
-  "main.out" 1780274167.85174 4084 9bb5b4c65157d13dde2960b73fdd3b14 "xelatex"
+  "main.out" 1780274259.74418 4084 9bb5b4c65157d13dde2960b73fdd3b14 "xelatex"
   "main.tex" 1780269989.05451 615 403fce2ae1e31c1168f8f23a975afe02 ""
-  "main.toc" 1780274167.85197 2738 04ca9b4e73024d7a9a09d40b512e81ea "xelatex"
+  "main.toc" 1780274259.74453 2738 04ca9b4e73024d7a9a09d40b512e81ea "xelatex"
   "mcode.sty" 1780036486 10953 f07d0b606633695e39d1c9706bbafa89 ""
   "model_results/ar_2_hmm/diagnostics.tex" 1780273533.53726 358 741c74e4aadd6f2be37ceab121dc1a7b ""
   "model_results/ar_2_hmm/emission_params.tex" 1780269985.07138 633 259f2f99cb7ea9965503e76456eded66 ""
@@ -235,8 +235,8 @@
   "sections/forward_algorithm.tex" 1780214003.94194 1424 6ce6a0af510c4aa4d4e2aeeb1e51ff02 ""
   "sections/future_work.tex" 1780273258.85752 522 92856d75aec406766f826b60377fb08c ""
   "sections/generel_theory.tex" 1780260732.21233 3246 0044507e610e35ca13f6e2f6c209452e ""
-  "sections/introduction.tex" 1780274166.63823 2328 656fc39ee0609b88cc62afff9303e2eb ""
-  "sections/models_and_results.tex" 1780273750.46839 21164 4ec641185ebc4d9267bd48eee7bb6854 ""
+  "sections/introduction.tex" 1780274176.6415 2328 656fc39ee0609b88cc62afff9303e2eb ""
+  "sections/models_and_results.tex" 1780274258.5049 21333 26f9668a89e2da51538022e3ab1cb7a3 ""
   "sections/software.tex" 1780260380.62227 3595 617b92f12f1987263c2639d437143fbc ""
   (generated)
   "main.aux"
