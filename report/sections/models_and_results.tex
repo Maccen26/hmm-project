@@ -324,53 +324,41 @@ the confidence band, and the dianostic plots are overall similiar to the AR(2)-H
 This indicates the the second order chain preforms as well as the AR(2) when
 capturing the temporal structure in the data. 
 This motivates the introduction of the AR(2) second-order HMM in the next section,
+
+
+
+
+
+%% ------ AR 2 HMM 2 ------
 \subsection{AR(2)-HMM(2)}
 \subsubsection{Theory}
-The Autoregressive lag 2 Second-order HMM (AR(2)-HMM(2)) combines the two previous extensions. The markov chain
-is second-order (transitions depend on the pair $(x_{t-1}, x_t)$) and
-the emission density carries an AR(2) component whose parameters also depend
+The Autoregressive lag 2 Second-order HMM (AR(2)-HMM(2)) combines the two previous extensions. 
+The markov chain is second-order (transitions depend on the 
+pair $(x_{t-1}, x_t)$) and the emission density carries an AR(2) 
+component whose parameters also depend
 on the pair $(x_{t-1}, x_t)$. 
 \subsubsection{Results}
-The AR(2) second-order HMM was fitted on the same CO$_2$ observations, with
-$\mu_1$ frozen at 400 ppm and the previous models used as a warm start. The
-estimated transition tensor is shown in
 Table \ref{tab:ar_2_second_order_hmm_transition} and the estimated emission
 parameters in Table \ref{tab:ar_2_second_order_hmm_emissions}.
 
 \input{model_results/ar_2_second_order_hmm/transition_matrix}
 
-The transition tensor follows the same overall pattern as the second-order
-HMM: rows like $(1,1)$, $(2,2)$ and $(3,3)$ keep most of their mass on the
-current state, while several rare two-step pairs end up with all the mass on
-a single successor. The presence of an AR(2) emission shifts some mass off
-the diagonal compared to the second-order HMM (e.g.\ $(0,0)$ now has
-$P(x_{t+1}=2 \mid 0,0) = 0.29$ versus essentially zero before), because the
-within-state autocorrelation already explains part of the persistence and the
-latent chain no longer needs as strong self-loops.
+The transition tensor follows the same overall pattern as the  AR(1)-HMM(2). 
+rows like $(1,1)$, $(2,2)$ and $(4,4)$ keep most of their mass on the
+current state. However, we see that for state 3 that self transtion 
+proberbility are acutally lower that the transtion probebility of transitioning to state 4
+from the state pair (3,3). This pushes state 3 even more into being a transition state between 
+the baseline and the high-CO$_2$ state.
 
 \input{model_results/ar_2_second_order_hmm/emission_params}
 
 Table \ref{tab:ar_2_second_order_hmm_emissions} reports the pair-specific
-emission parameters. The four state means again order the regimes
-($400$, $489$, $710$, $1399$ ppm). The first-order AR coefficients
-$\hat{\phi}_1$ are uniformly large and positive (most are between $0.6$ and
-$1.0$), confirming that within-regime autocorrelation dominates the
-short-term dynamics regardless of $x_{t-1}$. The second-order coefficients
-$\hat{\phi}_2$ are mostly small and negative, in line with what was observed
-for the simpler AR(2)-HMM. The last column reports
-$\hat{\phi}_1 + \hat{\phi}_2$, which approximates the long-run persistence
-of the AR(2) component: a few pairs --- notably $(1,3)$ with
-$\hat{\phi}_1 + \hat{\phi}_2 = 1.23$ --- fall outside the stationarity region.
-These non-stationary pair-specific AR processes sit on transitions that are
-sparsely populated in the data and should be interpreted as weakly identified
-artifacts of the fit, in the same way as the inflated $\sigma$ values in the
-second-order HMM.
+emission parameters. The 4 state ments are similar to the AR(1)-HMM(2) 
 
 \input{model_results/ar_2_second_order_hmm/diagnostics}
 
 Figure \ref{fig:ar_2_second_order_hmm_diagnostics} shows the diagnostics for
-the AR(2) second-order HMM. The log-likelihood again converges quickly to its
-optimum. The Q--Q plot of the pseudo-residuals is close to the diagonal, and
-the ACF is essentially white noise: combining a second-order chain with an
-AR(2) emission gives the best residual diagnostics of the four models, even
-though the marginal improvement over the plain AR-HMM is small.
+the AR(2)-HMM(2). The convergence of the log-likehood is not as smooth as 
+previous models, but it still converges after a around 20 iterations. 
+The Q-Q plot of the pseudo-residuals is similar to the previous models, with a few outliers in the tails. 
+The ACF of the residuals shows a similar pattern as the previous models, with a slow decay and several lags outside the confidence band.

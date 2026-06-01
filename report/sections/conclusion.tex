@@ -3,39 +3,29 @@
 This project investigated whether room occupancy can be inferred from a single
 $\text{CO}_2$ sensor by modelling the observed series with a Hidden Markov
 Model. Five nested 4-state Gaussian HMMs were fitted, organised along the
-hierarchy of Figure~\ref{fig:diagram:model_hierarchy}: a baseline HMM(1), an
+hierarchy of Figure~\ref{fig:diagram:model_hierarchy}. A
+baseline HMM(1), an
 AR(1) and AR(2) emission extension, a second-order latent chain with AR(1)
 emissions, and the fully combined AR(2), HMM(2) model. All models were
 implemented and fitted using \texttt{JAX}, \texttt{EQUINOX} and \texttt{Optax}.
 
 The likelihood-ratio tests in
 Table~\ref{tab:lrt_comparison} reject every base model in favour of its
-expanded counterpart at $p < 10^{-4}$, confirming that both adding
-autoregressive structure to the emissions and relaxing the first-order Markov
-assumption produce statistically significant gains in fit. The single largest
+expanded counterpart at $p \approx 0$, confirming that both adding
+autoregressive structure to the emissions and making the Markov
+chain second-order produce statistically significant gains in fit.
+The single largest
 improvement is the introduction of an AR(1) emission on top of the ordinary
 HMM, with a likelihood-ratio statistic of $\Lambda \approx 2058$ on four
 degrees of freedom and a drop in AIC of more than two thousand units. This
-indicates that most of the temporal structure left unexplained by the
-baseline HMM is autoregressive in nature, not a deficiency of the
-first-order latent chain.
+indicates that there indeed is a strong autocorrelation structure in the data that the plain HMM cannot
+capture it. 
 
-AIC and BIC, however, disagree on the recommended model.
-Table~\ref{tab:model_stats} shows that AIC decreases monotonically along the
-hierarchy and is minimised by AR(2), HMM(2), reflecting the genuine gain in
-log-likelihood from the largest model. BIC, which penalises additional
-parameters more heavily, instead selects AR(2), HMM(1): both second-order
-models add many parameters (one variance and AR coefficient per ordered
-state pair) without enough likelihood improvement to offset the penalty on
-this sample size. The takeaway is that the second-order chain pays for
-itself in fit but not in parsimony.
+By looking at the ACF plots for all the models, we have seen
+that the lags are still significant for all models. This tells us, 
+that there is still some temporal structure in the data we have not captured with the 
+models we have implemented.
 
-For practical use as an occupancy model, where interpretability and a
-manageable number of per-state parameters are valuable, AR(2), HMM(1) is the
-recommended model: it captures the within-regime autocorrelation that the
-plain HMM cannot, while keeping the latent dynamics first-order and the
-number of free parameters modest. AR(2), HMM(2) remains the strict best-fit
-model and is the appropriate choice when raw likelihood is the only
-criterion. Possible extensions to either model --- covariate-dependent
-transitions, richer emission families, or further parameter tying in the
-second-order chain --- are discussed in the Future Work section.
+Overall, we have seen that extending the ordinary with 
+higher order markov chains or autoregressive emissions gives a significant improvement in fit, 
+and tells us that there is indeed temporal structure in the data. However, there is still some temporal structure in the data that we have not captured with the models we have implemented, so there is still room for improvement.
